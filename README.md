@@ -32,7 +32,7 @@ Aplikasi ini dikembangkan menggunakan arsitektur modern dengan pendekatan **cont
 
 | Komponen       | Teknologi                       |
 | -------------- | ------------------------------- |
-| Framework      | Laravel 11                      |
+| Framework      | Laravel 12                      |
 | Database       | PostgreSQL (Docker Container)   |
 | Object Storage | MinIO S3 (Docker Container)     |
 | Environment    | Docker Desktop & Docker Compose |
