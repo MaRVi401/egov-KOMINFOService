@@ -3,18 +3,40 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 
+/*
+|--------------------------------------------------------------------------
+| Public Routes
+|--------------------------------------------------------------------------
+*/
 
-// Halaman utama (Login)
+// Landing Page
 Route::get('/', function () {
-    return view('auth.login');
-})->name('login')->middleware('guest');
+    return view('welcome');
+})->name('landing');
 
-// Proses Post Login
-Route::post('/login', [LoginController::class, 'login'])->middleware('guest');
+/*
+|--------------------------------------------------------------------------
+| Guest Routes (Belum Login)
+|--------------------------------------------------------------------------
+*/
+Route::middleware('guest')->group(function () {
 
+    // Halaman Login
+    Route::get('/login', function () {
+        return view('auth.login');
+    })->name('login');
 
-// Proteksi Route berdasarkan Auth
-Route::middleware(['auth'])->group(function () {
+    // Proses Login
+    Route::post('/login', [LoginController::class, 'login'])
+        ->name('login.post');
+});
+
+/*
+|--------------------------------------------------------------------------
+| Authenticated Routes (Sudah Login)
+|--------------------------------------------------------------------------
+*/
+Route::middleware('auth')->group(function () {
 
     // Dashboard Super Admin
     Route::get('/super-admin/dashboard', function () {
@@ -37,5 +59,6 @@ Route::middleware(['auth'])->group(function () {
     })->name('operator.dashboard');
 
     // Proses Logout
-    Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+    Route::post('/logout', [LoginController::class, 'logout'])
+        ->name('logout');
 });

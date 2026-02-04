@@ -19,7 +19,7 @@ class UserSeeder extends Seeder
                 'nama' => 'User ' . ucfirst($role),
                 'username' => str_replace('_', '', $role),
                 'email' => $role . '@mail.com',
-                'password' => Hash::make('password'),
+                'password' => Hash::make('12345678'),
                 'role' => $role,
             ]);
         }
