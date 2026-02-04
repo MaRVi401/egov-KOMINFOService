@@ -36,6 +36,7 @@ Aplikasi ini dikembangkan menggunakan arsitektur modern dengan pendekatan **cont
 | Database       | PostgreSQL (Docker Container)   |
 | Object Storage | MinIO S3 (Docker Container)     |
 | Environment    | Docker Desktop & Docker Compose |
+| Bundler        | Vite 6                           |
 | API Style      | RESTful API                     |
 
 ---
@@ -66,6 +67,9 @@ cd egov-KOMINFOService
 
 ```bash
 composer install
+```
+```bash
+npm install
 ```
 
 ---
@@ -154,7 +158,23 @@ Jika hasilnya `true`, maka koneksi MinIO berhasil.
 | PostgreSQL      | Port 5432                                      | Database Service                     |
 
 ---
+## 🖥️ Menjalankan Aplikasi
 
+Aplikasi ini membutuhkan **dua proses yang berjalan secara bersamaan**.
+
+### ▶️ Terminal 1 — Backend
+Jalankan server Laravel:
+```bash
+php artisan serve
+```
+### ▶️ Terminal 2 — Frontend
+Jalankan Vite untuk frontend:
+```bash
+npm run dev
+```
+
+
+---
 ## 📊 Arsitektur Singkat
 
 ```
@@ -172,8 +192,8 @@ Laravel Application
 
 ## 👨‍💻 Developer
 
-**Yss | Awil | Hasan**
-Mahasiswa Rekayasa Perangkat Lunak – Semester 6
+**Yss | Awil | Hasan**  
+Mahasiswa **Rekayasa Perangkat Lunak (RPL)** – PMI 2026 
 
 ---
 
