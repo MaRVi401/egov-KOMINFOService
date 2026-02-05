@@ -6,13 +6,11 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-
-
 class LoginController extends Controller
 {
     public function login(Request $request)
     {
-        // Validasi + custom error message
+        // 1. Validasi + custom error message
         $credentials = $request->validate(
             [
                 'username' => ['required'],
@@ -25,8 +23,11 @@ class LoginController extends Controller
             ]
         );
 
-        // Proses autentikasi
-        if (Auth::attempt($credentials)) {
+        // 2. Ambil status checkbox "Remember Me"
+        $remember = $request->has('remember');
+
+        // 3. Proses autentikasi dengan menyertakan argumen $remember
+        if (Auth::attempt($credentials, $remember)) {
             $request->session()->regenerate();
 
             // Redirect berdasarkan role

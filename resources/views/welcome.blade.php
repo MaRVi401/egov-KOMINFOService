@@ -256,19 +256,15 @@
                         </a>
                     </div>
                 </article>
-
-            </div>
-
-            <div class="mt-12 text-center">
-                <a href="#"
-                    class="inline-flex items-center px-6 py-3 text-base font-medium text-gray-900 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:ring-4 focus:ring-gray-100 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700">
-                    <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 8">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M13 7 7.674 1.3a.91.91 0 0 0-1.348 0L1 7" />
-                    </svg>
-                </a>
             </div>
         </div>
+
     </section>
+    <button id="back-to-top" type="button"
+        class="fixed bottom-8 right-8 z-50 inline-flex items-center p-3 text-gray-900 bg-white border border-gray-300 rounded-lg shadow-lg opacity-0 invisible transition-all duration-300 hover:bg-gray-50 focus:ring-4 focus:outline-none focus:ring-gray-100 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 active:scale-90">
+        <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 8">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M13 7 7.674 1.3a.91.91 0 0 0-1.348 0L1 7" />
+        </svg>
+    </button>
 @endsection
