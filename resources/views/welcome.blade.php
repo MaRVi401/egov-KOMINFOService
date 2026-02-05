@@ -36,7 +36,7 @@
                     <div
                         class="p-6 bg-gray-50 dark:bg-gray-800/50 flex justify-center items-center aspect-square overflow-hidden">
                         <img class="w-full h-full object-contain transform transition-transform hover:scale-110"
-                            src="{{ asset('assets/images/landingPages/image.png') }}" alt="E-Filling" />
+                            src="{{ asset('assets/images/landingPages/logo-kabSubang.webp') }}" alt="E-Filling" />
                     </div>
                     <div class="p-6 text-center flex flex-col grow">
                         <div>
@@ -69,7 +69,7 @@
                     <div
                         class="p-6 bg-gray-50 dark:bg-gray-800/50 flex justify-center items-center aspect-square overflow-hidden">
                         <img class="w-full h-full object-contain transform transition-transform hover:scale-110"
-                            src="{{ asset('assets/images/landingPages/image.png') }}" alt="E-Licensing" />
+                            src="{{ asset('assets/images/landingPages/logo-kabSubang.webp') }}" alt="E-Licensing" />
                     </div>
                     <div class="p-6 text-center flex flex-col grow">
                         <div>
@@ -96,7 +96,7 @@
                     <div
                         class="p-6 bg-gray-50 dark:bg-gray-800/50 flex justify-center items-center aspect-square overflow-hidden">
                         <img class="w-full h-full object-contain transform transition-transform hover:scale-110"
-                            src="{{ asset('assets/images/landingPages/image.png') }}" alt="E-Planning" />
+                            src="{{ asset('assets/images/landingPages/logo-kabSubang.webp') }}" alt="E-Planning" />
                     </div>
                     <div class="p-6 text-center flex flex-col grow">
                         <div>
@@ -124,7 +124,7 @@
                     <div
                         class="p-6 bg-gray-50 dark:bg-gray-800/50 flex justify-center items-center aspect-square overflow-hidden">
                         <img class="w-full h-full object-contain transform transition-transform hover:scale-110"
-                            src="{{ asset('assets/images/landingPages/image.png') }}" alt="Open Data" />
+                            src="{{ asset('assets/images/landingPages/logo-kabSubang.webp') }}" alt="Open Data" />
                     </div>
                     <div class="p-6 text-center flex flex-col grow">
                         <div>
