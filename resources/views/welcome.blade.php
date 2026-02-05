@@ -3,24 +3,68 @@
 @section('title', 'E-Gov Kominfo - Portal Layanan Digital')
 
 @section('content')
-    <section id="beranda" class="flex items-center justify-center py-20 lg:py-32 scroll-mt-20">
-        <div class="grid max-w-7xl px-4 mx-auto lg:gap-8 xl:gap-0 lg:grid-cols-12 items-center">
-            <div class="mr-auto place-self-center lg:col-span-7 text-center lg:text-left">
-                <h1
-                    class="max-w-2xl mb-4 text-4xl font-extrabold tracking-tight leading-none md:text-5xl xl:text-6xl uppercase text-gray-900 dark:text-white">
-                    Portal Layanan Digital Diskominfo
+    <section id="beranda" class="relative min-h-[90vh] flex items-center justify-center py-16 lg:py-24 overflow-hidden bg-white dark:bg-gray-900">
+    
+    <div class="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+        <div class="absolute -top-[10%] -left-[10%] w-96 h-96 bg-blue-400/20 rounded-full blur-[100px]"></div>
+        <div class="absolute -bottom-[10%] -right-[10%] w-96 h-96 bg-indigo-400/20 rounded-full blur-[100px]"></div>
+    </div>
+
+    <div class="container relative z-10 max-w-7xl px-6 mx-auto">
+        <div class="grid gap-12 lg:grid-cols-12 items-center">
+            
+            <div class="lg:col-span-7 flex flex-col items-center lg:items-start text-center lg:text-left">
+                
+                <h1 class="mb-6 text-4xl font-extrabold tracking-tight leading-[1.1] text-gray-900 md:text-6xl xl:text-7xl dark:text-white">
+                    Portal Layanan <br class="hidden lg:block"> 
+                    <span class="bg-clip-text text-transparent bg-linear-to-r from-blue-600 to-indigo-500">
+                        Digital DISKOMINFO
+                    </span>
                 </h1>
-                <p class="max-w-2xl mb-6 font-light text-gray-500 lg:mb-8 md:text-lg lg:text-xl dark:text-gray-400">
-                    Akses mudah dan cepat untuk berbagai layanan sistem elektronik pemerintah daerah dalam satu platform
-                    terintegrasi.
+
+                <p class="mb-8 max-w-xl text-lg font-normal text-gray-600 lg:text-xl leading-relaxed dark:text-gray-400">
+                    Akses satu pintu untuk seluruh ekosistem digital pemerintah daerah. Cepat, aman, dan dirancang untuk memudahkan kebutuhan publik.
                 </p>
+
+                <div class="flex flex-col w-full sm:flex-row sm:w-auto gap-4">
+                    <a href="#layanan" 
+                       class="inline-flex items-center justify-center px-8 py-4 text-base font-bold text-white transition-all duration-300 bg-blue-600 rounded-xl hover:bg-blue-700 hover:shadow-xl hover:shadow-blue-500/30 active:scale-95">
+                        Lihat Layanan
+                        <svg class="w-5 h-5 ml-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                        </svg>
+                    </a>
+                    
+                    <a href="#footer" 
+                       class="inline-flex items-center justify-center px-8 py-4 text-base font-bold text-gray-700 transition-all duration-300 bg-white border-2 border-gray-100 rounded-xl hover:bg-gray-50 hover:border-gray-200 dark:bg-gray-800 dark:text-white dark:border-gray-700 dark:hover:bg-gray-700 active:scale-95">
+                        Tentang Kami
+                    </a>
+                </div>
+
+                <div class="mt-10 pt-10 border-t border-gray-100 dark:border-gray-800 w-full flex justify-center lg:justify-start gap-8">
+                    <div>
+                        <p class="text-2xl font-bold text-gray-900 dark:text-white">24/7</p>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Akses Online</p>
+                    </div>
+                    <div class="w-px h-10 bg-gray-200 dark:bg-gray-700"></div>
+                    <div>
+                        <p class="text-2xl font-bold text-gray-900 dark:text-white">100%</p>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Terintegrasi</p>
+                    </div>
+                </div>
             </div>
-            <div class="hidden lg:mt-0 lg:col-span-5 lg:flex">
-                <img src="{{ asset('assets/images/landingPages/logo-jumbotron.svg') }}" alt="Illustration"
-                    class="w-full h-auto">
+
+            <div class="hidden lg:flex lg:col-span-5 relative group">
+                <div class="absolute inset-0 bg-blue-500/10 blur-[50px] rounded-full group-hover:bg-blue-500/20 transition-all duration-700"></div>
+                
+                <img src="{{ asset('assets/images/landingPages/logo-jumbotron.svg') }}" 
+                     alt="Diskominfo Digital Portal" 
+                     class="relative w-full h-auto drop-shadow-2xl transition-transform duration-700 group-hover:scale-[1.02]">
             </div>
+
         </div>
-    </section>
+    </div>
+</section>
 
     <hr class="border-gray-200 dark:border-gray-800">
 

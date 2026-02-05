@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('password');
             $table->enum('role', ['super_admin', 'pengguna_asn', 'kabid', 'operator']);
             $table->string('alamat')->nullable();
-            $table->string('email')->unique();
+            $table->string('email')->nullable()->unique();
             $table->string('no_wa')->nullable();
             $table->string('avatar')->nullable();
             $table->rememberToken();

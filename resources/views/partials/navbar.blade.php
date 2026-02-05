@@ -2,8 +2,8 @@
     <div class="max-w-7xl flex flex-wrap items-center justify-between mx-auto p-4">
         {{-- Logo Section --}}
         <a href="/" class="flex items-center space-x-3 rtl:space-x-reverse">
-            <img src="{{ asset('assets/images/landingPages/logo-diskominfo.png') }}" class="h-8 hidden md:block" alt="Logo" />
-            <span class="self-center text-2xl font-bold whitespace-nowrap">E-Gov Kominfo</span>
+            {{-- <img src="{{ asset('assets/images/landingPages/logo-diskominfo.png') }}" class="h-8 hidden md:block" alt="Logo" /> --}}
+            <span class="self-center text-2xl font-bold whitespace-nowrap">E-Gov SUBANG</span>
         </a>
 
         {{-- Action Buttons (Login/Dashboard & Mobile Toggle) --}}
