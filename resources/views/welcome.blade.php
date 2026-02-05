@@ -34,7 +34,7 @@
                              src="{{ asset('assets/images/landingPages/image.png') }}" 
                              alt="E-Filling" />
                     </div>
-                    <div class="p-6 text-center flex flex-col flex-grow">
+                    <div class="p-6 text-center flex flex-col grow">
                         <div>
                             <span class="inline-flex items-center bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-xs font-semibold px-2.5 py-1 rounded-full mb-4">
                                 <svg class="w-3 h-3 me-1" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
@@ -42,7 +42,7 @@
                             </span>
                         </div>
                         <h5 class="mb-3 text-xl font-bold tracking-tight text-gray-900 dark:text-white">E-Filling</h5>
-                        <p class="mb-6 text-sm text-gray-500 dark:text-gray-400 flex-grow">Pengisian dokumen secara digital dengan cepat.</p>
+                        <p class="mb-6 text-sm text-gray-500 dark:text-gray-400 grow">Pengisian dokumen secara digital dengan cepat.</p>
                         <a href="#" class="inline-flex items-center justify-center text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 transition-all">
                             Buka Layanan
                             <svg class="w-4 h-4 ms-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -58,14 +58,14 @@
                              src="{{ asset('assets/images/landingPages/image.png') }}" 
                              alt="E-Licensing" />
                     </div>
-                    <div class="p-6 text-center flex flex-col flex-grow">
+                    <div class="p-6 text-center flex flex-col grow">
                         <div>
                             <span class="inline-flex items-center bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 text-xs font-semibold px-2.5 py-1 rounded-full mb-4">
                                 Layanan Publik
                             </span>
                         </div>
                         <h5 class="mb-3 text-xl font-bold tracking-tight text-gray-900 dark:text-white">E-Licensing</h5>
-                        <p class="mb-6 text-sm text-gray-500 dark:text-gray-400 flex-grow">Perizinan online terpadu untuk masyarakat.</p>
+                        <p class="mb-6 text-sm text-gray-500 dark:text-gray-400 grow">Perizinan online terpadu untuk masyarakat.</p>
                         <a href="#" class="inline-flex items-center justify-center text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 transition-all">
                             Buka Layanan
                             <svg class="w-4 h-4 ms-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -81,14 +81,14 @@
                              src="{{ asset('assets/images/landingPages/image.png') }}" 
                              alt="E-Planning" />
                     </div>
-                    <div class="p-6 text-center flex flex-col flex-grow">
+                    <div class="p-6 text-center flex flex-col grow">
                         <div>
                             <span class="inline-flex items-center bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 text-xs font-semibold px-2.5 py-1 rounded-full mb-4">
                                 Internal
                             </span>
                         </div>
                         <h5 class="mb-3 text-xl font-bold tracking-tight text-gray-900 dark:text-white">E-Planning</h5>
-                        <p class="mb-6 text-sm text-gray-500 dark:text-gray-400 flex-grow">Sistem perencanaan pembangunan daerah.</p>
+                        <p class="mb-6 text-sm text-gray-500 dark:text-gray-400 grow">Sistem perencanaan pembangunan daerah.</p>
                         <a href="#" class="inline-flex items-center justify-center text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 transition-all">
                             Buka Layanan
                             <svg class="w-4 h-4 ms-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -104,14 +104,14 @@
                              src="{{ asset('assets/images/landingPages/image.png') }}" 
                              alt="Open Data" />
                     </div>
-                    <div class="p-6 text-center flex flex-col flex-grow">
+                    <div class="p-6 text-center flex flex-col grow">
                         <div>
                             <span class="inline-flex items-center bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 text-xs font-semibold px-2.5 py-1 rounded-full mb-4">
                                 Informasi
                             </span>
                         </div>
                         <h5 class="mb-3 text-xl font-bold tracking-tight text-gray-900 dark:text-white">Open Data</h5>
-                        <p class="mb-6 text-sm text-gray-500 dark:text-gray-400 flex-grow">Portal data terbuka transparan bagi publik.</p>
+                        <p class="mb-6 text-sm text-gray-500 dark:text-gray-400 grow">Portal data terbuka transparan bagi publik.</p>
                         <a href="#" class="inline-flex items-center justify-center text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 transition-all">
                             Buka Layanan
                             <svg class="w-4 h-4 ms-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
