@@ -84,7 +84,7 @@
 
         <div class="flex flex-col sm:flex-row items-center justify-center gap-4 text-sm text-gray-500 text-center">
             <p>
-                © 2026
+                © 2026 - {{ date('Y') }}
                 <span class="font-semibold text-gray-900 dark:text-white">
                     Dinas Komunikasi dan Informatika
                 </span>.
