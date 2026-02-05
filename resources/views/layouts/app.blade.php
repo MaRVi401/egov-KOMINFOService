@@ -4,9 +4,12 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>@yield('title', 'E-Gov Kominfo - Layanan Terintegrasi')</title>
+    <title>@yield('title', 'E-Gov Kominfo')</title>
+
+    <link rel="icon" type="image/png" href="{{ asset('assets/images/landingPages/logo-kabSubang.webp') }}">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    
 </head>
 
 <body class="flex flex-col min-h-screen bg-white dark:bg-gray-900 antialiased text-gray-900 dark:text-white">
