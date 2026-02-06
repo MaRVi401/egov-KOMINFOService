@@ -118,6 +118,19 @@ php artisan key:generate
 php artisan migrate
 ```
 
+
+
+---
+
+### 7️⃣ Setup minIO 
+
+1. Buka browser: [http://localhost:9001](http://localhost:9001)
+2. Login: (Menggunakan username dan password yang ada di env)
+3. Klik menu **Buckets** di sebelah kiri.
+4. Klik tombol **Create Bucket**.
+5. Isi nama bucket persis seperti di env.
+6. Klik **Create Bucket**.
+
 ---
 
 ## 🧪 Pengujian Sistem
@@ -132,17 +145,31 @@ php artisan tinker
 
 ### Test Koneksi Database
 
+Windows:
+
 ```php
 App\\Models\\User::count();
 ```
 
+linux:
+
+```php
+App\Models\User::count()
+```
+
 ### Test Object Storage (MinIO)
 
+Windows:
 ```php
 use Illuminate\\Support\\Facades\\Storage;
 
 Storage::disk('s3')->put('test.txt', 'Koneksi Berhasil');
 Storage::disk('s3')->exists('test.txt');
+```
+
+Linux:
+```php
+Storage::disk('s3')->put('tes.txt', 'Halo MinIO!');
 ```
 
 Jika hasilnya `true`, maka koneksi MinIO berhasil.
