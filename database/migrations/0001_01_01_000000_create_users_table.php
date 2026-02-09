@@ -11,19 +11,6 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
-            $table->uuid('uuid')->primary();
-            $table->string('nama');
-            $table->string('username')->unique();
-            $table->string('password');
-            $table->enum('role', ['super_admin', 'pengguna_asn', 'kabid', 'operator']);
-            $table->string('alamat')->nullable();
-            $table->string('email')->nullable()->unique();
-            $table->string('no_wa')->nullable();
-            $table->string('avatar')->nullable();
-            $table->rememberToken();
-            $table->timestamps();
-        });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
             $table->string('email')->primary();
