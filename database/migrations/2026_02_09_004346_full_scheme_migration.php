@@ -118,14 +118,15 @@ return new class extends Migration
             $table->string('pd_pj_email');
             $table->string('pd_pj_kontak');
             $table->enum('pd_jenis_layanan', ['permohonan baru', 'reset password', 'hapus akun', 'ganti nama akun']);
-            $table->text('pd_alasan_hapus_ganti')->nullable();
+            $table->string('pd_alasan_hapus_akun')->nullable();
+            $table->string('pd_alasan_ganti_nama')->nullable();
             $table->string('pd_usulan_email')->nullable();
 
             // ASN Section
             $table->string('asn_no_surat');
             $table->timestamp('asn_tgl');
             $table->integer('asn_hal');
-            $table->string('asn_nama');
+            $table->string('asn_nama_lengkap');
             $table->string('asn_nip');
             $table->string('asn_jabatan');
             $table->string('asn_instansi');
@@ -152,10 +153,11 @@ return new class extends Migration
             $table->string('pj_admin_telp');
             $table->string('pj_teknis_nama');
             $table->string('pj_teknis_instansi');
-            $table->string('pj_teknis_jabatan');
+            $table->string('pj_teknis_alamat');
             $table->string('pj_teknis_email');
             $table->string('pj_teknis_telp');
             $table->string('subdomain_nama');
+            $table->string('subdomain_alamat');
             $table->string('subdomain_ip');
             $table->string('subdomain_redirect')->nullable();
             $table->text('subdomain_deskripsi');
@@ -189,7 +191,6 @@ return new class extends Migration
             $table->string('kembang_ttd_nama');
             $table->string('kembang_ttd_nip');
             $table->string('kembang_nama_sistem');
-            $table->string('kembang_fitur');
             $table->text('kembang_ket');
             $table->string('kembang_perintah_pj1_nama');
             $table->string('kembang_perintah_pj1_nip');
