@@ -1,0 +1,29 @@
+{
+    "menu": [
+        {
+            "role": "super_admin",
+            "items": [
+                {
+                    "name": "Dashboard",
+                    "route": "dashboard",
+                    "icon": "ti ti-layout-dashboard"
+                },
+                {
+                    "name": "Kelola User",
+                    "route": "roles-management",
+                    "icon": "ti ti-users"
+                }
+            ]
+        },
+        {
+            "role": "pengguna_asn",
+            "items": [
+                {
+                    "name": "Dashboard",
+                    "icon": "home",
+                    "route": "dashboard"
+                }
+            ]
+        }
+    ]
+}
