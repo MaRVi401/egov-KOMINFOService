@@ -20,7 +20,7 @@
             "items": [
                 {
                     "name": "Dashboard",
-                    "icon": "home",
+                    "icon": "ti ti-layout-dashboard",
                     "route": "dashboard"
                 }
             ]
