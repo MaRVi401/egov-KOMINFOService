@@ -1,7 +1,36 @@
 @import "tailwindcss";
 @import "flowbite";
 
-/* Konfigurasi tema v4 jika diperlukan */
 @theme {
-    --color-primary-500: #3b82f6;
+    /* Light Mode Variables */
+    --color-neutral-primary-soft: #f9fafb;
+    --color-neutral-primary-medium: #f3f4f6;
+    --color-neutral-secondary-soft: #f3f4f6;
+    --color-neutral-secondary-medium: #e5e7eb;
+    --color-heading: #111827;
+    --color-body: #4b5563;
+    --color-default: #e5e7eb;
+    --color-default-medium: #d1d5db;
+    
+    --radius-base: 0.5rem;
+
+    /* Registrasi variant dark untuk Tailwind 4 */
+    @variant dark (&:where(.dark, .dark *));
+}
+
+@layer base {
+    /* Force override variabel saat class .dark ada di tag html */
+    .dark {
+        --color-neutral-primary-soft: #111827;
+        --color-neutral-primary-medium: #1f2937;
+        --color-neutral-secondary-soft: #1f2937;
+        --color-neutral-secondary-medium: #374151;
+        --color-heading: #f9fafb;
+        --color-body: #9ca3af;
+        --color-default: #374151;
+        --color-default-medium: #4b5563;
+        
+        background-color: var(--color-neutral-primary-soft);
+        color: var(--color-body);
+    }
 }
