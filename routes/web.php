@@ -16,9 +16,12 @@ Route::get('/', function () {
 
 // Test Page
 Route::get('/test', function () {
-    return view('test');
-})->name('test');
+    return view('layouts.dashboard');
+})->name('dashboard');
 
+Route::get('/permohonan', function () {
+    return view('layouts.permohonan');
+})->name('permohonan');
 /*
 |--------------------------------------------------------------------------
 | Guest Routes (Belum Login)
@@ -35,6 +38,7 @@ Route::middleware('guest')->group(function () {
     Route::post('/login', [LoginController::class, 'login'])
         ->name('login.post');
 });
+
 
 /*
 |--------------------------------------------------------------------------
