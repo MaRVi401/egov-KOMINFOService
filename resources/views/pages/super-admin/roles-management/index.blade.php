@@ -66,17 +66,34 @@
                             <span
                                 class="bg-yellow-100 text-yellow-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-yellow-900 dark:text-yellow-300">Menunggu</span>
                         </td>
-                        <td class="px-6 py-4 flex items-center space-x-3">
-                            <a href="#"
-                                class="text-gray-500 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-                                title="Detail/Pengaturan">
-                                <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                    viewBox="0 0 20 20">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                        stroke-width="2"
-                                        d="M4 12.25V1m0 11.25a2.25 2.25 0 0 0 0 4.5m0-4.5a2.25 2.25 0 0 1 0 4.5M4 19v-2.25m6-13.5V1m0 2.25a2.25 2.25 0 0 0 0 4.5m0-4.5a2.25 2.25 0 0 1 0 4.5M10 19V7.75m6 4.5V1m0 11.25a2.25 2.25 0 1 0 0 4.5 2.25 2.25 0 0 0 0-4.5ZM16 19v-2" />
-                                </svg>
-                            </a>
+                        <td class="px-6 py-4">
+                            <button id="dropdownMenuIconHorizontalButton-{{ $loop->index ?? '1' }}"
+                                data-dropdown-toggle="dropdownDots-{{ $loop->index ?? '1' }}"
+                                class="inline-flex items-center p-2 text-sm font-medium text-center text-gray-900 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none dark:text-white focus:ring-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+                                type="button">
+                                <i class="ti ti-dots-vertical text-xl"></i>
+                            </button>
+
+                            <div id="dropdownDots-{{ $loop->index ?? '1' }}"
+                                class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44 dark:bg-gray-700 dark:divide-gray-600">
+                                <ul class="py-2 text-sm text-gray-700 dark:text-gray-200"
+                                    aria-labelledby="dropdownMenuIconHorizontalButton">
+                                    <li>
+                                        <a href="#"
+                                            class="flex items-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                                            <i class="ti ti-eye mr-2 text-lg text-blue-500"></i>
+                                            View Detail
+                                        </a>
+                                    </li>
+                                </ul>
+                                <div class="py-2">
+                                    <a href="#"
+                                        class="flex items-center px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-red-500 dark:hover:text-white">
+                                        <i class="ti ti-trash mr-2 text-lg"></i>
+                                        Delete
+                                    </a>
+                                </div>
+                            </div>
                         </td>
                     </tr>
                 </tbody>
