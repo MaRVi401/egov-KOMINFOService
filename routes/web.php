@@ -16,11 +16,11 @@ Route::get('/', function () {
 
 // Test Page
 Route::get('/test', function () {
-    return view('layouts.dashboard');
+    return view('pages.super-admin.dashboard');
 })->name('dashboard');
 
 Route::get('/permohonan', function () {
-    return view('layouts.permohonan');
+    return view('pages.super-admin.permohonan');
 })->name('permohonan');
 /*
 |--------------------------------------------------------------------------
