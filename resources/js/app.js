@@ -2,6 +2,39 @@ import './bootstrap';
 import 'flowbite';
 import { initScrollSpy } from './landing';
 
+// Dark mode setup
+const htmlElement = document.documentElement;
+const themeToggleBtn = document.getElementById('theme-toggle');
+
+// Function to set theme
+function setTheme(theme) {
+    if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        htmlElement.classList.add('dark');
+        localStorage.setItem('theme', 'dark');
+    } else {
+        htmlElement.classList.remove('dark');
+        localStorage.setItem('theme', 'light');
+    }
+}
+
+// Initialize theme on load
+const savedTheme = localStorage.getItem('theme');
+setTheme(savedTheme);
+
+// Toggle theme function
+window.toggleDarkMode = function() {
+    if (htmlElement.classList.contains('dark')) {
+        setTheme('light');
+    } else {
+        setTheme('dark');
+    }
+};
+
+if (themeToggleBtn) {
+    themeToggleBtn.addEventListener('click', window.toggleDarkMode);
+}
+
+
 initScrollSpy();
 
 window.addEventListener('scroll', function() {
