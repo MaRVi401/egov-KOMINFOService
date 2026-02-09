@@ -57,7 +57,7 @@
             <div class="hidden lg:flex lg:col-span-5 relative group">
                 <div class="absolute inset-0 bg-blue-500/10 blur-[50px] rounded-full group-hover:bg-blue-500/20 transition-all duration-700"></div>
                 
-                <img src="{{ asset('assets/images/landingPages/logo-jumbotron.svg') }}" 
+                <img src="{{ asset('assets/images/landingPages/vampir.png') }}" 
                      alt="Diskominfo Digital Portal" 
                      class="relative w-full h-auto drop-shadow-2xl transition-transform duration-700 group-hover:scale-[1.02]">
             </div>
