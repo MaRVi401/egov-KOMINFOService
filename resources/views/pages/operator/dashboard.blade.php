@@ -1,36 +1,30 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <title>Dashboard</title>
-    @vite(['resources/css/app.css'])
-</head>
-<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+@extends('layouts.main')
 
-    <div class="bg-white shadow-md rounded-lg p-6 w-full max-w-md text-center">
-        <h1 class="text-2xl font-bold mb-4">
-            Selamat Datang 👋
-        </h1>
+@section('title', 'Dashboard Operator')
 
-        <p class="text-gray-700 mb-2">
-            <strong>Nama:</strong> {{ auth()->user()->nama }}
-        </p>
+@section('content')
+    <div class="p-4 border-2 border-default border-dashed rounded-base dark:border-default-medium">
+        <h2 class="text-2xl font-bold text-heading mb-6">Overview Analityc</h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+            <div class="flex flex-col items-center justify-center h-32 rounded-base bg-neutral-secondary-soft border border-default dark:border-default-medium">
+               <p class="text-3xl font-bold text-heading">24</p>
+               <p class="text-sm text-body uppercase tracking-wider">Layanan Aktif</p>
+            </div>
+            <div class="flex flex-col items-center justify-center h-32 rounded-base bg-neutral-secondary-soft border border-default dark:border-default-medium">
+               <p class="text-3xl font-bold text-heading">3.81</p>
+               <p class="text-sm text-body uppercase tracking-wider">Indeks Kepuasan</p>
+            </div>
+            <div class="flex flex-col items-center justify-center h-32 rounded-base bg-neutral-secondary-soft border border-default dark:border-default-medium">
+               <p class="text-3xl font-bold text-heading">100%</p>
+               <p class="text-sm text-body uppercase tracking-wider">Uptime Sistem</p>
+            </div>
+        </div>
 
-        <p class="text-gray-700 mb-6">
-            <strong>Role:</strong>
-            <span class="px-2 py-1 rounded bg-blue-100 text-blue-700 text-sm">
-                {{ auth()->user()->role }}
+        <div class="w-full bg-neutral-primary-medium rounded-base border border-default dark:border-default-medium p-6 h-96 flex items-center justify-center">
+            <span class="text-neutral-tertiary-medium italic text-lg text-center">
+                Visualisasi Data Document Scanner YOLOv8 & Pathfinding Visualizer akan tampil di sini.
             </span>
-        </p>
-
-        <form action="{{ route('logout') }}" method="POST">
-            @csrf
-            <button type="submit"
-                class="w-full bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg">
-                Logout
-            </button>
-        </form>
+        </div>
     </div>
-
-</body>
-</html>
+@endsection

@@ -22,7 +22,7 @@
 
             {{-- MENU PERMOHONAN --}}
             <li>
-                <a href="{{ route('permohonan') }}"
+                <a href="#"
                     class="flex items-center p-2 rounded-base group {{ request()->routeIs('permohonan') ? 'bg-neutral-secondary-medium text-heading' : 'text-body hover:bg-neutral-secondary-medium hover:text-heading' }}">
 
                     {{-- Icon Permohonan --}}

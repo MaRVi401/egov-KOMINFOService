@@ -41,16 +41,26 @@
                     <div class="z-50 hidden my-4 text-base list-none bg-white dark:bg-neutral-primary-medium divide-y divide-default border border-default dark:border-default-medium rounded-base shadow-lg"
                         id="dropdown-user">
                         <div class="px-4 py-3">
-                            <p class="text-sm font-medium text-heading">Ahmad Yassin</p>
-                            <p class="text-sm text-body truncate">ahmad.yassin@polindra.ac.id</p>
+                            <p class="text-sm font-medium text-heading">{{ auth()->user()->nama }}</p>
+                            <p class="text-sm text-body truncate">{{ auth()->user()->email }}</p>
                         </div>
                         <ul class="py-1">
-                            <li><a href="#"
-                                    class="block px-4 py-2 text-sm text-body hover:bg-neutral-secondary-soft dark:hover:text-heading">Edit
+                            <li>
+                                <a href="#"
+                                    class="block px-4 py-2 text-sm text-body hover:bg-neutral-secondary-soft">Edit
                                     Profile</a>
                             </li>
-                            <li><a href="#" class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50">Sign
-                                    out</a></li>
+                            <li>
+                                <a href="{{ route('logout') }}"
+                                    class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50"
+                                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                    Sign out
+                                </a>
+
+                                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">
+                                    @csrf
+                                </form>
+                            </li>
                         </ul>
                     </div>
                 </div>

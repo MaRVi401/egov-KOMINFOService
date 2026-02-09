@@ -30,14 +30,8 @@ class LoginController extends Controller
         if (Auth::attempt($credentials, $remember)) {
             $request->session()->regenerate();
 
-            // Redirect berdasarkan role
-            return match (Auth::user()->role) {
-                'super_admin'  => redirect()->intended('/super-admin/dashboard'),
-                'pengguna_asn' => redirect()->intended('/asn/dashboard'),
-                'kabid'        => redirect()->intended('/kabid/dashboard'),
-                'operator'     => redirect()->intended('/operator/dashboard'),
-                default        => redirect('/'),
-            };
+            // Cukup satu tujuan redirect, karena DashboardController yang akan mengatur tampilannya
+            return redirect()->intended('/dashboard');
         }
 
         // Jika username/password salah
