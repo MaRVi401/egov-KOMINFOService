@@ -14,6 +14,11 @@ Route::get('/', function () {
     return view('welcome');
 })->name('landing');
 
+// Test Page
+Route::get('/test', function () {
+    return view('test');
+})->name('test');
+
 /*
 |--------------------------------------------------------------------------
 | Guest Routes (Belum Login)
