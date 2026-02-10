@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Intervention\Image\Laravel\Facades\Image;
 use Illuminate\Support\Str;
 
 class UserManagementController extends Controller
@@ -53,24 +54,46 @@ class UserManagementController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        // 1. Validasi dengan Custom Messages
+        $rules = [
             'nama'     => 'required|string|max:255',
             'email'    => 'required|email|unique:users,email',
             'username' => 'required|string|unique:users,username',
             'role'     => 'required|in:super_admin,pengguna_asn,kabid,operator',
             'nip'      => 'required|string|max:50',
             'password' => 'required|min:8|confirmed',
-            'avatar'   => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-        ]);
+            'avatar'   => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+        ];
+
+        $messages = [
+            'avatar.max'   => 'Ukuran foto terlalu besar, maksimal adalah 2MB.',
+            'avatar.image' => 'File yang diunggah harus berupa gambar.',
+            'avatar.mimes' => 'Format gambar harus JPG, JPEG, PNG, atau WebP.',
+            'email.unique' => 'Email ini sudah terdaftar di sistem.',
+            'username.unique' => 'Username ini sudah digunakan.',
+            'password.confirmed' => 'Konfirmasi password tidak cocok.',
+        ];
+
+        $request->validate($rules, $messages);
 
         DB::beginTransaction();
         try {
-            // Upload to Minio (S3 disk)
             $avatarPath = null;
+
+            // 2. Proses Gambar ke WebP
             if ($request->hasFile('avatar')) {
-                $avatarPath = $request->file('avatar')->store('avatars', 's3');
+                $file = $request->file('avatar');
+                $filename = 'avatars/' . Str::random(40) . '.webp';
+
+                $image = Image::read($file)
+                    ->scale(width: 500)
+                    ->encodeByExtension('webp', quality: 75);
+
+                Storage::disk('s3')->put($filename, (string) $image);
+                $avatarPath = $filename;
             }
 
+            // 3. Simpan User Utama
             $user = User::create([
                 'nama'     => $request->nama,
                 'email'    => $request->email,
@@ -82,7 +105,7 @@ class UserManagementController extends Controller
                 'avatar'   => $avatarPath,
             ]);
 
-            // Create role specialization entry
+            // 4. Simpan Detail Role
             $this->getRoleModel($request->role)::create([
                 'uuid'     => (string) Str::uuid(),
                 'users_id' => $user->uuid,
@@ -90,10 +113,10 @@ class UserManagementController extends Controller
             ]);
 
             DB::commit();
-            return redirect()->route('user-management.index')->with('success', 'User created successfully.');
+            return redirect()->route('user-management.index')->with('success', 'User baru berhasil ditambahkan.');
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->with('error', 'Error: ' . $e->getMessage());
+            return back()->withErrors(['error' => 'Gagal sistem: ' . $e->getMessage()])->withInput();
         }
     }
 
@@ -113,15 +136,24 @@ class UserManagementController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        $request->validate([
+        $rules = [
             'nama'     => 'required|string|max:255',
             'email'    => 'required|email|unique:users,email,' . $user->uuid . ',uuid',
             'username' => 'required|string|unique:users,username,' . $user->uuid . ',uuid',
             'role'     => 'required|in:super_admin,pengguna_asn,kabid,operator',
             'nip'      => 'required|string|max:50',
-            'avatar'   => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'avatar'   => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'password' => 'nullable|min:8|confirmed',
-        ]);
+        ];
+
+        $messages = [
+            'avatar.max' => 'Ukuran foto maksimal 2MB.',
+            'avatar.mimes' => 'Format foto harus JPG, JPEG, PNG, atau WebP.',
+            'email.unique' => 'Alamat email sudah digunakan oleh user lain.',
+            'nip.required' => 'NIP wajib diisi untuk sinkronisasi data.',
+        ];
+
+        $request->validate($rules, $messages);
 
         DB::beginTransaction();
         try {
@@ -131,7 +163,6 @@ class UserManagementController extends Controller
             $user->nama = $request->nama;
             $user->email = $request->email;
             $user->username = $request->username;
-            $user->alamat = $request->alamat;
             $user->no_wa = $request->no_wa;
             $user->role = $newRole;
 
@@ -139,18 +170,26 @@ class UserManagementController extends Controller
                 $user->password = Hash::make($request->password);
             }
 
+            // 5. Update Gambar & Hapus File Lama
             if ($request->hasFile('avatar')) {
-                // Delete old avatar from Minio
                 if ($user->avatar) {
                     Storage::disk('s3')->delete($user->avatar);
                 }
-                // Store new avatar in Minio
-                $user->avatar = $request->file('avatar')->store('avatars', 's3');
+
+                $file = $request->file('avatar');
+                $filename = 'avatars/' . Str::random(40) . '.webp';
+
+                $image = Image::read($file)
+                    ->scale(width: 500)
+                    ->encodeByExtension('webp', quality: 75);
+
+                Storage::disk('s3')->put($filename, (string) $image);
+                $user->avatar = $filename;
             }
 
             $user->save();
 
-            // Sync role tables
+            // 6. Sinkronisasi Tabel Role
             if ($oldRole !== $newRole) {
                 $this->getRoleModel($oldRole)::where('users_id', $user->uuid)->delete();
                 $this->getRoleModel($newRole)::create([
@@ -163,10 +202,10 @@ class UserManagementController extends Controller
             }
 
             DB::commit();
-            return redirect()->route('user-management.index')->with('success', 'User updated successfully.');
+            return redirect()->route('user-management.index')->with('success', 'Profil user diperbarui.');
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->with('error', 'Update failed: ' . $e->getMessage());
+            return back()->withErrors(['error' => 'Terjadi kesalahan: ' . $e->getMessage()])->withInput();
         }
     }
 
