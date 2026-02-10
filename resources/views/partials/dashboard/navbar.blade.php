@@ -46,9 +46,10 @@
                         </div>
                         <ul class="py-1">
                             <li>
-                                <a href="#"
-                                    class="block px-4 py-2 text-sm text-body hover:bg-neutral-secondary-soft">Edit
-                                    Profile</a>
+                                <a href="{{ route('profile.edit') }}"
+                                class="block px-4 py-2 text-sm text-body hover:bg-neutral-secondary-soft">
+                                    Edit Profile
+                                </a>
                             </li>
                             <li>
                                 <a href="{{ route('logout') }}"
