@@ -78,7 +78,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div
                 class="lg:col-span-1 bg-neutral-primary-medium rounded-base border border-default p-6 flex flex-col h-full">
-                <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-6">User Distribution</h3>
+                <h3 class="text-center text-lg font-bold text-slate-900 dark:text-white mb-6">User Distribution</h3>
                 <div class="relative grow flex items-center justify-center min-h-60">
                     <canvas id="userRoleChart"></canvas>
                 </div>
