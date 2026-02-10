@@ -25,13 +25,31 @@ class UserManagementController extends Controller
     {
         $query = User::query()->where('uuid', '!=', Auth::id());
 
+        // Filter logic
+        if ($request->filled('role')) {
+            $query->where('role', $request->role);
+        }
+
         // Search Logic
         if ($request->has('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
                 $q->where('nama', 'LIKE', "%{$search}%")
                     ->orWhere('username', 'LIKE', "%{$search}%")
-                    ->orWhere('email', 'LIKE', "%{$search}%");
+                    ->orWhere('email', 'LIKE', "%{$search}%")
+                    // Cari di tabel relasi detail (NIP)
+                    ->orWhereHas('superAdmin', function ($sq) use ($search) {
+                        $sq->where('nip', 'LIKE', "%{$search}%");
+                    })
+                    ->orWhereHas('penggunaAsn', function ($sq) use ($search) {
+                        $sq->where('nip', 'LIKE', "%{$search}%");
+                    })
+                    ->orWhereHas('kabid', function ($sq) use ($search) {
+                        $sq->where('nip', 'LIKE', "%{$search}%");
+                    })
+                    ->orWhereHas('operator', function ($sq) use ($search) {
+                        $sq->where('nip', 'LIKE', "%{$search}%");
+                    });
             });
         }
 
@@ -164,6 +182,7 @@ class UserManagementController extends Controller
             $user->email = $request->email;
             $user->username = $request->username;
             $user->no_wa = $request->no_wa;
+            $user->alamat = $request->alamat;
             $user->role = $newRole;
 
             if ($request->filled('password')) {

@@ -100,6 +100,18 @@
                         <input type="text" name="no_wa" value="{{ $user->no_wa }}"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                     </div>
+                    
+                    {{-- Alamat --}}
+                    <div class="md:col-span-2">
+                        <label class="block mb-2 text-sm font-semibold text-gray-900 dark:text-white">Alamat Lengkap</label>
+                        <textarea name="alamat" rows="3"
+                            class="bg-gray-50 border text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:text-white transition-colors
+        {{ $errors->has('alamat') ? 'border-red-500 dark:border-red-500' : 'border-gray-300 dark:border-gray-600' }}"
+                            placeholder="Masukkan alamat lengkap sesuai KTP...">{{ old('alamat', $user->alamat) }}</textarea>
+                        @error('alamat')
+                            <p class="mt-1.5 text-xs font-medium text-red-600 dark:text-red-500">{{ $message }}</p>
+                        @enderror
+                    </div>
                 </div>
 
                 {{-- Avatar Section --}}
