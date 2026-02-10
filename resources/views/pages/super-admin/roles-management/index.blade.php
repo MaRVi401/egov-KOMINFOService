@@ -1,6 +1,6 @@
 @extends('layouts.main')
 
-@section('title', 'Daftar Permohonan')
+@section('title', 'Roles Management')
 
 @section('content')
     <div class="p-4 border-2 border-default border-dashed rounded-base dark:border-default-medium">
