@@ -35,7 +35,8 @@
                     <button type="button"
                         class="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-neutral-tertiary"
                         data-dropdown-toggle="dropdown-user">
-                        <img class="w-8 h-8 rounded-full" src="https://ui-avatars.com/api/?name=Ahmad+Yassin"
+                        <img class="w-8 h-8 rounded-full object-cover" 
+                            src="{{ auth()->user()->avatar ? Storage::disk('s3')->url('avatars/' . auth()->user()->avatar) : 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->nama) }}"
                             alt="user photo">
                     </button>
                     <div class="z-50 hidden my-4 text-base list-none bg-white dark:bg-neutral-primary-medium divide-y divide-default border border-default dark:border-default-medium rounded-base shadow-lg"
