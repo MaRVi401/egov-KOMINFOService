@@ -9,9 +9,9 @@
                     "icon": "ti ti-layout-dashboard"
                 },
                 {
-                    "name": "Kelola User",
-                    "route": "roles-management",
-                    "icon": "ti ti-users"
+                    "name": "User Management",
+                    "icon": "ti ti-users-group",
+                    "route": "user-management.index"
                 }
             ]
         },

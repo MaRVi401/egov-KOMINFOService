@@ -16,20 +16,59 @@ class User extends Authenticatable
     protected $keyType = 'string';
 
     protected $fillable = [
-        'nama', 'username', 'password', 'role', 'alamat', 'email', 'no_wa', 'avatar'
+        'nama',
+        'username',
+        'password',
+        'role',
+        'alamat',
+        'email',
+        'no_wa',
+        'avatar'
     ];
 
     protected $hidden = [
-        'password', 'remember_token',
+        'password',
+        'remember_token',
     ];
 
-    // Relasi ke tabel spesialisasi role
-    public function superAdmin() { return $this->hasOne(SuperAdmin::class, 'users_id', 'uuid'); }
-    public function penggunaAsn() { return $this->hasOne(PenggunaAsn::class, 'users_id', 'uuid'); }
-    public function kabid() { return $this->hasOne(Kabid::class, 'users_id', 'uuid'); }
-    public function operator() { return $this->hasOne(Operator::class, 'users_id', 'uuid'); }
+    // Penting untuk Route Resource agar mencari berdasarkan uuid di URL
+    public function getRouteKeyName()
+    {
+        return 'uuid';
+    }
 
-    // Relasi ke Tiket (sebagai pembuat atau petugas)
-    public function tiketDibuat() { return $this->hasMany(Tiket::class, 'users_id', 'uuid'); }
-    public function tiketDitangani() { return $this->hasMany(Tiket::class, 'petugas_id', 'uuid'); }
+    protected function casts(): array
+    {
+        return [
+            'password' => 'hashed',
+        ];
+    }
+
+    // Relasi ke tabel spesialisasi role
+    public function superAdmin()
+    {
+        return $this->hasOne(SuperAdmin::class, 'users_id', 'uuid');
+    }
+    public function penggunaAsn()
+    {
+        return $this->hasOne(PenggunaAsn::class, 'users_id', 'uuid');
+    }
+    public function kabid()
+    {
+        return $this->hasOne(Kabid::class, 'users_id', 'uuid');
+    }
+    public function operator()
+    {
+        return $this->hasOne(Operator::class, 'users_id', 'uuid');
+    }
+
+    // Relasi ke Tiket
+    public function tiketDibuat()
+    {
+        return $this->hasMany(Tiket::class, 'users_id', 'uuid');
+    }
+    public function tiketDitangani()
+    {
+        return $this->hasMany(Tiket::class, 'petugas_id', 'uuid');
+    }
 }
