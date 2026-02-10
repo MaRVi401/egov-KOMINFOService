@@ -18,7 +18,7 @@
 
                 <div class="lg:col-span-7 flex flex-col items-center lg:items-start text-center lg:text-left">
 
-                    <h1>
+                    <h1
                         class="mb-6 text-4xl font-extrabold tracking-tight leading-[1.1] text-gray-900 md:text-6xl xl:text-7xl dark:text-white">
                         Portal Layanan <br class="hidden lg:block">
                         <span class="bg-clip-text text-transparent bg-linear-to-r from-blue-600 to-indigo-500">

@@ -16,14 +16,7 @@ Route::get('/', function () {
     return view('welcome');
 })->name('landing');
 
-// // Test Page
-// Route::get('/test', function () {
-//     return view('pages.super-admin.dashboard');
-// })->name('dashboard');
 
-// Route::get('/permohonan', function () {
-//     return view('pages.super-admin.permohonan');
-// })->name('permohonan');
 /*
 |--------------------------------------------------------------------------
 | Guest Routes (Belum Login)
@@ -52,12 +45,12 @@ Route::middleware('auth')->group(function () {
     // Dashboard All Roles
     Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'index'])
         ->name('dashboard');
-    
+
     // edit profile
     Route::middleware(['auth'])->group(function () {
-    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::put('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
-});
+        Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+        Route::put('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+    });
 
     // Proses Logout
     Route::post('/logout', [LoginController::class, 'logout'])
