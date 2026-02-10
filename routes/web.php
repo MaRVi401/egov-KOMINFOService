@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\ProfileController;
 
 /*
@@ -62,8 +63,14 @@ Route::middleware('auth')->group(function () {
     Route::post('/logout', [LoginController::class, 'logout'])
         ->name('logout');
 
-    // Roles Management (Super Admin Only)
-    Route::get('/roles-management', function () {
-        return view('pages.super-admin.roles-management.index');
-    })->name('roles-management');
+    /*
+    |----------------------------------------------------------------------
+    | Khusus Super Admin
+    |----------------------------------------------------------------------
+    */
+    Route::middleware('can:super-admin-only')->group(function () {
+        Route::resource('user-management', UserManagementController::class)
+            ->names('user-management')
+            ->parameters(['user-management' => 'user']);
+    });
 });

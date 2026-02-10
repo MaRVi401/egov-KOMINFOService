@@ -6,14 +6,18 @@
         <ul class="space-y-2 font-medium">
             @foreach ($verticalMenu ?? [] as $menu)
                 @php
-                    $isActive = request()->routeIs($menu['route']);
+                    // Ambil prefix rute (misal: 'user-management' dari 'user-management.index')
+                    $routePrefix = explode('.', $menu['route'])[0];
+                    // Cek apakah rute sekarang adalah rute ini atau rute anak dari prefix ini
+                    $isActive = request()->routeIs($menu['route']) || request()->routeIs($routePrefix . '.*');
                 @endphp
                 <li>
                     <a href="{{ route($menu['route']) }}"
-                        class="flex items-center p-2 rounded-base group {{ $isActive ? 'bg-neutral-secondary-medium text-heading' : 'text-body hover:bg-neutral-secondary-medium hover:text-heading' }}">
+                        class="flex items-center p-2 rounded-base group transition-colors {{ $isActive ? 'bg-neutral-secondary-medium text-heading' : 'text-body hover:bg-neutral-secondary-medium hover:text-heading' }}">
                         
-                        {{-- Tambahkan w-6 h-6 dan flex agar icon terpusat sempurna --}}
-                        <i class="{{ $menu['icon'] }} text-xl w-6 h-6 flex items-center justify-center transition duration-75 {{ $isActive ? 'text-heading' : 'text-neutral-tertiary-medium group-hover:text-heading' }}"></i>
+                        <div class="w-6 h-6 flex items-center justify-center shrink-0">
+                            <i class="{{ $menu['icon'] }} text-xl transition duration-75 {{ $isActive ? 'text-heading' : 'text-neutral-tertiary-medium group-hover:text-heading' }}"></i>
+                        </div>
 
                         <span class="ms-3">{{ $menu['name'] }}</span>
                     </a>
