@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\PenggunaAsn\LayananController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -70,4 +72,20 @@ Route::middleware('auth')->group(function () {
             ->names('user-management')
             ->parameters(['user-management' => 'user']);
     });
+
+    /*
+    |----------------------------------------------------------------------
+    | Khusus pengguna asn
+    |----------------------------------------------------------------------
+    */
+
+    Route::middleware('can:pengguna_asn')->group(function () {
+        
+        Route::get('/layanan', [LayananController::class, 'index'])
+            ->name('layanan.index');
+
+    });
+    
+    
+    
 });
