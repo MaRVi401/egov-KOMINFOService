@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
@@ -12,10 +11,10 @@ class DashboardController extends Controller
         $user = Auth::user();
 
         return match ($user->role) {
-            // Memanggil index() dari Admin\DashboardController agar data statistik ter-load
+            // Dashboard Super Admin
             'super_admin'  => app(Admin\DashboardController::class)->index(),
             
-            // Nantinya Anda bisa buat Controller serupa untuk role lain
+            // Dashboard Other Roles
             'operator'     => view('pages.operator.dashboard'),
             'kabid'        => view('pages.kabid.dashboard'),
             'pengguna_asn' => view('pages.pengguna-asn.dashboard'),
