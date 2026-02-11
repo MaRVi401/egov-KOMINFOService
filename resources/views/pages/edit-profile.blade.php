@@ -6,7 +6,6 @@
     <section class="py-12 bg-gray-50 dark:bg-gray-900 min-h-screen">
         <div class="max-w-4xl mx-auto px-4">
 
-            {{-- TOMBOL KEMBALI KE DASHBOARD --}}
             <div class="mb-6">
                 <a href="{{ route('dashboard') }}"
                     class="inline-flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400 transition-colors group">
@@ -21,52 +20,62 @@
 
             <div class="flex items-center justify-between mb-8">
                 <div>
-                    {{-- HAPUS UPPERCASE --}}
                     <h2 class="text-3xl font-bold text-gray-900 dark:text-white text-left">Pengaturan Profil</h2>
                     <p class="text-sm text-gray-500 mt-1 text-left">Kelola informasi pribadi dan keamanan akun Anda.</p>
                 </div>
-                {{-- HAPUS UPPERCASE --}}
                 <span
                     class="px-4 py-1.5 text-xs font-bold text-blue-700 bg-blue-100 rounded-full dark:bg-blue-900/30 dark:text-blue-400 capitalize">
                     {{ str_replace('_', ' ', $user->role) }}
                 </span>
             </div>
 
-            {{-- AREA NOTIFIKASI --}}
+            <div class="space-y-4 mb-6">
+                {{-- 1. Alert Berhasil (Success) --}}
+                @if (session('success'))
+                    <div
+                        class="p-4 text-sm text-green-800 rounded-xl bg-green-50 border border-green-200 dark:bg-gray-800 dark:text-green-400 dark:border-green-900 shadow-sm flex items-center font-bold">
+                        <svg class="w-5 h-5 me-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd"
+                                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                clip-rule="evenodd"></path>
+                        </svg>
+                        {{ session('success') }}
+                    </div>
+                @endif
 
-            {{-- 1. Alert Berhasil (Hijau) --}}
-            @if (session('success'))
-                <div
-                    class="p-4 mb-6 text-sm text-green-800 rounded-xl bg-green-50 border border-green-200 dark:bg-gray-800 dark:text-green-400 dark:border-green-900 shadow-sm flex items-center font-bold">
-                    <svg class="w-5 h-5 me-2" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                            clip-rule="evenodd"></path>
-                    </svg>
-                    {{ session('success') }}
-                </div>
-            @endif
+                {{-- 2. Alert Info (Tidak Ada Perubahan) --}}
+                @if (session('info'))
+                    <div
+                        class="p-4 text-sm text-blue-800 rounded-xl bg-blue-50 border border-blue-200 dark:bg-gray-800 dark:text-blue-400 dark:border-blue-900 shadow-sm flex items-center font-bold">
+                        <svg class="w-5 h-5 me-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd"
+                                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                                clip-rule="evenodd"></path>
+                        </svg>
+                        {{ session('info') }}
+                    </div>
+                @endif
 
-            {{-- 2. Alert Gagal / Tidak Ada Perubahan (Merah) --}}
-            @if (session('error'))
-                <div
-                    class="p-4 mb-6 text-sm text-red-800 rounded-xl bg-red-50 border border-red-200 dark:bg-gray-800 dark:text-red-400 dark:border-red-900 shadow-sm flex items-center font-bold">
-                    <svg class="w-5 h-5 me-2" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd"
-                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-                            clip-rule="evenodd"></path>
-                    </svg>
-                    {{ session('error') }}
-                </div>
-            @endif
+                {{-- 3. Alert Gagal (Error) --}}
+                @if (session('error') || $errors->has('error'))
+                    <div
+                        class="p-4 text-sm text-red-800 rounded-xl bg-red-50 border border-red-200 dark:bg-gray-800 dark:text-red-400 dark:border-red-900 shadow-sm flex items-center font-bold">
+                        <svg class="w-5 h-5 me-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd"
+                                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                                clip-rule="evenodd"></path>
+                        </svg>
+                        {{ session('error') ?? 'Terdapat kesalahan dalam memperbarui profil.' }}
+                    </div>
+                @endif
+            </div>
 
             <form action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
 
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 text-gray-900">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-                    {{-- Sisi Kiri: Foto Profil --}}
                     <div class="lg:col-span-1">
                         <div
                             class="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 text-center sticky top-24 flex flex-col items-center">
@@ -94,20 +103,17 @@
                                 </label>
                             </div>
                             <div class="mt-6 text-left border-t border-gray-100 dark:border-gray-700 pt-4 w-full">
-                                {{-- HAPUS UPPERCASE --}}
                                 <h3 class="font-bold text-gray-900 dark:text-white text-lg">{{ $user->nama }}</h3>
                                 <p class="text-xs text-gray-500">Member sejak {{ $user->created_at->format('M Y') }}</p>
                             </div>
                         </div>
                     </div>
 
-                    {{-- Sisi Kanan: Form --}}
                     <div class="lg:col-span-2 space-y-6">
-                        {{-- Informasi Dasar --}}
+
                         <div
                             class="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700">
-                            {{-- HAPUS UPPERCASE --}}
-                            <h3 class="text-lg font-bold mb-6 flex items-center dark:text-white text-left">
+                            <h3 class="text-lg font-bold mb-6 flex items-center text-gray-900 dark:text-white text-left">
                                 <svg class="w-5 h-5 me-2 text-blue-600" fill="none" stroke="currentColor"
                                     viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -117,9 +123,7 @@
                             </h3>
 
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
-                                {{-- Nama Lengkap --}}
                                 <div class="md:col-span-2">
-                                    {{-- HAPUS UPPERCASE DI LABEL --}}
                                     <label class="block mb-2 text-xs font-bold text-gray-900 dark:text-white">Nama
                                         Lengkap</label>
                                     <input type="text" name="nama" value="{{ old('nama', $user->nama) }}"
@@ -129,6 +133,7 @@
                                         <p class="text-red-500 text-xs mt-1 font-medium">{{ $message }}</p>
                                     @enderror
                                 </div>
+
                                 <div>
                                     <label class="block mb-2 text-xs font-bold text-gray-400 dark:text-gray-500">NIP (Nomor
                                         Induk Pegawai)</label>
@@ -160,11 +165,21 @@
                                 </div>
 
                                 <div>
-                                    <label class="block mb-2 text-xs font-bold text-gray-900 dark:text-white">Nomor
-                                        WhatsApp</label>
+                                    <label class="block mb-2 text-xs font-bold text-gray-900 dark:text-white">
+                                        Nomor WhatsApp
+                                    </label>
                                     <input type="text" name="no_wa" value="{{ old('no_wa', $user->no_wa) }}"
-                                        class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all"
-                                        placeholder="08xxxxxxxxxx">
+                                        maxlength="15"
+                                        oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');"
+                                        @class([
+                                            'w-full px-4 py-3 rounded-xl border focus:ring-2 outline-none transition-all dark:bg-gray-700 dark:border-gray-600 dark:text-white',
+                                            'border-red-500 focus:ring-red-500' => $errors->has('no_wa'),
+                                            'border-gray-300 focus:ring-blue-500' => !$errors->has('no_wa'),
+                                        ]) placeholder="08xxxxxxxxxx">
+
+                                    @error('no_wa')
+                                        <p class="text-red-500 text-xs mt-1 font-medium">{{ $message }}</p>
+                                    @enderror
                                 </div>
 
                                 <div class="md:col-span-2">
@@ -176,11 +191,9 @@
                             </div>
                         </div>
 
-                        {{-- BAGIAN KEAMANAN AKUN (RESET PASSWORD) --}}
                         <div
                             class="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700">
-                            {{-- HAPUS UPPERCASE --}}
-                            <h3 class="text-lg font-bold mb-6 flex items-center dark:text-white text-left text-gray-900">
+                            <h3 class="text-lg font-bold mb-6 flex items-center text-gray-900 dark:text-white text-left">
                                 <svg class="w-5 h-5 me-2 text-blue-600" fill="none" stroke="currentColor"
                                     viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -209,9 +222,7 @@
                                 mengubah password.</p>
                         </div>
 
-                        {{-- TOMBOL AKSI --}}
                         <div class="flex items-center justify-end gap-4 pt-4">
-                            {{-- HAPUS UPPERCASE PADA TOMBOL --}}
                             <a href="{{ route('dashboard') }}"
                                 class="px-8 py-3 text-xs font-bold text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200 transition-colors">Batal</a>
 
@@ -225,6 +236,7 @@
             </form>
         </div>
     </section>
+
     @push('scripts')
         @vite('resources/js/profile.js')
     @endpush
