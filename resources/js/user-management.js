@@ -35,7 +35,18 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (searchInput && clearBtn) {
         clearBtn.addEventListener('click', function (e) {
-            searchInput.value = ''; // Kosongkan input secara visual
+            searchInput.value = ''; 
         });
     }
 });
+
+window.previewImage = function(input) {
+    const preview = document.getElementById('avatar-preview');
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            preview.src = e.target.result;
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+}

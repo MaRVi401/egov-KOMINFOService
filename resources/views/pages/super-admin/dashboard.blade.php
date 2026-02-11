@@ -7,7 +7,7 @@
         {{-- Header Section --}}
         <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
-                <h2 class="text-2xl font-bold text-slate-900 dark:text-white">User Analytics Overview</h2>
+                <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Gambaran Umum Analisis Pengguna</h2>
                 <p class="text-sm text-slate-500 dark:text-slate-400">Ringkasan distribusi dan statistik data pengguna
                     sistem.</p>
             </div>
@@ -39,8 +39,7 @@
             <div
                 class="p-6 rounded-base bg-neutral-primary-medium border border-default shadow-sm hover:border-emerald-500/50 transition-colors">
                 <div class="flex items-center justify-between mb-4">
-                    <p class="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Joined
-                        Today</p>
+                    <p class="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">User Baru Hari Ini</p>
                     <div class="p-2 rounded-lg bg-emerald-500/10 text-emerald-500">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="2">
@@ -59,8 +58,7 @@
             <div
                 class="p-6 rounded-base bg-neutral-primary-medium border border-default shadow-sm hover:border-amber-500/50 transition-colors">
                 <div class="flex items-center justify-between mb-4">
-                    <p class="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Active
-                        Roles</p>
+                    <p class="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Total Role</p>
                     <div class="p-2 rounded-lg bg-amber-500/10 text-amber-500">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="2">
@@ -78,7 +76,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div
                 class="lg:col-span-1 bg-neutral-primary-medium rounded-base border border-default p-6 flex flex-col h-full">
-                <h3 class="text-center text-lg font-bold text-slate-900 dark:text-white mb-6">User Distribution</h3>
+                <h3 class="text-center text-lg font-bold text-slate-900 dark:text-white mb-6">Distribusi Pengguna</h3>
                 <div class="relative grow flex items-center justify-center min-h-60">
                     <canvas id="userRoleChart"></canvas>
                 </div>
@@ -86,7 +84,7 @@
 
             <div class="lg:col-span-2 bg-neutral-primary-medium rounded-base border border-default p-6">
                 <div class="flex items-center justify-between mb-6">
-                    <h3 class="text-lg font-bold text-slate-900 dark:text-white">System Insight</h3>
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white">Rincian Distribusi Pengguna</h3>
                     <a href="{{ route('user-management.index') }}"
                         class="text-sm font-bold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors">
                         Kelola User →
