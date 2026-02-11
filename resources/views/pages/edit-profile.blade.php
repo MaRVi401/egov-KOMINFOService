@@ -73,7 +73,7 @@
                             <div class="relative inline-block">
                                 @php
                                     $avatarUrl = $user->avatar
-                                        ? Storage::disk('s3')->url($user->avatar)
+                                        ? \Illuminate\Support\Facades\Storage::disk('s3')->url($user->avatar)
                                         : 'https://ui-avatars.com/api/?name=' .
                                             urlencode($user->nama) .
                                             '&color=7F9CF5&background=EBF4FF';
