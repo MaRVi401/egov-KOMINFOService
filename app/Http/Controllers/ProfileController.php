@@ -6,7 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\{Auth, Hash, Storage, DB};
 use Illuminate\Validation\Rule;
-use Intervention\Image\Laravel\Facades\Image; 
+use Intervention\Image\Laravel\Facades\Image;
 use Illuminate\Support\Str;
 
 class ProfileController extends Controller
@@ -45,10 +45,32 @@ class ProfileController extends Controller
             'avatar'   => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
         ]);
 
-        $data = $request->only(['nama', 'username', 'email', 'no_wa', 'alamat']);
+        // Ambil data dari request
+        $inputData = $request->only(['nama', 'username', 'email', 'no_wa', 'alamat']);
 
-        // --- LOGIKA UPLOAD & KOMPRES GAMBAR ---
-        if ($request->hasFile('avatar')) {
+        // --- LOGIKA CEK PERUBAHAN ---
+        // Kita isi model dengan data baru tapi TIDAK langsung di-save
+        $user->fill($inputData);
+
+        // Flag untuk menandai apakah ada file atau password baru
+        $hasNewFile = $request->hasFile('avatar');
+        $hasNewPassword = false;
+
+        // Cek jika password diisi dan berbeda dengan yang lama
+        if ($request->filled('password')) {
+            if (!Hash::check($request->password, $user->getOriginal('password'))) {
+                $user->password = Hash::make($request->password);
+                $hasNewPassword = true;
+            }
+        }
+
+        // Jika tidak ada data yang kotor (isDirty), tidak ada file baru, dan tidak ada password baru
+        if (!$user->isDirty() && !$hasNewFile && !$hasNewPassword) {
+            return back()->with('error', 'Tidak ada data profil yang diubah.');
+        }
+
+        // --- LOGIKA UPLOAD & KOMPRES GAMBAR (Hanya jalan jika ada file) ---
+        if ($hasNewFile) {
             try {
                 // 1. Hapus avatar lama di S3 jika ada
                 if ($user->avatar && Storage::disk('s3')->exists($user->avatar)) {
@@ -56,32 +78,28 @@ class ProfileController extends Controller
                 }
 
                 $file = $request->file('avatar');
-                
-                // 2. Buat path file lengkap dengan folder 'avatars/'
+
+                // 2. Buat path file lengkap
                 $filename = 'avatars/avatar_' . $user->uuid . '_' . time() . '.webp';
 
                 // 3. Proses gambar dengan Intervention Image
                 $image = Image::read($file);
-                $image->scale(width: 500); // Resize agar ukuran file kecil
-                $encoded = $image->toWebp(quality: 75); // Konversi ke WebP
+                $image->scale(width: 500);
+                $encoded = $image->toWebp(quality: 75);
 
                 // 4. Upload ke S3/MinIO
                 Storage::disk('s3')->put($filename, (string) $encoded);
 
-                // 5. Simpan path lengkap ke database agar pemanggilan di Blade mudah
-                $data['avatar'] = $filename;
+                // 5. Update path di model
+                $user->avatar = $filename;
 
             } catch (\Exception $e) {
                 return back()->withErrors(['avatar' => 'Gagal memproses gambar: ' . $e->getMessage()]);
             }
         }
 
-        // Update password jika diisi
-        if ($request->filled('password')) {
-            $data['password'] = Hash::make($request->password);
-        }
-
-        $user->update($data);
+        // Simpan semua perubahan yang sudah dikumpulkan di objek $user
+        $user->save();
 
         return back()->with('success', 'Profil berhasil diperbarui!');
     }
