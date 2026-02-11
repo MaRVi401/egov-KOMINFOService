@@ -19,7 +19,7 @@
             <div
                 class="p-6 rounded-base bg-neutral-primary-medium border border-default shadow-sm hover:border-primary/50 transition-colors">
                 <div class="flex items-center justify-between mb-4">
-                    <p class="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Total Users
+                    <p class="text-sm font-semibold text-slate-500 dark:text-slate-400 tracking-wider">Total Users
                     </p>
                     <div class="p-2 rounded-lg bg-blue-500/10 text-blue-500">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none"
@@ -39,7 +39,7 @@
             <div
                 class="p-6 rounded-base bg-neutral-primary-medium border border-default shadow-sm hover:border-emerald-500/50 transition-colors">
                 <div class="flex items-center justify-between mb-4">
-                    <p class="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">User Baru
+                    <p class="text-sm font-semibold text-slate-500 dark:text-slate-400 tracking-wider">User Baru
                         Hari Ini</p>
                     <div class="p-2 rounded-lg bg-emerald-500/10 text-emerald-500">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none"
@@ -59,7 +59,7 @@
             <div
                 class="p-6 rounded-base bg-neutral-primary-medium border border-default shadow-sm hover:border-amber-500/50 transition-colors">
                 <div class="flex items-center justify-between mb-4">
-                    <p class="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Total Role
+                    <p class="text-sm font-semibold text-slate-500 dark:text-slate-400 tracking-wider">Total Role
                     </p>
                     <div class="p-2 rounded-lg bg-amber-500/10 text-amber-500">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none"
@@ -78,7 +78,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div
                 class="lg:col-span-1 bg-neutral-primary-medium rounded-base border border-default p-6 flex flex-col h-full">
-                <h3 class="text-center text-lg font-bold text-slate-900 dark:text-white mb-6">Distribusi Pengguna</h3>
+                <h3 class="text-center text-lg font-bold text-slate-900 dark:text-white mb-6    ">Distribusi Pengguna</h3>
                 <div class="relative grow flex items-center justify-center min-h-60">
                     <canvas id="userRoleChart" data-labels="{{ json_encode($chartData['labels']) }}"
                         data-values="{{ json_encode($chartData['data']) }}">
@@ -120,7 +120,7 @@
                         </svg>
                         <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
                             Data distribusi peran membantu Anda memantau beban akses sistem. Pastikan jumlah akun dengan
-                            peran <span class="text-slate-900 dark:text-white font-bold uppercase">Super Admin</span> tetap
+                            peran <span class="text-slate-900 dark:text-white font-bold">Super Admin</span> tetap
                             terjaga untuk keamanan
                             infrastruktur.
                         </p>
