@@ -19,6 +19,11 @@ class AppServiceProvider extends ServiceProvider
         Gate::define('super-admin-only', function (User $user) {
             return $user->role === 'super_admin';
         });
+
+        // Gate untuk Middleware 'can:pengguna_asn
+        Gate::define('pengguna_asn', function (User $user) {
+            return $user->role === 'pengguna_asn'; 
+        });
         // View Composer hanya berjalan saat view 'partials.dashboard.sidebar' dipanggil
         View::composer('partials.dashboard.sidebar', function ($view) {
             

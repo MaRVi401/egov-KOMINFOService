@@ -4,6 +4,11 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\PenggunaAsn\LayananController;
+use App\Http\Controllers\DashboardController;
+
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -43,7 +48,7 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function () {
 
     // Dashboard All Roles
-    Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'index'])
+    Route::get('/dashboard', [DashboardController::class, 'index'])
         ->name('dashboard');
 
     // edit profile
@@ -63,8 +68,26 @@ Route::middleware('auth')->group(function () {
     |----------------------------------------------------------------------
     */
     Route::middleware('can:super-admin-only')->group(function () {
+        
+    //User management
         Route::resource('user-management', UserManagementController::class)
             ->names('user-management')
             ->parameters(['user-management' => 'user']);
     });
+
+    /*
+    |----------------------------------------------------------------------
+    | Khusus pengguna asn
+    |----------------------------------------------------------------------
+    */
+
+    Route::middleware('can:pengguna_asn')->group(function () {
+        
+        Route::get('/layanan', [LayananController::class, 'index'])
+            ->name('layanan.index');
+
+    });
+    
+    
+    
 });

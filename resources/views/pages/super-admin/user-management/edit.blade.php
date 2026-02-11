@@ -100,6 +100,18 @@
                         <input type="text" name="no_wa" value="{{ $user->no_wa }}"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                     </div>
+
+                    {{-- Alamat --}}
+                    <div class="md:col-span-2">
+                        <label class="block mb-2 text-sm font-semibold text-gray-900 dark:text-white">Alamat Lengkap</label>
+                        <textarea name="alamat" rows="3"
+                            class="bg-gray-50 border text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:text-white transition-colors
+        {{ $errors->has('alamat') ? 'border-red-500 dark:border-red-500' : 'border-gray-300 dark:border-gray-600' }}"
+                            placeholder="Masukkan alamat lengkap sesuai KTP...">{{ old('alamat', $user->alamat) }}</textarea>
+                        @error('alamat')
+                            <p class="mt-1.5 text-xs font-medium text-red-600 dark:text-red-500">{{ $message }}</p>
+                        @enderror
+                    </div>
                 </div>
 
                 {{-- Avatar Section --}}
@@ -108,23 +120,21 @@
                     <div
                         class="flex items-center gap-6 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl border border-dashed border-gray-300 dark:border-gray-600">
                         <div class="relative shrink-0">
-                            @if ($user->avatar)
-                                <img class="w-20 h-20 rounded-full object-cover ring-4 ring-white dark:ring-gray-800 shadow-lg"
-                                    src="{{ Storage::url($user->avatar) }}" alt="current-avatar">
-                            @else
-                                <div
-                                    class="w-20 h-20 rounded-full bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-300 flex items-center justify-center font-bold text-2xl">
-                                    {{ strtoupper(substr($user->nama, 0, 1)) }}
-                                </div>
-                            @endif
+                            {{-- Image Preview --}}
+                            <img id="avatar-preview"
+                                class="w-20 h-20 rounded-full object-cover ring-4 ring-white dark:ring-gray-800 shadow-lg"
+                                src="{{ $user->avatar ? \Illuminate\Support\Facades\Storage::disk('s3')->url($user->avatar) : 'https://ui-avatars.com/api/?name=' . urlencode($user->nama) }}"
+                                alt="current-avatar"
+                                onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name={{ urlencode($user->nama) }}';">
                         </div>
-                        <div class="w-full">
-                            {{-- Input File --}}
-                            <input type="file" name="avatar"
-                                class="block w-full text-xs text-gray-900 border rounded-lg cursor-pointer bg-white focus:outline-none dark:bg-gray-800 dark:placeholder-gray-400 transition-colors
-                                        {{ $errors->has('avatar') ? 'border-red-500 dark:border-red-500' : 'border-gray-300 dark:border-gray-600 dark:text-gray-400' }}">
 
-                            {{-- Error Message atau Hint --}}
+                        <div class="w-full">
+                            {{-- Input File dengan Event Listener onchange --}}
+                            <input type="file" name="avatar" id="avatar-input" accept="image/*"
+                                onchange="previewImage(this)"
+                                class="block w-full text-xs text-gray-900 border rounded-lg cursor-pointer bg-white focus:outline-none dark:bg-gray-800 dark:placeholder-gray-400 transition-colors
+                {{ $errors->has('avatar') ? 'border-red-500 dark:border-red-500' : 'border-gray-300 dark:border-gray-600 dark:text-gray-400' }}">
+
                             @error('avatar')
                                 <div class="flex items-center gap-1 mt-1.5 text-red-600 dark:text-red-500">
                                     <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
@@ -195,4 +205,7 @@
             </form>
         </div>
     </div>
+    @push('scripts')
+        @vite('resources/js/user-management.js')
+    @endpush
 @endsection

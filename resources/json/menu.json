@@ -22,6 +22,11 @@
                     "name": "Dashboard",
                     "icon": "ti ti-layout-dashboard",
                     "route": "dashboard"
+                },
+                {
+                    "name": "Layanan Digital",
+                    "icon": "ti ti-apps", 
+                    "route": "layanan.index" 
                 }
             ]
         }
