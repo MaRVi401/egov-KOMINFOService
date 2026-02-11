@@ -42,6 +42,8 @@
                 'avatar'   => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
                 'password' => 'nullable|string|min:8|confirmed',
             ], [
+                'password.confirmed' => 'Konfirmasi password tidak cocok.',
+                'password.min' => 'Password minimal harus 8 karakter.',
                 'no_wa.max'   => 'Nomor WhatsApp tidak boleh lebih dari 15 digit.',
                 'no_wa.min'   => 'Nomor WhatsApp minimal 10 digit.',
                 'no_wa.regex' => 'Nomor WhatsApp hanya boleh berisi angka.',
