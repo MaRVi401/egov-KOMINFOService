@@ -19,7 +19,7 @@
             <div
                 class="p-6 rounded-base bg-neutral-primary-medium border border-default shadow-sm hover:border-primary/50 transition-colors">
                 <div class="flex items-center justify-between mb-4">
-                    <p class="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Total Users
+                    <p class="text-sm font-semibold text-slate-500 dark:text-slate-400 tracking-wider">Total Users
                     </p>
                     <div class="p-2 rounded-lg bg-blue-500/10 text-blue-500">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none"
@@ -39,7 +39,8 @@
             <div
                 class="p-6 rounded-base bg-neutral-primary-medium border border-default shadow-sm hover:border-emerald-500/50 transition-colors">
                 <div class="flex items-center justify-between mb-4">
-                    <p class="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">User Baru Hari Ini</p>
+                    <p class="text-sm font-semibold text-slate-500 dark:text-slate-400 tracking-wider">User Baru
+                        Hari Ini</p>
                     <div class="p-2 rounded-lg bg-emerald-500/10 text-emerald-500">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="2">
@@ -58,7 +59,8 @@
             <div
                 class="p-6 rounded-base bg-neutral-primary-medium border border-default shadow-sm hover:border-amber-500/50 transition-colors">
                 <div class="flex items-center justify-between mb-4">
-                    <p class="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Total Role</p>
+                    <p class="text-sm font-semibold text-slate-500 dark:text-slate-400 tracking-wider">Total Role
+                    </p>
                     <div class="p-2 rounded-lg bg-amber-500/10 text-amber-500">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="2">
@@ -76,9 +78,11 @@
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div
                 class="lg:col-span-1 bg-neutral-primary-medium rounded-base border border-default p-6 flex flex-col h-full">
-                <h3 class="text-center text-lg font-bold text-slate-900 dark:text-white mb-6">Distribusi Pengguna</h3>
+                <h3 class="text-center text-lg font-bold text-slate-900 dark:text-white mb-6    ">Distribusi Pengguna</h3>
                 <div class="relative grow flex items-center justify-center min-h-60">
-                    <canvas id="userRoleChart"></canvas>
+                    <canvas id="userRoleChart" data-labels="{{ json_encode($chartData['labels']) }}"
+                        data-values="{{ json_encode($chartData['data']) }}">
+                    </canvas>
                 </div>
             </div>
 
@@ -116,7 +120,7 @@
                         </svg>
                         <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
                             Data distribusi peran membantu Anda memantau beban akses sistem. Pastikan jumlah akun dengan
-                            peran <span class="text-slate-900 dark:text-white font-bold uppercase">Super Admin</span> tetap
+                            peran <span class="text-slate-900 dark:text-white font-bold">Super Admin</span> tetap
                             terjaga untuk keamanan
                             infrastruktur.
                         </p>
@@ -125,59 +129,7 @@
             </div>
         </div>
     </div>
-
-    {{-- Chart Scripts --}}
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Deteksi Mode Gelap secara real-time
-            const isDark = document.documentElement.classList.contains('dark');
-            const textColor = isDark ? '#f8fafc' : '#475569';
-
-            const ctx = document.getElementById('userRoleChart').getContext('2d');
-
-            new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: {!! json_encode($chartData['labels']) !!},
-                    datasets: [{
-                        data: {!! json_encode($chartData['data']) !!},
-                        backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'],
-                        hoverOffset: 15,
-                        borderWidth: 0,
-                        borderRadius: 4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    cutout: '75%',
-                    plugins: {
-                        legend: {
-                            position: 'bottom',
-                            labels: {
-                                color: textColor,
-                                padding: 20,
-                                usePointStyle: true,
-                                font: {
-                                    size: 11,
-                                    weight: '600'
-                                }
-                            }
-                        },
-                        tooltip: {
-                            backgroundColor: isDark ? '#1e293b' : '#ffffff',
-                            titleColor: isDark ? '#ffffff' : '#1e293b',
-                            bodyColor: isDark ? '#cbd5e1' : '#475569',
-                            borderColor: isDark ? '#334155' : '#e2e8f0',
-                            borderWidth: 1,
-                            padding: 12,
-                            displayColors: true,
-                            boxPadding: 6
-                        }
-                    }
-                }
-            });
-        });
-    </script>
+    @push('scripts')
+        @vite('resources/js/user-management.js')
+    @endpush
 @endsection

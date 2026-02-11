@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class DashboardController extends Controller
 {
@@ -22,7 +23,7 @@ class DashboardController extends Controller
         ];
 
         $chartData = [
-            'labels' => $roleData->pluck('role')->map(fn($role) => str_replace('-', ' ', strtoupper($role))),
+            'labels' => $roleData->pluck('role')->map(fn($role) => Str::title(str_replace(['_', '-'], ' ', $role))),
             'data' => $roleData->pluck('total'),
         ];
 
