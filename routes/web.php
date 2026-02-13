@@ -4,8 +4,10 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\PenggunaAsn\LayananController;
+use App\Http\Controllers\PenggunaAsn\ServiceController;
+use App\Http\Controllers\PenggunaAsn\ServiceEmailGovController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DevTemplateController;
 
 
 
@@ -83,8 +85,24 @@ Route::middleware('auth')->group(function () {
 
     Route::middleware('can:pengguna_asn')->group(function () {
         
-        Route::get('/layanan', [LayananController::class, 'index'])
-            ->name('layanan.index');
+        Route::resource('services', ServiceController::class)
+            ->names(['index' => 'services.index']);
+
+        // RUTE UNTUK DOWNLOAD 
+        Route::get('services/email-gov/download/{uuid}', [ServiceEmailGovController::class, 'download'])
+        ->name('email.download');
+
+        // Rute baru untuk Email E-Gov
+        Route::resource('services-email-e-gov', ServiceEmailGovController::class)
+            ->names([
+                'index' => 'email.index',
+                'store' => 'email.store'
+            ]);
+
+        Route::prefix('dev')->group(function () {
+            Route::get('/upload-template', [DevTemplateController::class, 'index'])->name('dev.template.index');
+            Route::post('/upload-template', [DevTemplateController::class, 'store'])->name('dev.template.store');
+        });
 
     });
     

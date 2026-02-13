@@ -106,18 +106,19 @@ return new class extends Migration
             // PD = Perangkat Daerah
             $table->string('pd_no_surat');
             $table->timestamp('pd_tgl');
-            $table->integer('pd_hal');
-            $table->string('pd_instansi_nama');
-            $table->string('pd_bidang');
-            $table->string('pd_alamat');
-            $table->string('pd_telp');
-            $table->string('pd_email');
-            $table->string('pd_pj_nama');
-            $table->string('pd_pj_nip');
-            $table->string('pd_pj_jabatan');
-            $table->string('pd_pj_email');
-            $table->string('pd_pj_kontak');
-            $table->enum('pd_jenis_layanan', ['permohonan baru', 'reset password', 'hapus akun', 'ganti nama akun']);
+            $table->integer('pd_hal')->nullable();
+            $table->string('pd_instansi_nama')->nullable();
+            $table->string('pd_nama_kepala_instansi')->nullable();
+            $table->string('pd_bidang')->nullable();
+            $table->string('pd_alamat')->nullable();
+            $table->string('pd_telp')->nullable();
+            $table->string('pd_email')->nullable();
+            $table->string('pd_pj_nama')->nullable();
+            $table->string('pd_pj_nip')->nullable();
+            $table->string('pd_pj_jabatan')->nullable();
+            $table->string('pd_pj_email')->nullable();
+            $table->string('pd_pj_kontak')->nullable();
+            $table->enum('pd_jenis_layanan', ['permohonan baru ', 'reset password ', 'hapus akun ', 'ganti nama akun '])->nullable();
             $table->string('pd_alasan_hapus_akun')->nullable();
             $table->string('pd_alasan_ganti_nama')->nullable();
             $table->string('pd_usulan_email')->nullable();
@@ -125,13 +126,13 @@ return new class extends Migration
             // ASN Section
             $table->string('asn_no_surat');
             $table->timestamp('asn_tgl');
-            $table->integer('asn_hal');
-            $table->string('asn_nama_lengkap');
-            $table->string('asn_nip');
-            $table->string('asn_jabatan');
-            $table->string('asn_instansi');
-            $table->string('asn_kontak');
-            $table->enum('asn_jenis_layanan', ['permohonan baru', 'reset password', 'hapus akun', 'ganti nama akun']);
+            $table->integer('asn_hal')->nullable();
+            $table->string('asn_nama_lengkap')->nullable();
+            $table->string('asn_nip')->nullable();
+            $table->string('asn_jabatan')->nullable();
+            $table->string('asn_instansi')->nullable();
+            $table->string('asn_kontak')->nullable();
+            $table->enum('asn_jenis_layanan', ['permohonan baru', 'reset password', 'hapus akun', 'ganti nama akun'])->nullable();
             $table->timestamps();
         });
 
