@@ -25,28 +25,28 @@ return new class extends Migration
         // 2. Role Specializations
         Schema::create('super_admin', function (Blueprint $table) {
             $table->uuid('uuid')->primary();
-            $table->foreignUuid('users_id')->constrained('users', 'uuid')->onDelete('cascade');
+            $table->foreignUuid('users_id')->constrained('users', 'uuid')->cascadeOnDelete();
             $table->string('nip')->nullable();
             $table->timestamps();
         });
 
         Schema::create('pengguna_asn', function (Blueprint $table) {
             $table->uuid('uuid')->primary();
-            $table->foreignUuid('users_id')->constrained('users', 'uuid')->onDelete('cascade');
+            $table->foreignUuid('users_id')->constrained('users', 'uuid')->cascadeOnDelete();
             $table->string('nip');
             $table->timestamps();
         });
 
         Schema::create('kabid', function (Blueprint $table) {
             $table->uuid('uuid')->primary();
-            $table->foreignUuid('users_id')->constrained('users', 'uuid')->onDelete('cascade');
+            $table->foreignUuid('users_id')->constrained('users', 'uuid')->cascadeOnDelete();
             $table->string('nip');
             $table->timestamps();
         });
 
         Schema::create('operator', function (Blueprint $table) {
             $table->uuid('uuid')->primary();
-            $table->foreignUuid('users_id')->constrained('users', 'uuid')->onDelete('cascade');
+            $table->foreignUuid('users_id')->constrained('users', 'uuid')->cascadeOnDelete();
             $table->string('nip');
             $table->timestamps();
         });
@@ -63,7 +63,7 @@ return new class extends Migration
         // 4. Tiket
         Schema::create('tiket', function (Blueprint $table) {
             $table->uuid('uuid')->primary();
-            $table->foreignUuid('users_id')->constrained('users', 'uuid');
+            $table->foreignUuid('users_id')->constrained('users', 'uuid')->cascadeOnDelete();
             $table->foreignUuid('layanan_id')->constrained('layanan', 'uuid');
             $table->foreignUuid('petugas_id')->nullable()->constrained('users', 'uuid');
             $table->string('no_tiket')->unique();
@@ -75,25 +75,25 @@ return new class extends Migration
         // 5. Log & Komentar
         Schema::create('riwayat_status_tiket', function (Blueprint $table) {
             $table->uuid('uuid')->primary();
-            $table->foreignUuid('tiket_id')->constrained('tiket', 'uuid')->onDelete('cascade');
-            $table->foreignUuid('users_id')->constrained('users', 'uuid');
+            $table->foreignUuid('tiket_id')->constrained('tiket', 'uuid')->cascadeOnDelete();
+            $table->foreignUuid('users_id')->constrained('users', 'uuid')->cascadeOnDelete();
             $table->enum('status', ['diajukan', 'ditangani', 'selesai', 'ditolak']);
             $table->timestamps();
         });
 
         Schema::create('komentar_tiket', function (Blueprint $table) {
             $table->uuid('uuid')->primary();
-            $table->foreignUuid('tiket_id')->constrained('tiket', 'uuid')->onDelete('cascade');
-            $table->foreignUuid('users_id')->constrained('users', 'uuid');
+            $table->foreignUuid('tiket_id')->constrained('tiket', 'uuid')->cascadeOnDelete();
+            $table->foreignUuid('users_id')->constrained('users', 'uuid')->cascadeOnDelete();
             $table->string('komentar');
             $table->timestamps();
         });
 
-        // 6. Detail Layanan (Nama kolom disingkat agar < 63 Karakter)
+        // 6. Detail Layanan 
         
-        Schema::create('detail_tiket_layanan_pengaduan_elektronik', function (Blueprint $table) {
+        Schema::create('detail_tiket_layanan_pengaduan_sistem_elektronik', function (Blueprint $table) {
             $table->uuid('uuid')->primary();
-            $table->foreignUuid('tiket_id')->constrained('tiket', 'uuid')->onDelete('cascade');
+            $table->foreignUuid('tiket_id')->constrained('tiket', 'uuid')->cascadeOnDelete();
             $table->text('detail_pengaduan');
             $table->string('lampiran_screenshot')->nullable();
             $table->timestamps();
@@ -101,7 +101,7 @@ return new class extends Migration
 
         Schema::create('detail_tiket_layanan_email_gov', function (Blueprint $table) {
             $table->uuid('uuid')->primary();
-            $table->foreignUuid('tiket_id')->constrained('tiket', 'uuid')->onDelete('cascade');
+            $table->foreignUuid('tiket_id')->constrained('tiket', 'uuid')->cascadeOnDelete();
             
             // PD = Perangkat Daerah
             $table->string('pd_no_surat');
@@ -118,7 +118,7 @@ return new class extends Migration
             $table->string('pd_pj_jabatan')->nullable();
             $table->string('pd_pj_email')->nullable();
             $table->string('pd_pj_kontak')->nullable();
-            $table->enum('pd_jenis_layanan', ['permohonan baru ', 'reset password ', 'hapus akun ', 'ganti nama akun '])->nullable();
+            $table->enum('pd_jenis_layanan', ['permohonan baru', 'reset password', 'hapus akun', 'ganti nama akun'])->nullable();
             $table->string('pd_alasan_hapus_akun')->nullable();
             $table->string('pd_alasan_ganti_nama')->nullable();
             $table->string('pd_usulan_email')->nullable();
@@ -138,7 +138,7 @@ return new class extends Migration
 
         Schema::create('detail_tiket_layanan_subdomain', function (Blueprint $table) {
             $table->uuid('uuid')->primary();
-            $table->foreignUuid('tiket_id')->constrained('tiket', 'uuid')->onDelete('cascade');
+            $table->foreignUuid('tiket_id')->constrained('tiket', 'uuid')->cascadeOnDelete();
             $table->string('no_surat');
             $table->timestamp('tanggal');
             $table->integer('halaman');
@@ -168,7 +168,7 @@ return new class extends Migration
 
         Schema::create('detail_tiket_layanan_pembuatan_apps', function (Blueprint $table) {
             $table->uuid('uuid')->primary();
-            $table->foreignUuid('tiket_id')->constrained('tiket', 'uuid')->onDelete('cascade');
+            $table->foreignUuid('tiket_id')->constrained('tiket', 'uuid')->cascadeOnDelete();
             
             // Pengajuan (Awal)
             $table->string('ajuan_no_surat');
@@ -209,7 +209,7 @@ return new class extends Migration
         Schema::dropIfExists('detail_tiket_layanan_pembuatan_apps');
         Schema::dropIfExists('detail_tiket_layanan_subdomain');
         Schema::dropIfExists('detail_tiket_layanan_email_gov');
-        Schema::dropIfExists('detail_tiket_layanan_pengaduan_elektronik');
+        Schema::dropIfExists('detail_tiket_layanan_pengaduan_sistem_elektronik');
         Schema::dropIfExists('komentar_tiket');
         Schema::dropIfExists('riwayat_status_tiket');
         Schema::dropIfExists('tiket');
