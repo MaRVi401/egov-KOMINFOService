@@ -10,6 +10,8 @@ export default defineConfig({
                     'resources/js/user-management.js',
                     'resources/js/email-e-gov.js',
                     ],
+                    'resources/js/profile.js',
+                ],
             refresh: true,
         }),
         tailwindcss(),

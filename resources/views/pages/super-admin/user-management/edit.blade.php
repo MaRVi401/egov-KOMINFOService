@@ -100,7 +100,7 @@
                         <input type="text" name="no_wa" value="{{ $user->no_wa }}"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                     </div>
-                    
+
                     {{-- Alamat --}}
                     <div class="md:col-span-2">
                         <label class="block mb-2 text-sm font-semibold text-gray-900 dark:text-white">Alamat Lengkap</label>
@@ -120,23 +120,21 @@
                     <div
                         class="flex items-center gap-6 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl border border-dashed border-gray-300 dark:border-gray-600">
                         <div class="relative shrink-0">
-                            @if ($user->avatar)
-                                <img class="w-20 h-20 rounded-full object-cover ring-4 ring-white dark:ring-gray-800 shadow-lg"
-                                    src="{{ Storage::url($user->avatar) }}" alt="current-avatar">
-                            @else
-                                <div
-                                    class="w-20 h-20 rounded-full bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-300 flex items-center justify-center font-bold text-2xl">
-                                    {{ strtoupper(substr($user->nama, 0, 1)) }}
-                                </div>
-                            @endif
+                            {{-- Image Preview --}}
+                            <img id="avatar-preview"
+                                class="w-20 h-20 rounded-full object-cover ring-4 ring-white dark:ring-gray-800 shadow-lg"
+                                src="{{ $user->avatar ? \Illuminate\Support\Facades\Storage::disk('s3')->url($user->avatar) : 'https://ui-avatars.com/api/?name=' . urlencode($user->nama) }}"
+                                alt="current-avatar"
+                                onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name={{ urlencode($user->nama) }}';">
                         </div>
-                        <div class="w-full">
-                            {{-- Input File --}}
-                            <input type="file" name="avatar"
-                                class="block w-full text-xs text-gray-900 border rounded-lg cursor-pointer bg-white focus:outline-none dark:bg-gray-800 dark:placeholder-gray-400 transition-colors
-                                        {{ $errors->has('avatar') ? 'border-red-500 dark:border-red-500' : 'border-gray-300 dark:border-gray-600 dark:text-gray-400' }}">
 
-                            {{-- Error Message atau Hint --}}
+                        <div class="w-full">
+                            {{-- Input File dengan Event Listener onchange --}}
+                            <input type="file" name="avatar" id="avatar-input" accept="image/*"
+                                onchange="previewImage(this)"
+                                class="block w-full text-xs text-gray-900 border rounded-lg cursor-pointer bg-white focus:outline-none dark:bg-gray-800 dark:placeholder-gray-400 transition-colors
+                {{ $errors->has('avatar') ? 'border-red-500 dark:border-red-500' : 'border-gray-300 dark:border-gray-600 dark:text-gray-400' }}">
+
                             @error('avatar')
                                 <div class="flex items-center gap-1 mt-1.5 text-red-600 dark:text-red-500">
                                     <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
@@ -197,14 +195,17 @@
                 <div class="flex items-center justify-end gap-3 border-t border-gray-200 dark:border-gray-700 pt-6">
                     <a href="{{ route('user-management.index') }}"
                         class="text-gray-700 bg-white border border-gray-300 hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 transition-all">
-                        Cancel
+                        Batal
                     </a>
                     <button type="submit"
                         class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-8 py-2.5 text-center transition-all shadow-md">
-                        Save Changes
+                        Simpan
                     </button>
                 </div>
             </form>
         </div>
     </div>
+    @push('scripts')
+        @vite('resources/js/user-management.js')
+    @endpush
 @endsection

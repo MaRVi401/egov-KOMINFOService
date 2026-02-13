@@ -35,9 +35,10 @@
                     <button type="button"
                         class="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-neutral-tertiary"
                         data-dropdown-toggle="dropdown-user">
-                        <img class="w-8 h-8 rounded-full object-cover" 
-                            src="{{ auth()->user()->avatar ? Storage::disk('s3')->url('avatars/' . auth()->user()->avatar) : 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->nama) }}"
-                            alt="user photo">
+                        <img class="w-8 h-8 rounded-full object-cover"
+                            src="{{ auth()->user()->avatar ? \Illuminate\Support\Facades\Storage::disk('s3')->url( auth()->user()->avatar) : 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->nama) }}"
+                            alt="user photo"
+                            onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->nama) }}';">
                     </button>
                     <div class="z-50 hidden my-4 text-base list-none bg-white dark:bg-neutral-primary-medium divide-y divide-default border border-default dark:border-default-medium rounded-base shadow-lg"
                         id="dropdown-user">
@@ -48,7 +49,7 @@
                         <ul class="py-1">
                             <li>
                                 <a href="{{ route('profile.edit') }}"
-                                class="block px-4 py-2 text-sm text-body hover:bg-neutral-secondary-soft">
+                                    class="block px-4 py-2 text-sm text-body hover:bg-neutral-secondary-soft">
                                     Edit Profile
                                 </a>
                             </li>

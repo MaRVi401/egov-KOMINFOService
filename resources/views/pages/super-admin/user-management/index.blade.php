@@ -123,15 +123,11 @@
                                 <th scope="row"
                                     class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                     <div class="flex items-center gap-3">
-                                        @if ($user->avatar)
-                                            <img class="w-10 h-10 rounded-full object-cover border border-gray-200 dark:border-gray-600"
-                                                src="{{ Storage::url($user->avatar) }}" alt="{{ $user->nama }}">
-                                        @else
-                                            <div
-                                                class="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-300 flex items-center justify-center font-bold border border-blue-200 dark:border-blue-800">
-                                                {{ strtoupper(substr($user->nama, 0, 1)) }}
-                                            </div>
-                                        @endif
+                                        <img class="w-10 h-10 rounded-full object-cover border border-gray-200 dark:border-gray-600"
+                                            src="{{ $user->avatar ? \Illuminate\Support\Facades\Storage::disk('s3')->url($user->avatar) : 'https://ui-avatars.com/api/?name=' . urlencode($user->nama) }}"
+                                            alt="{{ $user->nama }}"
+                                            onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name={{ urlencode($user->nama) }}';">
+
                                         <div class="flex flex-col">
                                             <span
                                                 class="text-sm font-bold text-gray-900 dark:text-white">{{ $user->nama }}</span>

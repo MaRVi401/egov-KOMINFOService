@@ -1,87 +1,102 @@
 <?php
 
-namespace App\Http\Controllers;
+    namespace App\Http\Controllers;
 
-use App\Models\User;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Validation\Rule;
-// Tambahkan import ini untuk memproses gambar
-use Intervention\Image\Laravel\Facades\Image; 
+    use App\Models\User;
+    use Illuminate\Http\Request;
+    use Illuminate\Support\Facades\{Auth, Hash, Storage, DB};
+    use Illuminate\Validation\Rule;
+    use Intervention\Image\Laravel\Facades\Image;
+    use Illuminate\Support\Str;
 
-class ProfileController extends Controller
-{
-    public function edit()
+    class ProfileController extends Controller
     {
-        $user = Auth::user();
-        return view('pages.edit-profile', compact('user'));
-    }
+        /**
+         * Menampilkan halaman edit profil dengan data NIP.
+         */
+        public function edit()
+        {
+            /** @var User $user */
+            $user = Auth::user();
 
-    public function update(Request $request)
-    {
-        /** @var User $user */
-        $user = Auth::user();
+            $roleRelation = Str::camel($user->role);
+            $nip = $user->$roleRelation ? $user->$roleRelation->nip : '-';
 
-        $request->validate([
-            'nama'     => 'required|string|max:255',
-            'username' => ['required', 'string', 'max:255', Rule::unique('users')->ignore($user->uuid, 'uuid')],
-            'email'    => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user->uuid, 'uuid')],
-            'no_wa'    => 'nullable|string|max:15',
-            'alamat'   => 'nullable|string',
-            'avatar'   => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120', // Max upload awal 5MB (biar kita kompres nanti)
-        ]);
+            return view('pages.edit-profile', compact('user', 'nip'));
+        }
 
-        $data = $request->only(['nama', 'username', 'email', 'no_wa', 'alamat']);
+        /**
+         * Memproses pembaruan profil secara atomik (DB & S3).
+         */
+        public function update(Request $request)
+        {
+            /** @var User $user */
+            $user = Auth::user();
 
-        // --- LOGIKA BARU UNTUK UPLOAD & KOMPRES GAMBAR ---
-        if ($request->hasFile('avatar')) {
+            $request->validate([
+                'nama'     => 'required|string|max:255',
+                'username' => ['required', 'string', 'max:255', Rule::unique('users')->ignore($user->uuid, 'uuid')],
+                'email'    => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user->uuid, 'uuid')],
+                'no_wa'    => 'nullable|string|min:10|max:15|regex:/^[0-9]+$/',
+                'alamat'   => 'nullable|string',
+                'avatar'   => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
+                'password' => 'nullable|string|min:8|confirmed',
+            ], [
+                'password.confirmed' => 'Konfirmasi password tidak cocok.',
+                'password.min' => 'Password minimal harus 8 karakter.',
+                'no_wa.max'   => 'Nomor WhatsApp tidak boleh lebih dari 15 digit.',
+                'no_wa.min'   => 'Nomor WhatsApp minimal 10 digit.',
+                'no_wa.regex' => 'Nomor WhatsApp hanya boleh berisi angka.',
+            ]);
+
+            $inputData = $request->only(['nama', 'username', 'email', 'no_wa', 'alamat']);
+            $user->fill($inputData);
+
+            if ($request->filled('password')) {
+                $user->password = Hash::make($request->password);
+            }
+
+            $hasNewFile = $request->hasFile('avatar');
+
+            if (!$user->isDirty() && !$hasNewFile) {
+                return back()->with('info', 'Tidak ada perubahan data profil.');
+            }
+
+            DB::beginTransaction();
+            $newFilename = null;
+
             try {
-                // 1. Hapus avatar lama jika ada
-                if ($user->avatar) {
-                    if (Storage::disk('s3')->exists('avatars/' . $user->avatar)) {
-                        Storage::disk('s3')->delete('avatars/' . $user->avatar);
-                    }
+                $oldAvatar = $user->getOriginal('avatar');
+
+                if ($hasNewFile) {
+                    $file = $request->file('avatar');
+                    $newFilename = 'avatars/avatar_' . $user->uuid . '_' . time() . '.webp';
+
+                    $image = Image::read($file);
+                    $image->scale(width: 500);
+                    $encoded = $image->toWebp(quality: 75);
+
+                    Storage::disk('s3')->put($newFilename, (string) $encoded);
+
+                    $user->avatar = $newFilename;
                 }
 
-                $file = $request->file('avatar');
-                
-                // 2. Buat nama file baru dengan akhiran .webp
-                $filename = 'avatar_' . $user->uuid . '_' . time() . '.webp';
+                $user->save();
 
-                // 3. Baca file gambar menggunakan Intervention Image
-                $image = Image::read($file);
+                if ($hasNewFile && $oldAvatar && Storage::disk('s3')->exists($oldAvatar)) {
+                    Storage::disk('s3')->delete($oldAvatar);
+                }
 
-                // 4. Resize gambar (Opsional tapi sangat disarankan)
-                // Kita atur lebar 500px, tingginya menyesuaikan (aspect ratio tetap)
-                // Ini menjamin ukuran file pasti KECIL (< 200kb)
-                $image->scale(width: 500);
-
-                // 5. Encode ke format WebP dengan kualitas 75%
-                // Kualitas 75% visualnya masih bagus tapi ukurannya turun drastis
-                $encoded = $image->toWebp(quality: 75);
-
-                // 6. Upload hasil encode ke MinIO
-                // Perhatikan kita pakai 'put', bukan 'putFileAs' karena ini data stream
-                Storage::disk('s3')->put('avatars/' . $filename, (string) $encoded);
-
-                // 7. Simpan nama file ke array data untuk update database
-                $data['avatar'] = $filename;
-
+                DB::commit();
+                return back()->with('success', 'Profil berhasil diperbarui!');
             } catch (\Exception $e) {
-                // Jika error (misal GD Library belum aktif), kembalikan pesan error
-                return back()->withErrors(['avatar' => 'Gagal memproses gambar: ' . $e->getMessage()]);
+                DB::rollBack();
+
+                if ($newFilename && Storage::disk('s3')->exists($newFilename)) {
+                    Storage::disk('s3')->delete($newFilename);
+                }
+
+                return back()->with('error', 'Gagal memperbarui profil: ' . $e->getMessage());
             }
         }
-        // -----------------------------------------------------
-
-        if ($request->filled('password')) {
-            $data['password'] = Hash::make($request->password);
-        }
-
-        $user->update($data);
-
-        return back()->with('success', 'Profil berhasil diperbarui! Gambar telah dikompres ke WebP.');
     }
-}

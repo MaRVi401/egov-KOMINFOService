@@ -6,9 +6,7 @@
         <ul class="space-y-2 font-medium">
             @foreach ($verticalMenu ?? [] as $menu)
                 @php
-                    // Ambil prefix rute (misal: 'user-management' dari 'user-management.index')
                     $routePrefix = explode('.', $menu['route'])[0];
-                    // Cek apakah rute sekarang adalah rute ini atau rute anak dari prefix ini
                     $isActive = request()->routeIs($menu['route']) || request()->routeIs($routePrefix . '.*');
                 @endphp
                 <li>
