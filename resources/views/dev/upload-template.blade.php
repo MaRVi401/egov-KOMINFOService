@@ -40,6 +40,7 @@
             <select name="target_name" id="target_name" required>
                 <option value="Template-email-asn.docx">Template-email-asn.docx (Untuk ASN)</option>
                 <option value="Template-Email-Instansi.docx">Template-Email-Instansi.docx (Untuk Perangkat Daerah)</option>
+                <option value="Template-Sub-Domain.docx">Template-Sub-Domain.docx (Untuk Perangkat Daerah)</option>
             </select>
         </div>
 

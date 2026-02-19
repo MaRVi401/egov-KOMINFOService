@@ -7,7 +7,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 
-class WordTemplateService
+class WordTemplateServiceEmailGov
 {
    
     public function generateDokumen($kategori, $detail, $noTiket)

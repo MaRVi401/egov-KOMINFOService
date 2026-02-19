@@ -8,6 +8,7 @@ use App\Http\Controllers\PenggunaAsn\ServiceController;
 use App\Http\Controllers\PenggunaAsn\ServiceEmailGovController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DevTemplateController;
+use App\Http\Controllers\PenggunaAsn\ServiceSubDomainController;
 
 
 
@@ -98,6 +99,17 @@ Route::middleware('auth')->group(function () {
                 'index' => 'email.index',
                 'store' => 'email.store'
             ]);
+
+        //Rute baru untuk Sub Domain
+        Route::resource('service-sub-domain', ServiceSubDomainController::class)
+            ->names([
+                'index' => 'subdomain.index',
+                'store' => 'subdomain.store'
+            ]);
+        //RUTE DOWNLOAD SUBDOMAIN
+        Route::get('services/subdomain/download/{uuid}', [ServiceSubDomainController::class, 'download'])
+            ->name('subdomain.download');
+            
 
         Route::prefix('dev')->group(function () {
             Route::get('/upload-template', [DevTemplateController::class, 'index'])->name('dev.template.index');
