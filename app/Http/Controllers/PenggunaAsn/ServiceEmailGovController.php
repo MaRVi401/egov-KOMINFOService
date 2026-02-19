@@ -12,7 +12,7 @@ use App\Models\Tiket;
 use App\Models\DetailTiketLayananEmailGov;
 use App\Models\RiwayatStatusTiket;
 use App\Models\Layanan;
-use App\Services\WordTemplateService;
+use App\Services\WordTemplateServiceEmailGov;
 
 class ServiceEmailGovController extends Controller
 {
@@ -20,7 +20,7 @@ class ServiceEmailGovController extends Controller
     protected $wordTemplateService;
 
     // 3. CONSTRUCTOR (INJECT SERVICE)
-    public function __construct(WordTemplateService $wordTemplateService)
+    public function __construct(WordTemplateServiceEmailGov $wordTemplateService)
     {
         $this->wordTemplateService = $wordTemplateService;
     }
@@ -166,7 +166,7 @@ class ServiceEmailGovController extends Controller
         return $detail;
     }
 
-    public function download($uuid, WordTemplateService $wordService)
+    public function download($uuid, WordTemplateServiceEmailGov $wordService)
     {
         
         $tiket = Tiket::where('uuid', $uuid)->firstOrFail();

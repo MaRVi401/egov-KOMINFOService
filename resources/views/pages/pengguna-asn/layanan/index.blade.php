@@ -40,7 +40,7 @@
             <p class="mb-3 font-normal text-gray-700 dark:text-gray-400 text-sm">
                 Pengajuan subdomain resmi daerah untuk website instansi atau unit kerja pemerintah.
             </p>
-            <a href="#" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-emerald-700 rounded-lg hover:bg-emerald-800 focus:ring-4 focus:outline-none focus:ring-emerald-300 dark:bg-emerald-600 dark:hover:bg-emerald-700 dark:focus:ring-emerald-800">
+            <a href="{{route('subdomain.index')}}" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-emerald-700 rounded-lg hover:bg-emerald-800 focus:ring-4 focus:outline-none focus:ring-emerald-300 dark:bg-emerald-600 dark:hover:bg-emerald-700 dark:focus:ring-emerald-800">
                 Akses Layanan
                 <i class="ti ti-arrow-right ml-2"></i>
             </a>

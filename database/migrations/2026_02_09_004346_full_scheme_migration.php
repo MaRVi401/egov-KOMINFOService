@@ -144,6 +144,7 @@ return new class extends Migration
             $table->integer('halaman');
             $table->string('instansi_opd');
             $table->string('instansi_bidang');
+            $table->string('instansi_nama_kepala');
             $table->string('instansi_alamat');
             $table->string('instansi_telp');
             $table->string('instansi_email');

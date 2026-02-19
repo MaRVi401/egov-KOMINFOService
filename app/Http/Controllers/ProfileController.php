@@ -48,7 +48,7 @@
                 'no_wa.min'   => 'Nomor WhatsApp minimal 10 digit.',
                 'no_wa.regex' => 'Nomor WhatsApp hanya boleh berisi angka.',
             ]);
-
+ 
             $inputData = $request->only(['nama', 'username', 'email', 'no_wa', 'alamat']);
             $user->fill($inputData);
 
