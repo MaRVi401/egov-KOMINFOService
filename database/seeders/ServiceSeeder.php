@@ -20,7 +20,8 @@ class ServiceSeeder extends Seeder
             'Email E-Gov',
             'Subdomain',
             'Pembuatan App',
-            'Pengaduan Sistem'
+            'Pengaduan Sistem',
+            'Pembuatan & Pengembangan apps'
         ];
 
         foreach ($services as $nama) {

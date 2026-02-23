@@ -172,35 +172,38 @@ return new class extends Migration
             $table->foreignUuid('tiket_id')->constrained('tiket', 'uuid')->cascadeOnDelete();
             
             // Pengajuan (Awal)
-            $table->string('ajuan_no_surat');
-            $table->timestamp('ajuan_tgl');
-            $table->string('ajuan_nama_sistem');
-            $table->text('ajuan_ket_sistem');
-            $table->string('ajuan_ttd_nama');
-            $table->string('ajuan_ttd_nip');
-            $table->string('ajuan_perintah_pj1_nama');
-            $table->string('ajuan_perintah_pj1_nip');
-            $table->string('ajuan_perintah_pj1_jabatan');
-            $table->string('ajuan_perintah_pj2_nama');
-            $table->string('ajuan_perintah_pj2_nip');
-            $table->string('ajuan_perintah_pj2_jabatan');
-            $table->string('ajuan_fitur');
-            $table->text('ajuan_ket_fitur');
+            $table->string('ajuan_no_surat')->nullable();
+            $table->timestamp('ajuan_tgl')->nullable();
+            $table->string('ajuan_nama_sistem')->nullable();
+            $table->text('ajuan_ket_sistem')->nullable();
+            $table->string('ajuan_ttd_nama')->nullable();
+            $table->string('ajuan_ttd_nip')->nullable();
+            $table->string('ajuan_perintah_pj1_nama')->nullable();
+            $table->string('ajuan_perintah_pj1_nip')->nullable();
+            $table->string('ajuan_perintah_pj1_jabatan')->nullable();
+            $table->string('ajuan_perintah_pj2_nama')->nullable();
+            $table->string('ajuan_perintah_pj2_nip')->nullable();
+            $table->string('ajuan_perintah_pj2_jabatan')->nullable();
+            $table->string('ajuan_nama_skpd')->nullable();
+            $table->text('ajuan_fitur')->nullable();
+            $table->text('ajuan_ket_fitur')->nullable();
 
             // Pengembangan
-            $table->string('kembang_no_surat');
-            $table->timestamp('kembang_tgl');
-            $table->string('kembang_ttd_nama');
-            $table->string('kembang_ttd_nip');
-            $table->string('kembang_nama_sistem');
-            $table->text('kembang_ket');
-            $table->string('kembang_perintah_pj1_nama');
-            $table->string('kembang_perintah_pj1_nip');
-            $table->string('kembang_perintah_pj1_jabatan');
-            $table->string('kembang_perintah_pj2_nama');
-            $table->string('kembang_perintah_pj2_nip');
-            $table->string('kembang_nama_fitur');
-            $table->text('kembang_ket_fitur');
+            $table->string('kembang_no_surat')->nullable();
+            $table->timestamp('kembang_tgl')->nullable();
+            $table->string('kembang_ttd_nama')->nullable();
+            $table->string('kembang_ttd_nip')->nullable();
+            $table->string('kembang_nama_sistem')->nullable();
+            $table->text('kembang_ket')->nullable();
+            $table->string('kembang_perintah_pj1_nama')->nullable();
+            $table->string('kembang_perintah_pj1_nip')->nullable();
+            $table->string('kembang_perintah_pj1_jabatan')->nullable();
+            $table->string('kembang_perintah_pj2_nama')->nullable();
+            $table->string('kembang_perintah_pj2_jabatan')->nullable();
+            $table->string('kembang_perintah_pj2_nip')->nullable();
+            $table->string('kembang_nama_skpd')->nullable();
+            $table->text('kembang_nama_fitur')->nullable();
+            $table->text('kembang_ket_fitur')->nullable();
             $table->timestamps();
         });
     }
