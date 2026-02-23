@@ -9,7 +9,7 @@ use App\Http\Controllers\PenggunaAsn\ServiceEmailGovController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DevTemplateController;
 use App\Http\Controllers\PenggunaAsn\ServiceSubDomainController;
-
+use App\Http\Controllers\PenggunaAsn\ServiceAppsCreationController;
 
 
 
@@ -89,7 +89,7 @@ Route::middleware('auth')->group(function () {
         Route::resource('services', ServiceController::class)
             ->names(['index' => 'services.index']);
 
-        // RUTE UNTUK DOWNLOAD 
+        // RUTE UNTUK DOWNLOAD Email Gov
         Route::get('services/email-gov/download/{uuid}', [ServiceEmailGovController::class, 'download'])
         ->name('email.download');
 
@@ -106,6 +106,16 @@ Route::middleware('auth')->group(function () {
                 'index' => 'subdomain.index',
                 'store' => 'subdomain.store'
             ]);
+        
+        //Rute baru untuk Pembuatan Apps
+        Route::get('/service-app-creation/download/{uuid}', [App\Http\Controllers\PenggunaAsn\ServiceAppsCreationController::class, 'download'])->name('appscreation.download');
+        Route::resource('service-app-creation', ServiceAppsCreationController::class)
+            ->names([
+                'index' => 'appmaker.index',
+                'store' => 'appmaker.store'
+            ]);
+
+        
         //RUTE DOWNLOAD SUBDOMAIN
         Route::get('services/subdomain/download/{uuid}', [ServiceSubDomainController::class, 'download'])
             ->name('subdomain.download');

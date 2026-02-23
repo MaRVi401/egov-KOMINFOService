@@ -51,12 +51,12 @@
                 <i class="ti ti-device-mobile-code text-2xl text-purple-600 dark:text-purple-300"></i>
             </div>
             <a href="#">
-                <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Pembuatan App</h5>
+                <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Pembuatan & Pengembangan App</h5>
             </a>
             <p class="mb-3 font-normal text-gray-700 dark:text-gray-400 text-sm">
-                Fasilitasi pengembangan aplikasi sistem informasi berbasis web maupun mobile.
+                Fasilitas pengembangan aplikasi sistem informasi berbasis web maupun mobile.
             </p>
-            <a href="#" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-purple-700 rounded-lg hover:bg-purple-800 focus:ring-4 focus:outline-none focus:ring-purple-300 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-800">
+            <a href="{{route('appmaker.index')}}" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-purple-700 rounded-lg hover:bg-purple-800 focus:ring-4 focus:outline-none focus:ring-purple-300 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-800">
                 Akses Layanan
                 <i class="ti ti-arrow-right ml-2"></i>
             </a>

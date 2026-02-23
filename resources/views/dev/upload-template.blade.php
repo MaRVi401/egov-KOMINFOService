@@ -41,6 +41,8 @@
                 <option value="Template-email-asn.docx">Template-email-asn.docx (Untuk ASN)</option>
                 <option value="Template-Email-Instansi.docx">Template-Email-Instansi.docx (Untuk Perangkat Daerah)</option>
                 <option value="Template-Sub-Domain.docx">Template-Sub-Domain.docx (Untuk Perangkat Daerah)</option>
+                <option value="Template-Pembuatan-sistem-awal.docx">Template-Pembuatan-sistem-awal.docx</option>
+                <option value="Template-Pengembangan-fitur-apps.docx">Template-Pengembangan-fitur-apps.docx</option>
             </select>
         </div>
 
