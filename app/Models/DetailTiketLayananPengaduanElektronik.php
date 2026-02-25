@@ -9,7 +9,7 @@ class DetailTiketLayananPengaduanElektronik extends Model
 {
     use HasUuids;
 
-    protected $table = 'detail_tiket_layanan_pengaduan_elektronik';
+    protected $table = 'detail_tiket_layanan_pengaduan_sistem_elektronik';
     protected $primaryKey = 'uuid';
     public $incrementing = false;
     protected $keyType = 'string';

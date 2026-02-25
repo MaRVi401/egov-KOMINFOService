@@ -93,9 +93,8 @@
                     </div>
                     <div>
                         <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">NIP</label>
-                        <input type="text" name="ajuan_ttd_nip" class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                        <input type="text" name="ajuan_ttd_nip" maxlength="18" oninput="this.value = this.value.replace(/[^0-9]/g, '');" class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white" placeholder="18 digit NIP">
                     </div>
-
                     <div class="md:col-span-2 mt-2"><p class="text-sm font-semibold text-gray-700 dark:text-gray-300">Penanggung Jawab 1</p></div>
                     <div class="md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
@@ -104,7 +103,7 @@
                         </div>
                         <div>
                             <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">NIP</label>
-                            <input type="text" name="ajuan_perintah_pj1_nip" class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                            <input type="text" name="ajuan_perintah_pj1_nip" maxlength="18" oninput="this.value = this.value.replace(/[^0-9]/g, '');" class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white" placeholder="18 digit NIP">
                         </div>
                         <div>
                             <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Jabatan</label>
@@ -120,7 +119,7 @@
                         </div>
                         <div>
                             <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">NIP</label>
-                            <input type="text" name="ajuan_perintah_pj2_nip" class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                            <input type="text" name="ajuan_perintah_pj2_nip" maxlength="18" oninput="this.value = this.value.replace(/[^0-9]/g, '');" class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white" placeholder="18 digit NIP (Opsional)">    
                         </div>
                         <div>
                             <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Jabatan</label>
@@ -203,7 +202,7 @@
                     </div>
                     <div>
                         <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">NIP</label>
-                        <input type="text" name="kembang_ttd_nip" class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                        <input type="text" name="kembang_ttd_nip" maxlength="18" oninput="this.value = this.value.replace(/[^0-9]/g, '');" class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white" placeholder="Masukkan 18 digit NIP">   
                     </div>
 
                     <div class="md:col-span-2 mt-2"><p class="text-sm font-semibold text-gray-700 dark:text-gray-300">Penanggung Jawab 1</p></div>
@@ -221,7 +220,6 @@
                             <input type="text" name="kembang_perintah_pj1_jabatan" class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                         </div>
                     </div>
-
                     <div class="md:col-span-2 mt-2"><p class="text-sm font-semibold text-gray-700 dark:text-gray-300">Penanggung Jawab 2</p></div>
                     <div class="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
@@ -232,10 +230,13 @@
                             <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">NIP</label>
                             <input type="text" name="kembang_perintah_pj2_nip" class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                         </div>
+                        <div>
+                            <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Jabatan</label>
+                            <input type="text" name="kembang_perintah_pj2_jabatan" class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                        </div>
                         {{-- Sesuai ERD, tidak ada kembang_perintah_pj2_jabatan --}}
                     </div>
                 </div>
-
                 <h3 class="text-md font-semibold text-green-600 dark:text-green-400 mb-4 border-b pb-2">Detail Pengembangan Fitur</h3>
                 <div class="grid gap-6 mb-6 md:grid-cols-2">
                     <div class="md:col-span-2">
@@ -245,14 +246,12 @@
                     <div class="md:col-span-2">
                         <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Keterangan Umum Pengembangan</label>
                         <textarea name="kembang_ket" rows="3" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"></textarea>
-                    </div>
-                    
+                    </div>    
                     {{-- INPUT DINAMIS UNTUK PENGEMBANGAN FITUR --}}
                     <div class="md:col-span-2">
                         <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                             Daftar Fitur yang Dikembangkan <span class="text-xs text-gray-500 font-normal">(Maksimal 20 fitur)</span>
-                        </label>
-                        
+                        </label>   
                         {{-- PENTING: Gunakan class 'fitur-container' agar terbaca oleh JS --}}
                         <div class="fitur-container space-y-3" data-name="kembang_nama_fitur[]">
                             <div class="flex items-center space-x-2 transition-all duration-300 fitur-row">
@@ -266,11 +265,9 @@
                                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4" /></svg>
                                 </button>
                             </div>
-                        </div>
-                        
+                        </div>    
                         <p class="fitur-warning mt-2 text-sm text-red-600 hidden dark:text-red-400">Anda telah mencapai batas maksimal 20 fitur.</p>
                     </div>
-
                     <div class="md:col-span-2">
                         <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Keterangan Detail Fitur</label>
                         <textarea name="kembang_ket_fitur" rows="3" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"></textarea>
@@ -284,9 +281,7 @@
                 </div>
             </div>
         </form>
-
     </div>
-
     {{-- STEP 3: SELESAI --}}
     <div id="step-3" class="step-content hidden transition-opacity duration-300">
         <div class="text-center py-10 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 max-w-2xl mx-auto">
@@ -298,7 +293,6 @@
             <button onclick="window.location.reload()" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">Kembali ke Dashboard</button>
         </div>
     </div>
-
 </div>
 
 @push('scripts')

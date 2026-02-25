@@ -10,6 +10,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DevTemplateController;
 use App\Http\Controllers\PenggunaAsn\ServiceSubDomainController;
 use App\Http\Controllers\PenggunaAsn\ServiceAppsCreationController;
+use App\Http\Controllers\PenggunaAsn\ServiceComplaintSystemController;
 
 
 
@@ -106,6 +107,10 @@ Route::middleware('auth')->group(function () {
                 'index' => 'subdomain.index',
                 'store' => 'subdomain.store'
             ]);
+
+        //RUTE DOWNLOAD SUBDOMAIN
+        Route::get('services/subdomain/download/{uuid}', [ServiceSubDomainController::class, 'download'])
+            ->name('subdomain.download');
         
         //Rute baru untuk Pembuatan Apps
         Route::get('/service-app-creation/download/{uuid}', [App\Http\Controllers\PenggunaAsn\ServiceAppsCreationController::class, 'download'])->name('appscreation.download');
@@ -115,11 +120,12 @@ Route::middleware('auth')->group(function () {
                 'store' => 'appmaker.store'
             ]);
 
-        
-        //RUTE DOWNLOAD SUBDOMAIN
-        Route::get('services/subdomain/download/{uuid}', [ServiceSubDomainController::class, 'download'])
-            ->name('subdomain.download');
-            
+        //Rute untuk pengaduan
+        Route::resource('service-compliant-system', ServiceComplaintSystemController::class)
+            ->names([
+                'index' => 'compliant.index',
+                'store' => 'store.index'
+            ]);
 
         Route::prefix('dev')->group(function () {
             Route::get('/upload-template', [DevTemplateController::class, 'index'])->name('dev.template.index');

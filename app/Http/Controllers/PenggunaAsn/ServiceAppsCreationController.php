@@ -9,9 +9,10 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
 use App\Models\Tiket;
-use App\Models\DetailTiketLayananPembuatanApp; // Sesuaikan dengan nama Model-mu
+use App\Models\DetailTiketLayananPembuatanApp;
 use App\Models\RiwayatStatusTiket;
 use App\Models\Layanan;
+use App\Services\WordTemplateServiceAppsCreation;
 
 class ServiceAppsCreationController extends Controller
 {
@@ -24,7 +25,6 @@ class ServiceAppsCreationController extends Controller
     {
         $kategori = $request->input('kategori_aktif');
 
-        // Pastikan kategori valid sesuai dengan value yang dikirim dari JS
         if (!in_array($kategori, ['pembangunan_awal', 'pengembangan_fitur'])) {
             return response()->json([
                 'status' => 'error',
@@ -32,20 +32,16 @@ class ServiceAppsCreationController extends Controller
             ], 422);
         }
         
-        // 1. Validasi Input (Tanpa validasi no_surat karena di-generate oleh Model)
         $this->validateInput($request, $kategori);
 
         DB::beginTransaction();
         try {
-            // Ambil data layanan dari master tabel (Sesuaikan dengan nama layanan di DB)
             $layanan = Layanan::where('nama', 'LIKE', 'Pembuatan & Pengembangan apps')->firstOrFail();
             
-            // Generate Nomor Tiket Internal (Berbeda dengan Nomor Surat)
             $noTiket = 'TPA-' . Carbon::now()->format('dmY') . '-' . Str::upper(Str::random(4));
             
             $jenisLayananDB = ($kategori === 'pembangunan_awal') ? 'Pembangunan Sistem Awal' : 'Pengembangan Fitur';
             
-            // 2. Simpan ke tabel tiket master
             $tiket = Tiket::create([
                 'uuid'       => (string) Str::uuid(),
                 'users_id'   => Auth::user()->uuid,
@@ -55,10 +51,8 @@ class ServiceAppsCreationController extends Controller
                 'deskripsi'  => 'Pembuatan Apps - ' . $jenisLayananDB,
             ]);
         
-            // 3. Simpan ke tabel detail (Model akan otomatis mengisi no_surat & convert array ke JSON)
             $this->storeDetail($tiket->uuid, $request, $kategori);
             
-            // 4. Catat riwayat status
             RiwayatStatusTiket::create([
                 'uuid'     => (string) Str::uuid(), 
                 'tiket_id' => $tiket->uuid,
@@ -84,17 +78,58 @@ class ServiceAppsCreationController extends Controller
 
     private function validateInput($request, $kategori)
     {
-        // Perhatikan: 'ajuan_no_surat' dan 'kembang_no_surat' sudah dihapus dari validasi
+        $messages = [
+            'required' => 'Kolom :attribute wajib diisi.',
+            'string'   => 'Kolom :attribute harus berupa teks.',
+            'max'      => 'Kolom :attribute maksimal berisi :max karakter.',
+            'numeric'  => 'Kolom :attribute hanya boleh berisi angka.',
+            'digits'   => 'Kolom :attribute harus tepat berjumlah :digits digit angka.',
+            'array'    => 'Format input :attribute tidak valid.',
+            'min'      => 'Kolom :attribute minimal harus berisi :min item.'
+        ];
+
+        $attributes = [
+            'ajuan_nama_skpd'            => 'Nama SKPD',
+            'ajuan_ttd_nama'             => 'Nama Pejabat Penandatangan',
+            'ajuan_ttd_nip'              => 'NIP Pejabat Penandatangan',
+            'ajuan_perintah_pj1_nama'    => 'Nama Penanggung Jawab 1',
+            'ajuan_perintah_pj1_nip'     => 'NIP Penanggung Jawab 1',
+            'ajuan_perintah_pj1_jabatan' => 'Jabatan Penanggung Jawab 1',
+            'ajuan_perintah_pj2_nama'    => 'Nama Penanggung Jawab 2',
+            'ajuan_perintah_pj2_nip'     => 'NIP Penanggung Jawab 2',
+            'ajuan_perintah_pj2_jabatan' => 'Jabatan Penanggung Jawab 2',
+            'ajuan_nama_sistem'          => 'Nama Sistem Aplikasi',
+            'ajuan_ket_sistem'           => 'Keterangan Sistem',
+            'ajuan_fitur'                => 'Daftar Fitur',
+            'ajuan_fitur.*'              => 'Isian Fitur', 
+            'ajuan_ket_fitur'            => 'Keterangan Detail Fitur',
+
+            'kembang_nama_skpd'            => 'Nama SKPD',
+            'kembang_ttd_nama'             => 'Nama Pejabat Penandatangan',
+            'kembang_ttd_nip'              => 'NIP Pejabat Penandatangan',
+            'kembang_perintah_pj1_nama'    => 'Nama Penanggung Jawab 1',
+            'kembang_perintah_pj1_nip'     => 'NIP Penanggung Jawab 1',
+            'kembang_perintah_pj1_jabatan' => 'Jabatan Penanggung Jawab 1',
+            'kembang_perintah_pj2_nama'    => 'Nama Penanggung Jawab 2',
+            'kembang_perintah_pj2_nip'     => 'NIP Penanggung Jawab 2',
+            'kembang_perintah_pj2_jabatan' => 'Jabatan Penanggung Jawab 2',
+            'kembang_nama_sistem'          => 'Nama Aplikasi Saat Ini',
+            'kembang_ket'                  => 'Keterangan Umum Pengembangan',
+            'kembang_nama_fitur'           => 'Daftar Fitur',
+            'kembang_nama_fitur.*'         => 'Isian Fitur', 
+            'kembang_ket_fitur'            => 'Keterangan Detail Fitur',
+        ];
+
         if ($kategori === 'pembangunan_awal') {
             $rules = [
                 'ajuan_nama_skpd'            => 'required|string|max:255',
                 'ajuan_ttd_nama'             => 'required|string|max:255',
-                'ajuan_ttd_nip'              => 'required|string|max:50',
+                'ajuan_ttd_nip'              => 'required|numeric|digits:18', 
                 'ajuan_perintah_pj1_nama'    => 'required|string|max:255',
-                'ajuan_perintah_pj1_nip'     => 'required|string|max:50',
+                'ajuan_perintah_pj1_nip'     => 'required|numeric|digits:18', 
                 'ajuan_perintah_pj1_jabatan' => 'required|string|max:255',
                 'ajuan_perintah_pj2_nama'    => 'nullable|string|max:255',
-                'ajuan_perintah_pj2_nip'     => 'nullable|string|max:50',
+                'ajuan_perintah_pj2_nip'     => 'nullable|numeric|digits:18', 
                 'ajuan_perintah_pj2_jabatan' => 'nullable|string|max:255',
                 'ajuan_nama_sistem'          => 'required|string|max:255',
                 'ajuan_ket_sistem'           => 'required|string',
@@ -106,13 +141,13 @@ class ServiceAppsCreationController extends Controller
             $rules = [
                 'kembang_nama_skpd'            => 'required|string|max:255',
                 'kembang_ttd_nama'             => 'required|string|max:255',
-                'kembang_ttd_nip'              => 'required|string|max:50',
+                'kembang_ttd_nip'              => 'required|numeric|digits:18', 
                 'kembang_perintah_pj1_nama'    => 'required|string|max:255',
-                'kembang_perintah_pj1_nip'     => 'required|string|max:50',
+                'kembang_perintah_pj1_nip'     => 'required|numeric|digits:18', 
                 'kembang_perintah_pj1_jabatan' => 'required|string|max:255',
                 'kembang_perintah_pj2_nama'    => 'nullable|string|max:255',
                 'kembang_perintah_pj2_jabatan' => 'nullable|string|max:255',
-                'kembang_perintah_pj2_nip'     => 'nullable|string|max:50',
+                'kembang_perintah_pj2_nip'     => 'nullable|numeric|digits:18', 
                 'kembang_nama_sistem'          => 'required|string|max:255',
                 'kembang_ket'                  => 'required|string',
                 'kembang_nama_fitur'           => 'required|array|min:1|max:20',
@@ -120,8 +155,8 @@ class ServiceAppsCreationController extends Controller
                 'kembang_ket_fitur'            => 'required|string',
             ];
         }
- 
-        $request->validate($rules);
+
+        $request->validate($rules, $messages, $attributes);
     }
 
     private function storeDetail($tiketUuid, $request, $kategori)
@@ -130,7 +165,6 @@ class ServiceAppsCreationController extends Controller
         $detail->uuid     = (string) Str::uuid();
         $detail->tiket_id = $tiketUuid;
 
-        // Kita tidak lagi memasukkan _no_surat dari request, dan tidak perlu json_encode
         if ($kategori === 'pembangunan_awal') {
             $detail->ajuan_tgl = Carbon::now();
             $detail->ajuan_nama_sistem          = $request->ajuan_nama_sistem;
@@ -140,18 +174,12 @@ class ServiceAppsCreationController extends Controller
             $detail->ajuan_perintah_pj1_nama    = $request->ajuan_perintah_pj1_nama;
             $detail->ajuan_perintah_pj1_nip     = $request->ajuan_perintah_pj1_nip;
             $detail->ajuan_perintah_pj1_jabatan = $request->ajuan_perintah_pj1_jabatan;
-            
             $detail->ajuan_perintah_pj2_nama    = $request->ajuan_perintah_pj2_nama;
             $detail->ajuan_perintah_pj2_nip     = $request->ajuan_perintah_pj2_nip;
             $detail->ajuan_perintah_pj2_jabatan = $request->ajuan_perintah_pj2_jabatan;
-
             $detail->ajuan_nama_skpd            = $request->ajuan_nama_skpd;
-            
-            // Langsung passing array-nya karena Model sudah punya $casts
             $detail->ajuan_fitur                = $request->ajuan_fitur;
-            
             $detail->ajuan_ket_fitur            = $request->ajuan_ket_fitur;
-
         } else {
             $detail->kembang_tgl = Carbon::now();
             $detail->kembang_ttd_nama             = $request->kembang_ttd_nama;
@@ -163,12 +191,9 @@ class ServiceAppsCreationController extends Controller
             $detail->kembang_perintah_pj1_jabatan = $request->kembang_perintah_pj1_jabatan;
             $detail->kembang_perintah_pj2_nama    = $request->kembang_perintah_pj2_nama;
             $detail->kembang_perintah_pj2_nip     = $request->kembang_perintah_pj2_nip;
+            $detail->kembang_perintah_pj2_jabatan = $request->kembang_perintah_pj2_jabatan;
             $detail->kembang_nama_skpd            = $request->kembang_nama_skpd;
-            $detail->kembang_nama_skpd            = $request->kembang_nama_skpd;
-            
-            // Langsung passing array-nya karena Model sudah punya $casts
             $detail->kembang_nama_fitur           = $request->kembang_nama_fitur;
-            
             $detail->kembang_ket_fitur            = $request->kembang_ket_fitur;
         }
         
@@ -177,18 +202,14 @@ class ServiceAppsCreationController extends Controller
         return $detail;
     }
 
-    public function download($uuid, \App\Services\WordTemplateServiceAppsCreation $wordService)
+    public function download($uuid, WordTemplateServiceAppsCreation $wordService)
     {
-        // 1. Ambil data tiket berdasarkan UUID
         $tiket = Tiket::where('uuid', $uuid)->firstOrFail();
         
-        // 2. Ambil detail tiket
         $detail = DetailTiketLayananPembuatanApp::where('tiket_id', $tiket->uuid)->firstOrFail();
 
-        // 3. Tentukan kategori berdasarkan data yang terisi
         $kategori = !empty($detail->ajuan_nama_skpd) ? 'pembangunan_awal' : 'pengembangan_fitur';
 
-        // 4. Panggil service Word (yang sudah terhubung ke MinIO)
         return $wordService->generateDokumen($kategori, $detail, $tiket->no_tiket);
     }
 }
