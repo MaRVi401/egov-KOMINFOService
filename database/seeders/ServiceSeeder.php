@@ -21,7 +21,8 @@ class ServiceSeeder extends Seeder
             'Subdomain',
             'Pembuatan App',
             'Pengaduan Sistem',
-            'Pembuatan & Pengembangan apps'
+            'Pembuatan & Pengembangan apps',
+            'Pengudan Sistem'
         ];
 
         foreach ($services as $nama) {

@@ -146,7 +146,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // ==========================================
-    // 2. LOGIKA FORM SUBMIT (AJAX)
+    // 2. LOGIKA FORM SUBMIT (AJAX) DENGAN SWEETALERT
     // ==========================================
     const form = document.getElementById('form-pengajuan');
     
@@ -154,7 +154,6 @@ document.addEventListener('DOMContentLoaded', function() {
         form.addEventListener('submit', function(e) {
             e.preventDefault(); 
             
-            // Ambil tombol yang di-klik
             const btnSubmit = e.submitter || this.querySelector('button[type="submit"]');
             const originalBtnText = btnSubmit.innerHTML;
             
@@ -163,7 +162,16 @@ document.addEventListener('DOMContentLoaded', function() {
             const alertError = document.getElementById('alert-error');
             if(alertError) alertError.classList.add('hidden');
             
-            // Loading state
+            Swal.fire({
+                title: 'Memproses Pengajuan...',
+                html: 'Mohon tunggu, data sedang diverifikasi dan disimpan.',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
             btnSubmit.innerHTML = '<span class="animate-spin inline-block mr-2">↻</span> Memproses...';
             btnSubmit.disabled = true;
 
@@ -182,11 +190,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 try {
                     data = await response.json();
                 } catch (err) {
-                    throw new Error("Server tidak merespon dengan JSON valid.");
+                    throw new Error("Server tidak merespon dengan format JSON yang valid.");
                 }
 
                 if (!response.ok) {
-                    const error = new Error(data.message || 'Terjadi kesalahan.');
+                    const error = new Error(data.message || 'Terjadi kesalahan saat memproses data.');
                     error.status = response.status;
                     error.data = data;
                     throw error;
@@ -195,41 +203,82 @@ document.addEventListener('DOMContentLoaded', function() {
                 return data;
             })
             .then(data => {
-                // 1. Pindahkan antarmuka ke Langkah 3 (Selesai)
-                goToStep(3); 
-                
-                // 2. Picu pengunduhan dokumen secara otomatis di latar belakang
-                if (data.uuid) {
-                    const downloadUrl = `/service-app-creation/download/${data.uuid}`;
-                    
-                    // Membuat elemen tautan tak kasat mata untuk memaksa peramban mengunduh
-                    const autoDownloadLink = document.createElement('a');
-                    autoDownloadLink.href = downloadUrl;
-                    autoDownloadLink.style.display = 'none';
-                    document.body.appendChild(autoDownloadLink);
-                    
-                    // Eksekusi klik otomatis
-                    autoDownloadLink.click();
-                    
-                    // Bersihkan elemen setelah diklik
-                    setTimeout(() => {
-                        document.body.removeChild(autoDownloadLink);
-                    }, 1000);
-                }
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Pengajuan Berhasil!',
+                    text: 'Dokumen permohonan Anda akan segera diunduh.',
+                    confirmButtonText: 'Lanjut Selesai',
+                    confirmButtonColor: '#3085d6',
+                }).then((result) => {
+                    if (result.isConfirmed || result.isDismissed) {
+                        btnSubmit.disabled = false;
+                        btnSubmit.innerHTML = originalBtnText;
+                        
+                        window.goToStep(3); 
+                        
+                        if (data.uuid) {
+                            const downloadUrl = `/service-app-creation/download/${data.uuid}`;
+                            const autoDownloadLink = document.createElement('a');
+                            autoDownloadLink.href = downloadUrl;
+                            autoDownloadLink.style.display = 'none';
+                            document.body.appendChild(autoDownloadLink);
+                            
+                            autoDownloadLink.click();
+                            
+                            setTimeout(() => {
+                                document.body.removeChild(autoDownloadLink);
+                            }, 1000);
+                        }
+                    }
+                });
             })
             .catch(error => {
                 btnSubmit.disabled = false;
                 btnSubmit.innerHTML = originalBtnText;
 
                 if (error.status === 422) {
-                    showAlert('Mohon periksa kembali inputan form Anda yang bertanda merah.', 'red');
+                    // --- PERBAIKAN: Menampilkan daftar error di dalam SweetAlert ---
+                    let errorListHtml = '<ul class="text-left text-sm text-red-500 list-disc pl-5 mt-3">';
+                    
                     if(error.data && error.data.errors) {
+                        // Memanggil fungsi untuk menampilkan teks merah di bawah input
                         showValidationErrors(error.data.errors);
+                        
+                        // Mengekstrak daftar pesan untuk ditampilkan di popup
+                        for (const [field, messages] of Object.entries(error.data.errors)) {
+                            errorListHtml += `<li>${messages[0]}</li>`;
+                        }
                     }
+                    errorListHtml += '</ul>';
+
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Validasi Gagal',
+                        html: '<p class="text-sm">Mohon periksa kembali isian Anda. Terdapat data berikut yang tidak sesuai:</p>' + errorListHtml,
+                        confirmButtonColor: '#d33',
+                        confirmButtonText: 'Periksa Formulir'
+                    }).then((result) => {
+                        // --- PERBAIKAN: Eksekusi auto-scroll setelah tombol OK ditekan ---
+                        const firstError = document.querySelector('.border-red-500');
+                        if (firstError) {
+                             firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }
+                    });
+
                 } else if (error.status === 500) {
-                    showAlert('Terjadi kesalahan pada server. Silakan coba lagi nanti.', 'red');
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gangguan Server',
+                        text: 'Terjadi kesalahan internal pada sistem. Silakan coba beberapa saat lagi.',
+                        confirmButtonColor: '#d33'
+                    });
                 } else {
-                    showAlert(error.message || 'Gagal menghubungi server.', 'red');
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal',
+                        text: error.message || 'Gagal menghubungi server.',
+                        confirmButtonColor: '#d33'
+                    });
                 }
             });
         });
@@ -239,36 +288,45 @@ document.addEventListener('DOMContentLoaded', function() {
     // 3. HELPER FUNCTIONS
     // ==========================================
     function resetValidationErrors() {
-        document.querySelectorAll('.border-red-500').forEach(el => el.classList.remove('border-red-500'));
-        document.querySelectorAll('.text-red-500').forEach(el => el.remove());
+        document.querySelectorAll('.border-red-500').forEach(el => {
+            el.classList.remove('border-red-500');
+        });
+        document.querySelectorAll('.error-text-validation').forEach(el => el.remove());
     }
 
     function showValidationErrors(errors) {
         for (const [field, messages] of Object.entries(errors)) {
-            const inputName = field.includes('.') ? field.split('.')[0] + '[]' : field;
-            const input = document.querySelector(`[name="${inputName}"]`);
+            let inputName = field;
+            let index = null;
+
+            if (field.includes('.')) {
+                const parts = field.split('.');
+                inputName = parts[0] + '[]';
+                index = parseInt(parts[1]);
+            }
             
-            if (input) {
-                input.classList.add('border-red-500');
-                
-                const msgElement = document.createElement('p');
-                msgElement.className = 'text-red-500 text-xs mt-1 italic';
-                msgElement.innerText = messages[0];
-                input.parentElement.appendChild(msgElement);
+            const inputElements = document.querySelectorAll(`[name="${inputName}"]`);
+            
+            if (index !== null) {
+                 if(inputElements[index]) {
+                     applyErrorToInput(inputElements[index], messages[0]);
+                 }
+            } else {
+                 if(inputElements[0]) {
+                     applyErrorToInput(inputElements[0], messages[0]);
+                 }
             }
         }
     }
 
-    function showAlert(message, color) {
-        const alertBox = document.getElementById('alert-error');
-        const alertText = document.getElementById('alert-error-msg');
+    function applyErrorToInput(input, message) {
+        input.classList.add('border-red-500');
         
-        if(alertBox && alertText) {
-            alertText.innerText = message;
-            alertBox.classList.remove('hidden');
-            alertBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        } else {
-            alert(message); 
-        }
+        const msgElement = document.createElement('p');
+        msgElement.className = 'text-red-500 text-xs mt-1 italic error-text-validation';
+        msgElement.innerText = message;
+        
+        input.parentElement.appendChild(msgElement);
+        // PERBAIKAN: Logika scrollIntoView telah dihapus dari sini untuk menghindari bentrok dengan SweetAlert
     }
 });
