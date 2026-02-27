@@ -22,7 +22,7 @@ class ServiceSeeder extends Seeder
             'Pembuatan App',
             'Pengaduan Sistem',
             'Pembuatan & Pengembangan apps',
-            'Pengudan Sistem'
+            'Pengaduan Sistem Elektronik'
         ];
 
         foreach ($services as $nama) {
