@@ -88,8 +88,15 @@ Route::middleware('auth')->group(function () {
     | Khusus Operator
     |----------------------------------------------------------------------
     */
-    Route::middleware(['auth', 'can:operator-only'])->prefix('operator')->name('operator.')->group(function () {
+    Route::middleware(['auth', 'can:operator-only'])->group(function () {
 
+        // Halaman Meja Kerja
+        Route::get('workdesk', [OperatorTicketController::class, 'workDesk'])->name('ticket.workdesk');
+
+        // Proses Ambil Tiket
+        Route::post('ticket/{uuid}/handle', [OperatorTicketController::class, 'handle'])->name('ticket.handle');
+        
+        // Proses Selesaikan Tiket
         Route::resource('ticket', OperatorTicketController::class)
             ->parameters(['ticket' => 'uuid'])
             ->only(['index', 'show', 'destroy']);

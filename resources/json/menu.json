@@ -46,7 +46,12 @@
                 {
                     "name": "Tiket Masuk",
                     "icon": "ti ti-ticket",
-                    "route": "operator.ticket.index"
+                    "route": "ticket.index"
+                },
+                {
+                    "name": "Tangani Tiket",
+                    "icon": "ti ti-briefcase-off",
+                    "route": "ticket.workdesk"
                 }
             ]
         }

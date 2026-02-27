@@ -6,15 +6,20 @@
         <ul class="space-y-2 font-medium">
             @foreach ($verticalMenu ?? [] as $menu)
                 @php
-                    $routePrefix = explode('.', $menu['route'])[0];
-                    $isActive = request()->routeIs($menu['route']) || request()->routeIs($routePrefix . '.*');
+                    $isActive = request()->routeIs($menu['route']);
+
+                    if ($menu['route'] === 'ticket.index' && !$isActive) {
+                        $isActive = request()->routeIs('ticket.show');
+                    }
+
                 @endphp
                 <li>
                     <a href="{{ route($menu['route']) }}"
                         class="flex items-center p-2 rounded-base group transition-colors {{ $isActive ? 'bg-neutral-secondary-medium text-heading' : 'text-body hover:bg-neutral-secondary-medium hover:text-heading' }}">
-                        
+
                         <div class="w-6 h-6 flex items-center justify-center shrink-0">
-                            <i class="{{ $menu['icon'] }} text-xl transition duration-75 {{ $isActive ? 'text-heading' : 'text-neutral-tertiary-medium group-hover:text-heading' }}"></i>
+                            <i
+                                class="{{ $menu['icon'] }} text-xl transition duration-75 {{ $isActive ? 'text-heading' : 'text-neutral-tertiary-medium group-hover:text-heading' }}"></i>
                         </div>
 
                         <span class="ms-3">{{ $menu['name'] }}</span>
