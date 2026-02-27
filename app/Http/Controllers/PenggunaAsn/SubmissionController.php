@@ -38,7 +38,8 @@ class SubmissionController extends Controller
             'layanan',
             'detailEmailGov',
             'detailSubdomain',
-            'detailApps'
+            'detailApps',
+            'detailPengaduan'
         ])
         ->where('uuid', $uuid)
         ->where('users_id', Auth::user()->uuid)

@@ -2,16 +2,16 @@
     <div>
         <label class="block mb-2 text-sm font-semibold text-gray-900 dark:text-white">Detail Pengaduan / Kronologi</label>
         <div class="p-4 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white min-h-[150px] whitespace-pre-line">
-            {{ $ticket->detailPengaduan->deskripsi_permasalahan ?? 'Tidak ada detail deskripsi.' }}
+            {{ $ticket->detailPengaduan->detail_pengaduan ?? 'Tidak ada detail deskripsi.' }}
         </div>
     </div>
 
     <div>
         <label class="block mb-2 text-sm font-semibold text-gray-900 dark:text-white">Lampiran Screenshot Kejadian</label>
-        @if(!empty($ticket->detailPengaduan->screenshot))
+        @if(!empty($ticket->detailPengaduan->lampiran_screenshot))
             <div class="mt-2">
-                <a href="{{ Storage::disk('s3')->url($ticket->detailPengaduan->screenshot) }}" target="_blank" class="group relative block max-w-md overflow-hidden rounded-lg border border-gray-300 dark:border-gray-600 shadow-sm hover:shadow-md transition-shadow">
-                    <img src="{{ Storage::disk('s3')->url($ticket->detailPengaduan->screenshot) }}" 
+                <a href="{{ Storage::disk('s3')->temporaryUrl($ticket->detailPengaduan->lampiran_screenshot, now()->addMinutes(60)) }}" target="_blank" class="group relative block max-w-md overflow-hidden rounded-lg border border-gray-300 dark:border-gray-600 shadow-sm hover:shadow-md transition-shadow">
+                    <img src="{{ Storage::disk('s3')->temporaryUrl($ticket->detailPengaduan->lampiran_screenshot, now()->addMinutes(60)) }}" 
                          alt="Screenshot Pengaduan" 
                          class="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-300">
                     <div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
