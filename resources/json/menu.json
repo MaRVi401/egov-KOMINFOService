@@ -25,13 +25,28 @@
                 },
                 {
                     "name": "Layanan Digital",
-                    "icon": "ti ti-apps", 
-                    "route": "services.index" 
+                    "icon": "ti ti-apps",
+                    "route": "services.index"
                 },
                 {
-                    "name" :"Pengajuan tiket",
-                    "icon" : "ti ti-ticket",
+                    "name": "Pengajuan tiket",
+                    "icon": "ti ti-ticket",
                     "route": "submission.index"
+                }
+            ]
+        },
+        {
+            "role": "operator",
+            "items": [
+                {
+                    "name": "Dashboard",
+                    "icon": "ti ti-layout-dashboard",
+                    "route": "dashboard"
+                },
+                {
+                    "name": "Tiket Masuk",
+                    "icon": "ti ti-ticket",
+                    "route": "operator.ticket.index"
                 }
             ]
         }

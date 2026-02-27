@@ -12,6 +12,7 @@ use App\Http\Controllers\PenggunaAsn\ServiceSubDomainController;
 use App\Http\Controllers\PenggunaAsn\ServiceAppsCreationController;
 use App\Http\Controllers\PenggunaAsn\ServiceComplaintSystemController;
 use App\Http\Controllers\PenggunaAsn\SubmissionController;
+use App\Http\Controllers\Operator\TicketController as OperatorTicketController;
 
 
 /*
@@ -57,7 +58,7 @@ Route::middleware('auth')->group(function () {
 
     // edit profile
     Route::middleware(['auth'])->group(function () {
-        
+
         Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::put('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
     });
@@ -72,11 +73,26 @@ Route::middleware('auth')->group(function () {
     |----------------------------------------------------------------------
     */
     Route::middleware('can:super-admin-only')->group(function () {
-        
-    //User management
+
+        //User management
         Route::resource('user-management', UserManagementController::class)
             ->names('user-management')
             ->parameters(['user-management' => 'user']);
+    });
+
+
+
+
+    /*
+    |----------------------------------------------------------------------
+    | Khusus Operator
+    |----------------------------------------------------------------------
+    */
+    Route::middleware(['auth', 'can:operator-only'])->prefix('operator')->name('operator.')->group(function () {
+
+        Route::resource('ticket', OperatorTicketController::class)
+            ->parameters(['ticket' => 'uuid'])
+            ->only(['index', 'show', 'destroy']);
     });
 
     /*
@@ -86,13 +102,13 @@ Route::middleware('auth')->group(function () {
     */
 
     Route::middleware('can:pengguna_asn')->group(function () {
-        
+
         Route::resource('services', ServiceController::class)
             ->names(['index' => 'services.index']);
 
         // RUTE UNTUK DOWNLOAD Email Gov
         Route::get('services/email-gov/download/{uuid}', [ServiceEmailGovController::class, 'download'])
-        ->name('email.download');
+            ->name('email.download');
 
         // Rute baru untuk Email E-Gov
         Route::resource('services-email-e-gov', ServiceEmailGovController::class)
@@ -111,7 +127,7 @@ Route::middleware('auth')->group(function () {
         //RUTE DOWNLOAD SUBDOMAIN
         Route::get('services/subdomain/download/{uuid}', [ServiceSubDomainController::class, 'download'])
             ->name('subdomain.download');
-        
+
         //Rute baru untuk Pembuatan Apps
         Route::get('/service-app-creation/download/{uuid}', [App\Http\Controllers\PenggunaAsn\ServiceAppsCreationController::class, 'download'])->name('appscreation.download');
         Route::resource('service-app-creation', ServiceAppsCreationController::class)
@@ -139,10 +155,5 @@ Route::middleware('auth')->group(function () {
                 'index' => 'submission.index',
                 'show' => 'submission.show',
             ]);
-        
-
     });
-    
-    
-    
 });
