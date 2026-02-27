@@ -11,7 +11,7 @@ use App\Http\Controllers\DevTemplateController;
 use App\Http\Controllers\PenggunaAsn\ServiceSubDomainController;
 use App\Http\Controllers\PenggunaAsn\ServiceAppsCreationController;
 use App\Http\Controllers\PenggunaAsn\ServiceComplaintSystemController;
-
+use App\Http\Controllers\PenggunaAsn\SubmissionController;
 
 
 /*
@@ -131,6 +131,15 @@ Route::middleware('auth')->group(function () {
             Route::get('/upload-template', [DevTemplateController::class, 'index'])->name('dev.template.index');
             Route::post('/upload-template', [DevTemplateController::class, 'store'])->name('dev.template.store');
         });
+
+        //Rute Submission
+        Route::post('/submission/{uuid}/upload', [SubmissionController::class, 'uploadDocument'])->name('submission.upload');
+        Route::resource('submission', SubmissionController::class)
+            ->names([
+                'index' => 'submission.index',
+                'show' => 'submission.show',
+            ]);
+        
 
     });
     

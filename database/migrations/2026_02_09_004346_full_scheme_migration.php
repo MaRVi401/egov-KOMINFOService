@@ -67,7 +67,8 @@ return new class extends Migration
             $table->foreignUuid('layanan_id')->constrained('layanan', 'uuid');
             $table->foreignUuid('petugas_id')->nullable()->constrained('users', 'uuid');
             $table->string('no_tiket')->unique();
-            $table->text('deskripsi');
+            $table->string('lampiran')->nullable();
+            $table->text('deskripsi')->nullable();
             $table->enum('status', ['diajukan', 'ditangani', 'selesai', 'ditolak']);
             $table->timestamps();
         });

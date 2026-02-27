@@ -77,7 +77,8 @@ class ServiceEmailGovController extends Controller
 
             return response()->json([
                 'status' => 'success',
-                'uuid'   => $tiket->uuid
+                'uuid'   => $tiket->uuid,
+                'no_tiket' => $tiket->no_tiket
             ], 200);
 
         } catch (\Exception $e) {
