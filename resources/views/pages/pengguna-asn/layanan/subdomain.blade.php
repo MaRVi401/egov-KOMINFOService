@@ -4,7 +4,6 @@
 
 @section('content')
 <div class="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
-    
     <div class="mb-8 mt-4">
         <ol class="items-center w-full max-w-2xl mx-auto flex space-x-8 justify-center">
             <li id="indicator-step-1" class="flex items-center space-x-2.5 text-blue-600 dark:text-blue-500">
@@ -22,9 +21,7 @@
     <div id="step-1" class="step-content transition-opacity duration-300">
         <form id="form-subdomain" action="{{ route('subdomain.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
-            
             <div class="max-w-5xl mx-auto bg-white dark:bg-gray-800 p-8 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
-                
                 <div class="border-b border-gray-200 dark:border-gray-700 pb-4 mb-8">
                     <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Formulir Layanan Subdomain</h2>
                     <p class="text-sm text-gray-500 dark:text-gray-400">Mohon lengkapi data administratif dan teknis di bawah ini.</p>
@@ -40,27 +37,22 @@
                             <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nama Perangkat Daerah</label>
                             <input type="text" name="nama_perangkat_daerah" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white" placeholder="Contoh: Dinas Komunikasi dan Informatika" required>
                         </div>
-
                         <div class="md:col-span-2">
                             <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Bidang / Bagian / UPTD</label>
                             <input type="text" name="bidang_bagian" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                         </div>
-
                         <div class="md:col-span-2">
                             <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nama Kepala Instansi</label>
                             <input type="text" name="nama_kepala_instansi" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white" required>
                         </div>
-
                         <div class="md:col-span-2">
                             <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Alamat Instansi</label>
                             <textarea name="alamat_instansi" rows="2" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"></textarea>
                         </div>
-
                         <div>
                             <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">No. Telepon Kantor</label>
                             <input type="number" name="no_telp_instansi" oninput="this.value = this.value.replace(/[^0-9]/g, '');" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                         </div>
-
                         <div>
                             <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email Instansi</label>
                             <input type="email" name="email_instansi" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
@@ -80,28 +72,25 @@
                             <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nama Lengkap</label>
                             <input type="text" name="nama_pj_admin" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white" required>
                         </div>
-
                         <div>
                             <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">NIP</label>
                             <input type="number" name="nip_pj_admin" oninput="this.value = this.value.replace(/[^0-9]/g, '');" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                         </div>
-
                         <div>
                             <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Jabatan</label>
                             <input type="text" name="jabatan_pj_admin" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                         </div>
-
                         <div>
                             <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email</label>
                             <input type="email" name="email_pj_admin" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                         </div>
-
                         <div>
                             <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">No. HP / WhatsApp</label>
                             <input type="number" name="no_telp_pj_admin" oninput="this.value = this.value.replace(/[^0-9]/g, '');" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white" required>
                         </div>
                     </div>
                 </div>
+
                 <hr class="h-px mt-14 mb-8 bg-gray-200 border-0 dark:bg-gray-700">
 
                 <div class="mb-10">
@@ -110,35 +99,32 @@
                         Penanggung Jawab Teknis
                     </h3>
                     <div class="p-4 mb-4 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400" role="alert">
-                        <span class="font-medium">Info:</span> PJ Teknis adalah orang yang akan mengelola server atau konfigurasi subdomain (Bisa pihak ketiga/vendor).
+                        <span class="font-medium">Info:</span> PJ Teknis adalah orang yang akan mengelola server atau konfigurasi subdomain.
                     </div>
                     <div class="grid gap-6 md:grid-cols-2">
                         <div class="md:col-span-2">
                             <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nama Lengkap</label>
                             <input type="text" name="nama_pj_teknis" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white" required>
                         </div>
-
                         <div class="md:col-span-2">
                             <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Asal Instansi / Perusahaan (Vendor)</label>
                             <input type="text" name="instansi_pj_teknis" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white" placeholder="Contoh: PT. Solusi Digital atau Staff IT Internal">
                         </div>
-
                         <div class="md:col-span-2">
                             <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Alamat Domisili</label>
                             <textarea name="alamat_pj_teknis" rows="2" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"></textarea>
                         </div>
-
                         <div>
                             <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email Teknis</label>
                             <input type="email" name="email_pj_teknis" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white" required>
                         </div>
-
                         <div>
                             <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">No. HP / WhatsApp</label>
                             <input type="number" name="no_telp_pj_teknis" oninput="this.value = this.value.replace(/[^0-9]/g, '');" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white" required>
                         </div>
                     </div>
                 </div>
+
                 <hr class="h-px mt-14 mb-8 bg-gray-200 border-0 dark:bg-gray-700">
 
                 <div class="mb-8">
@@ -146,7 +132,6 @@
                         <span class="flex items-center justify-center w-6 h-6 mr-2 text-sm rounded-full bg-blue-100 text-blue-600">4</span>
                         Data Teknis Subdomain
                     </h3>
-
                     <div class="mb-6">
                         <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Jenis Permohonan Subdomain</label>
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -167,40 +152,31 @@
 
                     <div class="grid gap-6 md:grid-cols-2">
                         <div>
-                            <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Usulan Subdomain (Contoh: simpeg.namakab.go.id)</label>
+                            <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Usulan Subdomain</label>
                             <input type="text" name="usulan_subdomain" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white" placeholder="simpeg.namakab.go.id" required>
-                            <p class="mt-1 text-xs text-gray-500">Isi dengan nama subdomain lengkap.</p>
                         </div>
-
                         <div>
-                            <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nama Subdomain (Hanya prefix)</label>
-                            <input type="text" name="nama_subdomain" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white" placeholder="Contoh: simpeg, dinkes" required>
-                            <p class="mt-1 text-xs text-gray-500">Hanya nama depannya saja (misal: "simpeg" dari "simpeg.namakab.go.id").</p>
+                            <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nama Subdomain (Prefix)</label>
+                            <input type="text" name="nama_subdomain" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white" placeholder="Contoh: simpeg" required>
                         </div>
-
                         <div>
                             <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Alamat Subdomain Lengkap (URL)</label>
                             <div class="flex">
-                                <span class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-r-0 border-gray-300 rounded-l-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
-                                    https://
-                                </span>
+                                <span class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-r-0 border-gray-300 rounded-l-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">https://</span>
                                 <input type="text" name="alamat_subdomain" class="rounded-none rounded-r-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white" placeholder="simpeg.namakab.go.id" required>
                             </div>
                         </div>
-
                         <div>
                             <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Alamat IP (Server Target)</label>
-                            <input type="text" name="alamat_ip" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white" placeholder="Contoh: 103.xxx.xxx.xxx" required>
+                            <input type="text" name="alamat_ip" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white" placeholder="103.xxx.xxx.xxx" required>
                         </div>
-
                         <div>
                             <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Redirect IP / URL (Opsional)</label>
-                            <input type="text" name="redirect_ip" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white" placeholder="Jika ada pengalihan khusus">
+                            <input type="text" name="redirect_ip" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                         </div>
-                        
                         <div class="md:col-span-2">
                             <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Deskripsi Singkat Aplikasi / Website</label>
-                            <textarea name="deskripsi_singkat" rows="3" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white" placeholder="Jelaskan fungsi utama aplikasi atau website yang akan menggunakan subdomain ini." required></textarea>
+                            <textarea name="deskripsi_singkat" rows="3" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white" required></textarea>
                         </div>
                     </div>
                 </div>
@@ -211,27 +187,24 @@
                         Kirim Permohonan
                     </button>
                 </div>
-
             </div>
         </form>
     </div>
 
     <div id="step-2" class="step-content hidden transition-opacity duration-300">
-        <div class="text-center py-10 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 max-w-2xl mx-auto mt-8">
+        <div class="text-center py-10 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 max-w-2xl mx-auto mt-8 shadow-sm">
+            <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 inline-block mb-6 border border-gray-200 dark:border-gray-600">
+                <span class="text-sm text-gray-500 dark:text-gray-400 block mb-1">Nomor Tiket Anda</span>
+                <span class="text-xl font-mono font-bold text-blue-600 dark:text-blue-400" id="nomor-tiket">#Memproses...</span>
+            </div>
             <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <svg class="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
             </div>
-            
             <h2 class="text-xl font-bold mb-2 text-gray-900 dark:text-white">Permohonan Berhasil!</h2>
-            <p class="text-gray-600 dark:text-gray-400 mb-6">
-                Dokumen permohonan sedang diunduh secara otomatis...<br>
-                Jika tidak, silakan cek folder download Anda.
-            </p>
-            
-            <div class="mt-6">
-                <a href="/dashboard" class="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
-                    Kembali ke Dashboard
-                </a>
+            <p class="text-gray-600 dark:text-gray-400 mb-6">Dokumen permohonan sedang diunduh secara otomatis.</p>
+            <div class="flex justify-center space-x-4">
+                <a href="/tiket/riwayat" class="px-6 py-2.5 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700">Cek Status Tiket</a>
+                <a href="/dashboard" class="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">Kembali ke Dashboard</a>
             </div>
         </div>
     </div>
@@ -240,5 +213,4 @@
 @push('scripts')
     @vite('resources/js/subdomain-forms.js')
 @endpush
-
 @endsection

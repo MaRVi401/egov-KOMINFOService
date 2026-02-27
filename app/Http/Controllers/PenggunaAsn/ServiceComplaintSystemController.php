@@ -41,8 +41,8 @@ class ServiceComplaintSystemController extends Controller
                 'users_id'   => Auth::user()->uuid,
                 'layanan_id' => $layanan->uuid,
                 'no_tiket'   => $noTiket,
-                'status'     => 'diajukan',
-                'deskripsi'  => $request->deskripsi,
+                'status'     => 'diajukan'
+                
             ]);
         
             $this->storeDetail($tiket->uuid, $request, $filePath);
@@ -74,13 +74,13 @@ class ServiceComplaintSystemController extends Controller
     private function validateInput(Request $request)
     {
         $request->validate([
-            'deskripsi'           => 'required|string|max:255',
+            // Validasi deskripsi dihapus dari sini
             'detail_pengaduan'    => 'required|string',
             'lampiran_screenshot' => 'nullable|image|mimes:jpeg,png,jpg|max:2048', 
         ], [
             'lampiran_screenshot.mimes' => 'File harus berupa gambar (JPG, JPEG, PNG).',
             'lampiran_screenshot.image' => 'File yang diunggah harus berupa gambar.',
-            'lampiran_screenshot.max'   => 'Ukuran gambar maksimal adalah 5MB.',
+            'lampiran_screenshot.max'   => 'Ukuran gambar maksimal adalah 2MB.', // disesuaikan dengan komentar di blade
         ]);
     }
 

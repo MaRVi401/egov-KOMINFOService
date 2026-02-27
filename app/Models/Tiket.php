@@ -18,5 +18,5 @@ class Tiket extends Model {
     public function detailPengaduan() { return $this->hasOne(DetailTiketLayananPengaduanElektronik::class, 'tiket_id', 'uuid'); }
     public function detailEmailGov() { return $this->hasOne(DetailTiketLayananEmailGov::class, 'tiket_id', 'uuid'); }
     public function detailSubdomain() { return $this->hasOne(DetailTiketLayananSubdomain::class, 'tiket_id', 'uuid'); }
-    public function detailApps() { return $this->hasOne(DetailTiketLayananPembuatanApps::class, 'tiket_id', 'uuid'); }
+    public function detailApps() { return $this->hasOne(DetailTiketLayananPembuatanApp::class, 'tiket_id', 'uuid'); }
 }

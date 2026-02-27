@@ -40,6 +40,12 @@ const SubdomainFormHandler = () => {
             if (response.ok) {
                 step1.classList.add('opacity-0');
                 
+                // Menangkap nomor tiket dari controller dan menampilkannya di UI
+                const nomorTiketElement = document.getElementById('nomor-tiket');
+                if (nomorTiketElement && result.no_tiket) {
+                    nomorTiketElement.textContent = result.no_tiket;
+                }
+                
                 setTimeout(() => {
                     step1.classList.add('hidden');
                     step2.classList.remove('hidden');
@@ -56,11 +62,23 @@ const SubdomainFormHandler = () => {
 
                 }, 300);
             } else {
-                alert(result.message || 'Terjadi kesalahan, mohon periksa kembali form Anda.');
+                // Menggunakan SweetAlert untuk pesan error validasi/server
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Validasi Gagal',
+                    text: result.message || 'Terjadi kesalahan, mohon periksa kembali form Anda.',
+                    confirmButtonColor: '#3085d6',
+                });
             }
         } catch (error) {
             console.error('Error:', error);
-            alert('Gagal mengirim data. Pastikan server berjalan.');
+            // Menggunakan SweetAlert untuk pesan error jaringan/sistem
+            Swal.fire({
+                icon: 'error',
+                title: 'Sistem Error',
+                text: 'Gagal mengirim data. Pastikan server berjalan dengan baik.',
+                confirmButtonColor: '#d33',
+            });
         } finally {
             submitBtn.disabled = false;
             submitBtn.innerHTML = originalBtnText;
@@ -77,5 +95,7 @@ function updateStepperUI(step1, step2) {
     step2.classList.add('text-blue-600', 'dark:text-blue-500');
     step2.querySelector('span').classList.replace('border-gray-500', 'border-blue-600');
 }
+
+
 
 document.addEventListener('DOMContentLoaded', SubdomainFormHandler);

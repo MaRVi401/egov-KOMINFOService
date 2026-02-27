@@ -1,12 +1,9 @@
 window.goToStep = function(stepNumber, category = null) {
-    // Sembunyikan semua step
     document.querySelectorAll('.step-content').forEach(el => el.classList.add('hidden'));
 
-    // Tampilkan step yang dituju
     const targetStep = document.getElementById('step-' + stepNumber);
     if(targetStep) targetStep.classList.remove('hidden');
 
-    // Logika khusus jika masuk ke Step 2 (Pilih Form)
     if (stepNumber === 2 && category) {
         document.querySelectorAll('.form-section').forEach(el => el.classList.add('hidden'));
 
@@ -15,7 +12,6 @@ window.goToStep = function(stepNumber, category = null) {
             inputKategori.value = category;
         }
 
-        // Tampilkan form sesuai pilihan card di step 1
         if (category === 'pembangunan_awal') {
             const formAwal = document.getElementById('form-pembangunan-awal');
             if(formAwal) formAwal.classList.remove('hidden');
@@ -49,15 +45,10 @@ window.updateStepper = function(activeStep) {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    
-    // ==========================================
-    // 1. LOGIKA FITUR DINAMIS (TAMBAH/HAPUS MULTIPLE FORM)
-    // ==========================================
     const fiturContainers = document.querySelectorAll('.fitur-container');
     const maxFitur = 20;
 
     fiturContainers.forEach(container => {
-        // Ambil nama input dari atribut data-name (ajuan_fitur[] atau kembang_nama_fitur[])
         const inputName = container.getAttribute('data-name'); 
 
         function updateButtons() {
@@ -85,7 +76,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
 
-            // Tampilkan atau sembunyikan teks peringatan
             const warningTxt = container.parentElement.querySelector('.fitur-warning');
             if (warningTxt) {
                 if (count >= maxFitur) {
@@ -107,16 +97,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 const newRow = document.createElement('div');
                 newRow.className = 'flex items-center space-x-2 transition-all duration-300 fitur-row';
                 
-                // Tema tombol mengikuti form mana ini dipanggil (Biru untuk Awal, Hijau untuk Kembang)
                 const btnColor = inputName.includes('kembang') ? 'green' : 'blue';
 
                 newRow.innerHTML = `
                     <input type="text" name="${inputName}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-${btnColor}-500 focus:border-${btnColor}-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white" placeholder="Fitur ke-${currentRows + 1}...">
-                    
                     <button type="button" class="btn-tambah-fitur px-3 py-2.5 text-sm font-medium text-white bg-${btnColor}-600 rounded-lg hover:bg-${btnColor}-700 focus:ring-4 focus:outline-none focus:ring-${btnColor}-300 dark:bg-${btnColor}-600 dark:hover:bg-${btnColor}-700">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
                     </button>
-
                     <button type="button" class="btn-hapus-fitur px-3 py-2.5 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4" /></svg>
                     </button>
@@ -130,13 +117,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 const rowToDel = btnHapus.closest('.fitur-row');
                 if (rowToDel) {
                     rowToDel.remove();
-                    
                     const remainingRows = container.querySelectorAll('.fitur-row');
                     remainingRows.forEach((row, idx) => {
                         const input = row.querySelector('input');
                         if (input) input.placeholder = `Fitur ke-${idx + 1}...`;
                     });
-
                     updateButtons();
                 }
             }
@@ -145,18 +130,12 @@ document.addEventListener('DOMContentLoaded', function() {
         updateButtons();
     });
 
-    // ==========================================
-    // 2. LOGIKA FORM SUBMIT (AJAX) DENGAN SWEETALERT
-    // ==========================================
     const form = document.getElementById('form-pengajuan');
-    
     if (form) {
         form.addEventListener('submit', function(e) {
             e.preventDefault(); 
-            
             const btnSubmit = e.submitter || this.querySelector('button[type="submit"]');
             const originalBtnText = btnSubmit.innerHTML;
-            
             resetValidationErrors();
             
             const alertError = document.getElementById('alert-error');
@@ -199,7 +178,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     error.data = data;
                     throw error;
                 }
-
                 return data;
             })
             .then(data => {
@@ -214,6 +192,11 @@ document.addEventListener('DOMContentLoaded', function() {
                         btnSubmit.disabled = false;
                         btnSubmit.innerHTML = originalBtnText;
                         
+                        const nomorTiketEl = document.getElementById('nomor-tiket');
+                        if (nomorTiketEl && data.no_tiket) {
+                            nomorTiketEl.textContent = data.no_tiket;
+                        }
+                        
                         window.goToStep(3); 
                         
                         if (data.uuid) {
@@ -222,9 +205,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             autoDownloadLink.href = downloadUrl;
                             autoDownloadLink.style.display = 'none';
                             document.body.appendChild(autoDownloadLink);
-                            
                             autoDownloadLink.click();
-                            
                             setTimeout(() => {
                                 document.body.removeChild(autoDownloadLink);
                             }, 1000);
@@ -237,14 +218,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 btnSubmit.innerHTML = originalBtnText;
 
                 if (error.status === 422) {
-                    // --- PERBAIKAN: Menampilkan daftar error di dalam SweetAlert ---
                     let errorListHtml = '<ul class="text-left text-sm text-red-500 list-disc pl-5 mt-3">';
-                    
                     if(error.data && error.data.errors) {
-                        // Memanggil fungsi untuk menampilkan teks merah di bawah input
                         showValidationErrors(error.data.errors);
-                        
-                        // Mengekstrak daftar pesan untuk ditampilkan di popup
                         for (const [field, messages] of Object.entries(error.data.errors)) {
                             errorListHtml += `<li>${messages[0]}</li>`;
                         }
@@ -254,11 +230,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     Swal.fire({
                         icon: 'warning',
                         title: 'Validasi Gagal',
-                        html: '<p class="text-sm">Mohon periksa kembali isian Anda. Terdapat data berikut yang tidak sesuai:</p>' + errorListHtml,
+                        html: '<p class="text-sm">Mohon periksa kembali isian Anda.</p>' + errorListHtml,
                         confirmButtonColor: '#d33',
                         confirmButtonText: 'Periksa Formulir'
-                    }).then((result) => {
-                        // --- PERBAIKAN: Eksekusi auto-scroll setelah tombol OK ditekan ---
+                    }).then(() => {
                         const firstError = document.querySelector('.border-red-500');
                         if (firstError) {
                              firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -269,7 +244,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     Swal.fire({
                         icon: 'error',
                         title: 'Gangguan Server',
-                        text: 'Terjadi kesalahan internal pada sistem. Silakan coba beberapa saat lagi.',
+                        text: 'Terjadi kesalahan internal pada sistem.',
                         confirmButtonColor: '#d33'
                     });
                 } else {
@@ -284,9 +259,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // ==========================================
-    // 3. HELPER FUNCTIONS
-    // ==========================================
     function resetValidationErrors() {
         document.querySelectorAll('.border-red-500').forEach(el => {
             el.classList.remove('border-red-500');
@@ -321,12 +293,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function applyErrorToInput(input, message) {
         input.classList.add('border-red-500');
-        
         const msgElement = document.createElement('p');
         msgElement.className = 'text-red-500 text-xs mt-1 italic error-text-validation';
         msgElement.innerText = message;
-        
         input.parentElement.appendChild(msgElement);
-        // PERBAIKAN: Logika scrollIntoView telah dihapus dari sini untuk menghindari bentrok dengan SweetAlert
     }
 });

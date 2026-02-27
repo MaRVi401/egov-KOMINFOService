@@ -27,6 +27,11 @@
                     "name": "Layanan Digital",
                     "icon": "ti ti-apps", 
                     "route": "services.index" 
+                },
+                {
+                    "name" :"Pengajuan tiket",
+                    "icon" : "ti ti-ticket",
+                    "route": "submission.index"
                 }
             ]
         }

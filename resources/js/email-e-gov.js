@@ -1,3 +1,5 @@
+import Swal from 'sweetalert2';
+
 window.goToStep = function(stepNumber, category = null) {
     document.querySelectorAll('.step-content').forEach(el => el.classList.add('hidden'));
 
@@ -78,67 +80,109 @@ document.addEventListener('DOMContentLoaded', function() {
         form.addEventListener('submit', function(e) {
             e.preventDefault(); 
             
-            const btnSubmit = e.submitter || this.querySelector('button[type="submit"]');
-            const originalBtnText = btnSubmit.innerHTML;
-            
-            resetValidationErrors();
-            const alertError = document.getElementById('alert-error');
-            if(alertError) alertError.classList.add('hidden');
-            
-            btnSubmit.innerHTML = '<span class="animate-spin">↻</span> Memproses...';
-            btnSubmit.disabled = true;
-
-            let formData = new FormData(this);
-
-            fetch(form.action, {
-                method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                    'Accept': 'application/json'
-                },
-                body: formData
-            })
-            .then(async response => {
-                let data;
-                try {
-                    data = await response.json();
-                } catch (err) {
-                    throw new Error("Server tidak merespon dengan JSON valid.");
-                }
-
-                if (!response.ok) {
-                    const error = new Error(data.message || 'Terjadi kesalahan.');
-                    error.status = response.status;
-                    error.data = data;
-                    throw error;
-                }
-
-                return data;
-            })
-            .then(data => {
-                if (data.status === 'success') {
-                    goToStep(3); 
-                    
-                    if(data.uuid) {
-                        window.location.href = `/services/email-gov/download/${data.uuid}`;
-                    }
-                }
-            })
-            .catch(error => {
-                btnSubmit.disabled = false;
-                btnSubmit.innerHTML = originalBtnText;
-
-                if (error.status === 422) {
-                    showAlert('Mohon periksa kembali inputan form Anda yang bertanda merah.', 'red');
-                    if(error.data && error.data.errors) {
-                        showValidationErrors(error.data.errors);
-                    }
-                } else if (error.status === 500) {
-                    showAlert('Terjadi kesalahan pada server. Silakan coba lagi nanti.', 'red');
-                } else {
-                    showAlert(error.message || 'Gagal menghubungi server.', 'red');
+            Swal.fire({
+                title: 'Konfirmasi Pengajuan',
+                text: "Apakah Anda yakin data yang diisikan sudah benar?",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#1A56DB', // Warna biru 
+                cancelButtonColor: '#EF4444', // Warna merah 
+                confirmButtonText: 'Ya, Kirim!',
+                cancelButtonText: 'Batal Periksa Lagi'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    prosesPengajuanForm(form, e.submitter || form.querySelector('button[type="submit"]'));
                 }
             });
+        });
+    }
+
+    function prosesPengajuanForm(formElement, btnSubmit) {
+        const originalBtnText = btnSubmit.innerHTML;
+        
+        resetValidationErrors();
+        
+        btnSubmit.innerHTML = '<span class="animate-spin inline-block mr-2">↻</span> Memproses...';
+        btnSubmit.disabled = true;
+
+        let formData = new FormData(formElement);
+
+        fetch(formElement.action, {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                'Accept': 'application/json'
+            },
+            body: formData
+        })
+        .then(async response => {
+            let data;
+            try {
+                data = await response.json();
+            } catch (err) {
+                throw new Error("Server tidak merespon dengan JSON valid.");
+            }
+
+            if (!response.ok) {
+                const error = new Error(data.message || 'Terjadi kesalahan.');
+                error.status = response.status;
+                error.data = data;
+                throw error;
+            }
+
+            return data;
+        })
+        .then(data => {
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: 'Pengajuan email Anda telah berhasil dikirim.',
+                timer: 2000,
+                showConfirmButton: false
+            }).then(() => {
+                
+                const noTiketElement = document.getElementById('nomor-tiket');
+                if(noTiketElement && data.no_tiket) {
+                    noTiketElement.innerText = data.no_tiket;
+                }
+                // -------------------------------
+                
+                goToStep(3); 
+                if(data.uuid) {
+                    window.location.href = `/services/email-gov/download/${data.uuid}`;
+                }
+            });
+        })
+        .catch(error => {
+            btnSubmit.disabled = false;
+            btnSubmit.innerHTML = originalBtnText;
+
+            if (error.status === 422) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Validasi Gagal',
+                    text: 'Mohon periksa kembali inputan form Anda yang bertanda merah.',
+                    confirmButtonColor: '#1A56DB'
+                });
+
+                if(error.data && error.data.errors) {
+                    showValidationErrors(error.data.errors);
+                }
+            } else if (error.status === 500) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Terjadi Kesalahan',
+                    text: 'Terjadi kesalahan pada server. Silakan coba lagi nanti.',
+                    confirmButtonColor: '#1A56DB'
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal',
+                    text: error.message || 'Gagal menghubungi server.',
+                    confirmButtonColor: '#1A56DB'
+                });
+            }
         });
     }
 
@@ -158,19 +202,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 msgElement.innerText = messages[0];
                 input.parentElement.appendChild(msgElement);
             }
-        }
-    }
-
-    function showAlert(message, color) {
-        const alertBox = document.getElementById('alert-error');
-        const alertText = document.getElementById('alert-error-msg');
-        
-        if(alertBox && alertText) {
-            alertText.innerText = message;
-            alertBox.classList.remove('hidden');
-            alertBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        } else {
-            alert(message);
         }
     }
 });

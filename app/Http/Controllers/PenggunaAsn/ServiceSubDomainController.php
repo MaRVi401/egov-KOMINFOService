@@ -67,6 +67,7 @@ class ServiceSubDomainController extends Controller
             return response()->json([
                 'status' => 'success',
                 'uuid'   => $tiket->uuid,
+                'no_tiket' => $tiket->no_tiket,
                 'message'=> 'Permohonan berhasil, dokumen sedang diunduh...',
                 'download_url' => $downloadUrl
             ], 200);
