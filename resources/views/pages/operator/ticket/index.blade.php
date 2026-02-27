@@ -161,7 +161,7 @@
                                 <td class="px-6 py-4 text-right">
                                     <button data-modal-target="modal-{{ $ticket->uuid }}"
                                         data-modal-toggle="modal-{{ $ticket->uuid }}"
-                                        class="bg-blue-600 text-white px-3 py-2 rounded-lg text-sm">
+                                        class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-sm cursor-pointer">
                                         Kelola
                                     </button>
 
@@ -191,7 +191,7 @@
                                                         method="POST">
                                                         @csrf
                                                         <button type="submit"
-                                                            class="text-white bg-green-700 hover:bg-green-800 font-medium rounded-lg text-sm px-5 py-2.5">Tangani
+                                                            class="text-white bg-green-700 hover:bg-green-800 font-medium rounded-lg text-sm px-5 py-2.5 cursor-pointer">Tangani
                                                             Tiket Ini</button>
                                                     </form>
                                                     <button data-modal-hide="modal-{{ $ticket->uuid }}" type="button"
