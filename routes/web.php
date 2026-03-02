@@ -12,6 +12,7 @@ use App\Http\Controllers\PenggunaAsn\ServiceSubDomainController;
 use App\Http\Controllers\PenggunaAsn\ServiceAppsCreationController;
 use App\Http\Controllers\PenggunaAsn\ServiceComplaintSystemController;
 use App\Http\Controllers\PenggunaAsn\SubmissionController;
+use App\Http\Controllers\PenggunaAsn\ServiceHistoryTicketController;
 use App\Http\Controllers\Operator\TicketController as OperatorTicketController;
 
 /*
@@ -172,5 +173,7 @@ Route::middleware('auth')->group(function () {
                 'index' => 'submission.index',
                 'show' => 'submission.show',
             ]);
+        Route::resource('history', ServiceHistoryTicketController::class);
+
     });
 });
