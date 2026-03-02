@@ -133,7 +133,7 @@
 
                                     @if($ticket->status === 'diajukan' && empty($ticket->lampiran) && !$isPengaduan)
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold text-gray-500 bg-gray-100 border border-gray-300 dark:bg-gray-700 dark:text-gray-400 dark:border-gray-600 shadow-sm">
-                                            -
+                                            Belum Diajukan
                                         </span>
                                     @else
                                         @php

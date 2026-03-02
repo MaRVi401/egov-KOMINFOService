@@ -19,7 +19,7 @@
     </div>
 
     <div id="step-1" class="step-content transition-opacity duration-300">
-        <form id="form-subdomain" action="{{ route('subdomain.store') }}" method="POST" enctype="multipart/form-data">
+        <form id="form-subdomain" action="{{ route('service-sub-domain.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="max-w-5xl mx-auto bg-white dark:bg-gray-800 p-8 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
                 <div class="border-b border-gray-200 dark:border-gray-700 pb-4 mb-8">
