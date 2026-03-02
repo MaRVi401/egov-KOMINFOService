@@ -36,15 +36,18 @@
                         class="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-neutral-tertiary"
                         data-dropdown-toggle="dropdown-user">
                         <img class="w-8 h-8 rounded-full object-cover"
-                            src="{{ auth()->user()->avatar ? \Illuminate\Support\Facades\Storage::disk('s3')->url( auth()->user()->avatar) : 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->nama) }}"
+                            src="{{ auth()->check() && auth()->user()->avatar
+                                ? \Illuminate\Support\Facades\Storage::disk('s3')->url(auth()->user()->avatar)
+                                : 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->nama ?? 'Guest') }}"
                             alt="user photo"
-                            onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->nama) }}';">
+                            onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->nama ?? 'Guest') }}';">
                     </button>
                     <div class="z-50 hidden my-4 text-base list-none bg-white dark:bg-neutral-primary-medium divide-y divide-default border border-default dark:border-default-medium rounded-base shadow-lg"
                         id="dropdown-user">
                         <div class="px-4 py-3">
-                            <p class="text-sm font-medium text-heading">{{ auth()->user()->nama }}</p>
-                            <p class="text-sm text-body truncate">{{ auth()->user()->email }}</p>
+                            <p class="text-sm font-medium text-heading">{{ auth()->user()->nama ?? 'Tamu' }}</p>
+                            <p class="text-sm text-body truncate">
+                                {{ auth()->user()->email ?? 'guest@kominfoservice.com' }}</p>
                         </div>
                         <ul class="py-1">
                             <li>

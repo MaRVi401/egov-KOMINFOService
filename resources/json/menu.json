@@ -25,13 +25,38 @@
                 },
                 {
                     "name": "Layanan Digital",
-                    "icon": "ti ti-apps", 
-                    "route": "services.index" 
+                    "icon": "ti ti-file-download",
+                    "route": "services.index"
                 },
                 {
-                    "name" :"Pengajuan tiket",
-                    "icon" : "ti ti-ticket",
+                    "name": "Pengajuan tiket",
+                    "icon": "ti ti-ticket",
                     "route": "submission.index"
+                },
+                {
+                    "name" : "Riwayat Status Tiket",
+                    "icon" : "ti ti-clock",
+                    "route": "history.index" 
+                }
+            ]
+        },
+        {
+            "role": "operator",
+            "items": [
+                {
+                    "name": "Dashboard",
+                    "icon": "ti ti-layout-dashboard",
+                    "route": "dashboard"
+                },
+                {
+                    "name": "Tiket Masuk",
+                    "icon": "ti ti-ticket",
+                    "route": "ticket.index"
+                },
+                {
+                    "name": "Tangani Tiket",
+                    "icon": "ti ti-briefcase",
+                    "route": "ticket.workdesk"
                 }
             ]
         }

@@ -22,17 +22,22 @@ class AppServiceProvider extends ServiceProvider
 
         // Gate untuk Middleware 'can:pengguna_asn
         Gate::define('pengguna_asn', function (User $user) {
-            return $user->role === 'pengguna_asn'; 
+            return $user->role === 'pengguna_asn';
         });
+
+        Gate::define('operator-only', function (User $user) {
+            return $user->role === 'operator';
+        });
+        
         // View Composer hanya berjalan saat view 'partials.dashboard.sidebar' dipanggil
         View::composer('partials.dashboard.sidebar', function ($view) {
-            
+
             // Mengambil file JSON
             $path = resource_path('json/menu.json');
             $menuData = json_decode(file_get_contents($path), true);
-            
+
             // Gunakan Auth::user() yang lebih eksplisit
-            $user = Auth::user(); 
+            $user = Auth::user();
             $userRole = $user ? $user->role : null;
 
             // Cari menu yang sesuai dengan role

@@ -19,8 +19,10 @@ class SubmissionController extends Controller
 
         if ($request->filled('status')) {
             $query->where('status', $request->status);
+        } else {
+            $query->where('status', '!=', 'selesai');
         }
-
+ 
         if ($request->has('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {

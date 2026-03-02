@@ -23,7 +23,7 @@ class ServiceComplaintSystemController extends Controller
     {
         return view('pages.pengguna-asn.layanan.compliant'); 
     }
-
+ 
     public function store(Request $request)
     {
         $this->validateInput($request);

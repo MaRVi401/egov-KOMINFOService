@@ -14,8 +14,10 @@ class DashboardController extends Controller
             // Dashboard Super Admin
             'super_admin'  => app(Admin\DashboardController::class)->index(),
             
-            // Dashboard Other Roles
-            'operator'     => view('pages.operator.dashboard'),
+            // Dashboard Operator
+            'operator'     => app(Operator\DashboardController::class)->index(request()),
+
+            // Dashboard Role Lainnya
             'kabid'        => view('pages.kabid.dashboard'),
             'pengguna_asn' => view('pages.pengguna-asn.dashboard'),
             
