@@ -16,7 +16,7 @@ class TicketController extends Controller
     public function index(Request $request)
     {
         $search = $request->input('search');
-        
+
         // Gunakan style anonymous function agar Intelephense tidak error
         $query = Tiket::with(['user', 'layanan'])
             ->where('status', 'diajukan')
@@ -25,12 +25,12 @@ class TicketController extends Controller
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('no_tiket', 'ilike', "%{$search}%")
-                  ->orWhereHas('user', function ($qu) use ($search) {
-                      $qu->where('nama', 'ilike', "%{$search}%");
-                  })
-                  ->orWhereHas('layanan', function ($ql) use ($search) {
-                      $ql->where('nama', 'ilike', "%{$search}%");
-                  });
+                    ->orWhereHas('user', function ($qu) use ($search) {
+                        $qu->where('nama', 'ilike', "%{$search}%");
+                    })
+                    ->orWhereHas('layanan', function ($ql) use ($search) {
+                        $ql->where('nama', 'ilike', "%{$search}%");
+                    });
             });
         }
 
@@ -80,9 +80,9 @@ class TicketController extends Controller
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('no_tiket', 'ilike', "%{$search}%")
-                  ->orWhereHas('user', function ($qu) use ($search) {
-                      $qu->where('nama', 'ilike', "%{$search}%");
-                  });
+                    ->orWhereHas('user', function ($qu) use ($search) {
+                        $qu->where('nama', 'ilike', "%{$search}%");
+                    });
             });
         }
 
@@ -100,5 +100,45 @@ class TicketController extends Controller
             ->firstOrFail();
 
         return view('pages.operator.ticket.show', compact('ticket'));
+    }
+
+    /**
+     * Update status tiket (Selesai / Ditolak) dengan komentar
+     */
+    public function update(Request $request, $uuid)
+    {
+        $request->validate([
+            'status' => 'required|in:selesai,ditolak',
+            'komentar' => 'required|string|min:5',
+        ]);
+
+        $ticket = Tiket::where('uuid', $uuid)->firstOrFail();
+
+        DB::transaction(function () use ($request, $ticket) {
+            // 1. Update status tiket
+            $ticket->update([
+                'status' => $request->status,
+            ]);
+
+            // 2. Simpan komentar ke tabel komentar_tiket
+            DB::table('komentar_tiket')->insert([
+                'uuid' => (string) Str::uuid(),
+                'tiket_id' => $ticket->uuid,
+                'users_id' => auth()->user()->uuid,
+                'komentar' => $request->komentar,
+                'created_at' => now(),
+            ]);
+
+            // 3. Catat perubahan ke riwayat_status_tiket
+            DB::table('riwayat_status_tiket')->insert([
+                'uuid' => (string) Str::uuid(),
+                'tiket_id' => $ticket->uuid,
+                'users_id' => auth()->user()->uuid,
+                'status' => $request->status,
+                'created_at' => now(),
+            ]);
+        });
+
+        return redirect()->route('ticket.workdesk')->with('success', 'Tiket berhasil diperbarui.');
     }
 }

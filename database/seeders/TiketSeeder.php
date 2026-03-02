@@ -40,7 +40,7 @@ class TiketSeeder extends Seeder
                 'users_id'   => $userKe4->uuid,
                 'layanan_id' => $layanan->uuid,
                 'no_tiket'   => 'TKT-' . date('Ymd') . '-000' . ($index + 1),
-                'lampiran'   => 'lampiran_tiket_utama_' . ($index + 1) . '.jpg', // <-- Selalu .jpg
+                'lampiran'   => 'testing.jpeg', 
                 'deskripsi'  => "Laporan layanan " . $layanan->nama . " oleh " . $userKe4->nama,
                 'status'     => 'diajukan',
                 'created_at' => now(),

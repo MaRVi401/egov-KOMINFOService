@@ -99,7 +99,7 @@ Route::middleware('auth')->group(function () {
         // Proses Selesaikan Tiket
         Route::resource('ticket', OperatorTicketController::class)
             ->parameters(['ticket' => 'uuid'])
-            ->only(['index', 'show', 'destroy']);
+            ->only(['index', 'show','update', 'destroy']);
     });
 
     /*
