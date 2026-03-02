@@ -398,22 +398,29 @@ namespace App\Models{
 
 namespace App\Models{
 /**
+ * PHPDoc ini membantu Intelephense mengenali properti database secara otomatis
+ *
  * @property string $uuid
  * @property string $users_id
  * @property string $layanan_id
  * @property string|null $petugas_id
  * @property string $no_tiket
- * @property string|null $lampiran
- * @property string|null $deskripsi
+ * @property string $deskripsi
  * @property string $status
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property string|null $lampiran
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ * * @property-read \App\Models\User $user
+ * @property-read \App\Models\Layanan $layanan
  * @property-read \App\Models\DetailTiketLayananPembuatanApp|null $detailApps
  * @property-read \App\Models\DetailTiketLayananEmailGov|null $detailEmailGov
  * @property-read \App\Models\DetailTiketLayananPengaduanElektronik|null $detailPengaduan
  * @property-read \App\Models\DetailTiketLayananSubdomain|null $detailSubdomain
- * @property-read \App\Models\Layanan $layanan
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\KomentarTiket> $komentar
+ * @property-read int|null $komentar_count
  * @property-read \App\Models\User|null $petugas
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\RiwayatStatusTiket> $riwayatStatus
+ * @property-read int|null $riwayat_status_count
  * @property-read \App\Models\User $user
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Tiket newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Tiket newQuery()
