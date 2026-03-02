@@ -14,6 +14,16 @@ use App\Http\Controllers\PenggunaAsn\ServiceComplaintSystemController;
 use App\Http\Controllers\PenggunaAsn\SubmissionController;
 use App\Http\Controllers\Operator\TicketController as OperatorTicketController;
 
+/*
+|--------------------------------------------------------------------------
+| Test Error Routes
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/error/{code}', function ($code) {
+    abort($code);
+});
+
 
 /*
 |--------------------------------------------------------------------------
@@ -95,11 +105,11 @@ Route::middleware('auth')->group(function () {
 
         // Proses Ambil Tiket
         Route::post('ticket/{uuid}/handle', [OperatorTicketController::class, 'handle'])->name('ticket.handle');
-        
+
         // Proses Selesaikan Tiket
         Route::resource('ticket', OperatorTicketController::class)
             ->parameters(['ticket' => 'uuid'])
-            ->only(['index', 'show','update', 'destroy']);
+            ->only(['index', 'show', 'update', 'destroy']);
     });
 
     /*
