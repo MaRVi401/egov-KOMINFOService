@@ -162,7 +162,7 @@
                                     <button data-modal-target="modal-{{ $ticket->uuid }}"
                                         data-modal-toggle="modal-{{ $ticket->uuid }}"
                                         class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-sm cursor-pointer">
-                                        Kelola
+                                        Tangani
                                     </button>
 
                                     <div id="modal-{{ $ticket->uuid }}" tabindex="-1" aria-hidden="true"
@@ -171,31 +171,59 @@
                                             <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
                                                 <div
                                                     class="flex items-center justify-between p-4 border-b rounded-t dark:border-gray-600">
-                                                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white">Detail
-                                                        Ringkas Tiket</h3>
+                                                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                                                        Detail Ringkas Tiket
+                                                    </h3>
+                                                    <button type="button"
+                                                        class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                                                        data-modal-hide="modal-{{ $ticket->uuid }}">
+                                                        <svg class="w-3 h-3" aria-hidden="true"
+                                                            xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                            viewBox="0 0 14 14">
+                                                            <path stroke="currentColor" stroke-linecap="round"
+                                                                stroke-linejoin="round" stroke-width="2"
+                                                                d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                                                        </svg>
+                                                        <span class="sr-only">Close modal</span>
+                                                    </button>
                                                 </div>
-                                                <div class="p-6 space-y-4">
-                                                    <p class="text-white"><strong>No Tiket:</strong>
+
+                                                <div class="p-6 space-y-4 text-left">
+                                                    <p class="text-gray-900 dark:text-white"><strong>No Tiket:</strong>
                                                         {{ $ticket->no_tiket }}</p>
-                                                    <p class="text-white"><strong>Deskripsi:</strong>
+                                                    <p class="text-gray-900 dark:text-white"><strong>Deskripsi:</strong>
                                                         {{ $ticket->deskripsi }}</p>
-                                                    <div class="mt-4">
-                                                        <p class="text-white mb-2"><strong>Lampiran:</strong></p>
-                                                        <img src="{{ asset('storage/lampiran/' . $ticket->lampiran) }}"
-                                                            class="w-full rounded-lg border">
-                                                    </div>
+                                                    @if ($ticket->lampiran)
+                                                        <div class="mt-4">
+                                                            <p class="text-white mb-2"><strong>Lampiran:</strong></p>
+                                                            <img src="{{ asset('storage/lampiran/' . $ticket->lampiran) }}"
+                                                                class="w-full rounded-lg border">
+                                                        </div>
+                                                    @endif
+                                                    {{-- @if ($ticket->lampiran)
+                                                        <div class="mt-4">
+                                                            <p class="text-gray-900 dark:text-white mb-2">
+                                                                <strong>Lampiran:</strong></p>
+                                                            <img src="{{ Storage::disk('s3')->url($ticket->lampiran) }}"
+                                                                class="w-full rounded-lg border dark:border-gray-600 object-contain max-h-64 bg-gray-50 dark:bg-gray-900">
+                                                        </div>
+                                                    @endif --}}
                                                 </div>
+
                                                 <div
                                                     class="flex items-center p-6 border-t border-gray-200 rounded-b dark:border-gray-600">
                                                     <form action="{{ route('ticket.handle', $ticket->uuid) }}"
                                                         method="POST">
                                                         @csrf
                                                         <button type="submit"
-                                                            class="text-white bg-green-700 hover:bg-green-800 font-medium rounded-lg text-sm px-5 py-2.5 cursor-pointer">Tangani
-                                                            Tiket Ini</button>
+                                                            class="text-white bg-green-700 hover:bg-green-800 font-medium rounded-lg text-sm px-5 py-2.5 cursor-pointer">
+                                                            Tangani Tiket Ini
+                                                        </button>
                                                     </form>
                                                     <button data-modal-hide="modal-{{ $ticket->uuid }}" type="button"
-                                                        class="ms-3 text-gray-500 bg-white hover:bg-gray-100 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5">Batal</button>
+                                                        class="ms-3 text-gray-500 bg-white hover:bg-gray-100 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 cursor-pointer">
+                                                        Batal
+                                                    </button>
                                                 </div>
                                             </div>
                                         </div>

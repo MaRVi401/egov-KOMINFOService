@@ -24,12 +24,12 @@ class TicketController extends Controller
 
         if ($search) {
             $query->where(function ($q) use ($search) {
-                $q->where('no_tiket', 'ilike', "%{$search}%")
+                $q->where('no_tiket', 'ilike', "%{$search}%") // Cari No Tiket
                     ->orWhereHas('user', function ($qu) use ($search) {
-                        $qu->where('nama', 'ilike', "%{$search}%");
+                        $qu->where('nama', 'ilike', "%{$search}%"); // Cari Nama Orang
                     })
                     ->orWhereHas('layanan', function ($ql) use ($search) {
-                        $ql->where('nama', 'ilike', "%{$search}%");
+                        $ql->where('nama', 'ilike', "%{$search}%"); // Pencarian layanan/subdomain
                     });
             });
         }
@@ -82,7 +82,9 @@ class TicketController extends Controller
                 $q->where('no_tiket', 'ilike', "%{$search}%")
                     ->orWhereHas('user', function ($qu) use ($search) {
                         $qu->where('nama', 'ilike', "%{$search}%");
-                    });
+                    })->orWhereHas('layanan', function ($ql) use ($search) {
+                        $ql->where('nama', 'ilike', "%{$search}%");
+                    });;
             });
         }
 
