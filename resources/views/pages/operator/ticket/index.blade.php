@@ -38,7 +38,7 @@
         <div class="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 mb-6">
             <div class="w-full flex flex-col md:flex-row gap-3">
                 <form action="{{ url()->current() }}" method="GET" class="flex flex-col md:flex-row gap-3 w-full">
-                    <div class="relative w-full md:w-2/3">
+                    <div class="relative w-full">
                         <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                             <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor" viewbox="0 0 20 20">
                                 <path fill-rule="evenodd"
@@ -61,31 +61,6 @@
                                 </svg>
                             </a>
                         @endif
-                    </div>
-
-                    <div class="w-full md:w-1/3">
-                        <div class="relative w-full">
-                            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                                <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
-                                </svg>
-                            </div>
-
-                            <select name="status" onchange="this.form.submit()"
-                                class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white cursor-pointer">
-                                <option value="">Semua Status</option>
-                                <option value="diajukan" {{ request('status') == 'diajukan' ? 'selected' : '' }}>Diajukan
-                                </option>
-                                <option value="ditangani" {{ request('status') == 'ditangani' ? 'selected' : '' }}>Ditangani
-                                </option>
-                                <option value="selesai" {{ request('status') == 'selesai' ? 'selected' : '' }}>Selesai
-                                </option>
-                                <option value="ditolak" {{ request('status') == 'ditolak' ? 'selected' : '' }}>Ditolak
-                                </option>
-                            </select>
-                        </div>
                     </div>
                 </form>
             </div>
