@@ -125,8 +125,6 @@
                                     <td class="px-6 py-4">
                                         <div class="text-gray-900 dark:text-gray-200 font-medium">{{ $rt->layanan->nama }}
                                         </div>
-                                        <div class="text-[10px] text-gray-400 uppercase tracking-wider">Kategori Layanan
-                                        </div>
                                     </td>
                                     <td class="px-6 py-4">
                                         <div class="flex items-center space-x-3">

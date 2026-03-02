@@ -25,7 +25,7 @@
                 },
                 {
                     "name": "Layanan Digital",
-                    "icon": "ti ti-apps",
+                    "icon": "ti ti-file-download",
                     "route": "services.index"
                 },
                 {
@@ -50,7 +50,7 @@
                 },
                 {
                     "name": "Tangani Tiket",
-                    "icon": "ti ti-briefcase-off",
+                    "icon": "ti ti-briefcase",
                     "route": "ticket.workdesk"
                 }
             ]
