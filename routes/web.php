@@ -120,27 +120,18 @@ Route::middleware('auth')->group(function () {
     */
 
     Route::middleware('can:pengguna_asn')->group(function () {
-
-        Route::resource('services', ServiceController::class)
-            ->names(['index' => 'services.index']);
+        
+        Route::resource('services', ServiceController::class);
 
         // RUTE UNTUK DOWNLOAD Email Gov
         Route::get('services/email-gov/download/{uuid}', [ServiceEmailGovController::class, 'download'])
             ->name('email.download');
 
         // Rute baru untuk Email E-Gov
-        Route::resource('services-email-e-gov', ServiceEmailGovController::class)
-            ->names([
-                'index' => 'email.index',
-                'store' => 'email.store'
-            ]);
+        Route::resource('services-email-e-gov', ServiceEmailGovController::class);
 
         //Rute baru untuk Sub Domain
-        Route::resource('service-sub-domain', ServiceSubDomainController::class)
-            ->names([
-                'index' => 'subdomain.index',
-                'store' => 'subdomain.store'
-            ]);
+        Route::resource('service-sub-domain', ServiceSubDomainController::class);
 
         //RUTE DOWNLOAD SUBDOMAIN
         Route::get('services/subdomain/download/{uuid}', [ServiceSubDomainController::class, 'download'])
@@ -148,18 +139,12 @@ Route::middleware('auth')->group(function () {
 
         //Rute baru untuk Pembuatan Apps
         Route::get('/service-app-creation/download/{uuid}', [App\Http\Controllers\PenggunaAsn\ServiceAppsCreationController::class, 'download'])->name('appscreation.download');
-        Route::resource('service-app-creation', ServiceAppsCreationController::class)
-            ->names([
-                'index' => 'appmaker.index',
-                'store' => 'appmaker.store'
-            ]);
+        Route::resource('service-app-creation', ServiceAppsCreationController::class);
+            
 
         //Rute untuk pengaduan
-        Route::resource('service-compliant-system', ServiceComplaintSystemController::class)
-            ->names([
-                'index' => 'compliant.index',
-                'store' => 'store.index'
-            ]);
+        Route::resource('service-compliant-system', ServiceComplaintSystemController::class);
+           
 
         Route::prefix('dev')->group(function () {
             Route::get('/upload-template', [DevTemplateController::class, 'index'])->name('dev.template.index');
@@ -168,12 +153,9 @@ Route::middleware('auth')->group(function () {
 
         //Rute Submission
         Route::post('/submission/{uuid}/upload', [SubmissionController::class, 'uploadDocument'])->name('submission.upload');
-        Route::resource('submission', SubmissionController::class)
-            ->names([
-                'index' => 'submission.index',
-                'show' => 'submission.show',
-            ]);
-        Route::resource('history', ServiceHistoryTicketController::class);
+        Route::resource('submission', SubmissionController::class);
+            
+        
 
     });
 });
