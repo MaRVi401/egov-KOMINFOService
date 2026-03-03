@@ -13,6 +13,7 @@ export default defineConfig({
                     'resource/js/subdomain-forms.js',
                     'resource/js/app-creation.js',
                     'resource/js/compliant-forms.js',
+                    'resources/js/dashboard-kabid.js'
                     ],
             refresh: true,
         }),

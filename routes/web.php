@@ -120,7 +120,7 @@ Route::middleware('auth')->group(function () {
     */
 
     Route::middleware('can:pengguna_asn-only')->group(function () {
-        
+
         Route::resource('services', ServiceController::class);
 
         // RUTE UNTUK DOWNLOAD Email Gov
@@ -140,11 +140,11 @@ Route::middleware('auth')->group(function () {
         //Rute baru untuk Pembuatan Apps
         Route::get('/service-app-creation/download/{uuid}', [App\Http\Controllers\PenggunaAsn\ServiceAppsCreationController::class, 'download'])->name('appscreation.download');
         Route::resource('service-app-creation', ServiceAppsCreationController::class);
-            
+
 
         //Rute untuk pengaduan
         Route::resource('service-compliant-system', ServiceComplaintSystemController::class);
-           
+
 
         Route::prefix('dev')->group(function () {
             Route::get('/upload-template', [DevTemplateController::class, 'index'])->name('dev.template.index');
