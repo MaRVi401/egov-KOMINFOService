@@ -9,4 +9,9 @@ class KomentarTiket extends Model {
     protected $primaryKey = 'uuid';
     public $incrementing = false;
     protected $fillable = ['tiket_id', 'users_id', 'komentar'];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'users_id', 'uuid');
+    }
 }
