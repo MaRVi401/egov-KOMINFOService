@@ -28,7 +28,7 @@
         </div>
 
         @if(!$isPengaduan)
-            @if(empty($ticket->lampiran) || $ticket->status == 'ditolak')
+            @if(($ticket->status == 'belum diajukan' && empty($ticket->lampiran)) || $ticket->status == 'ditolak')
                 
                 <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 mb-8 text-center">
                     <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">Unggah Dokumen Tindak Lanjut</h3>
@@ -94,7 +94,7 @@
         </div>
 
         @if(!$isPengaduan)
-            @if(empty($ticket->lampiran) || $ticket->status == 'ditolak')
+            @if(($ticket->status == 'belum diajukan' && empty($ticket->lampiran)) || $ticket->status == 'ditolak')
             <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 mb-8 text-center">
                 <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">Unduh Dokumen Sistem</h3>
                 <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">Anda dapat mengunduh ulang dokumen persuratan (DOCX) yang telah di-generate oleh sistem melalui tombol di bawah ini.</p>

@@ -111,6 +111,7 @@ class SubmissionController extends Controller
             Storage::disk('s3')->put($path, $encodedImage->toString());
 
             $ticket->lampiran = $path;
+            $ticket->status = 'diajukan';
             $ticket->save();
 
             return back()->with('success', 'Dokumen Gambar berhasil diunggah ke MinIO!');

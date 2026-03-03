@@ -130,33 +130,24 @@
                                 </td>
                                 <td class="px-6 py-4 text-center">
                                     @php
-                                        $isPengaduan = str_contains(strtolower($ticket->layanan->nama ?? ''), 'pengaduan');
+                                        $badgeClass = match($ticket->status) {
+                                            'belum diajukan' => 'bg-gray-100 text-gray-500 border-gray-300 dark:bg-gray-700 dark:text-gray-400 dark:border-gray-600',
+                                            'diajukan' => 'bg-gray-100 text-gray-800 border-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600',
+                                            'ditangani' => 'bg-blue-100 text-blue-800 border-blue-300 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800',
+                                            'selesai' => 'bg-green-100 text-green-800 border-green-300 dark:bg-green-900/30 dark:text-green-400 dark:border-green-800',
+                                            'ditolak' => 'bg-red-100 text-red-800 border-red-300 dark:bg-red-900/30 dark:text-red-400 dark:border-red-800',
+                                            default => 'bg-gray-100 text-gray-800 border-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600'
+                                        };
                                     @endphp
-
-                                    @if($ticket->status === 'diajukan' && empty($ticket->lampiran) && !$isPengaduan)
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold text-gray-500 bg-gray-100 border border-gray-300 dark:bg-gray-700 dark:text-gray-400 dark:border-gray-600 shadow-sm">
-                                            Belum Diajukan
-                                        </span>
-                                    @else
-                                        @php
-                                            $badgeClass = match($ticket->status) {
-                                                'diajukan' => 'bg-gray-100 text-gray-800 border-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600',
-                                                'ditangani' => 'bg-blue-100 text-blue-800 border-blue-300 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800',
-                                                'selesai' => 'bg-green-100 text-green-800 border-green-300 dark:bg-green-900/30 dark:text-green-400 dark:border-green-800',
-                                                'ditolak' => 'bg-red-100 text-red-800 border-red-300 dark:bg-red-900/30 dark:text-red-400 dark:border-red-800',
-                                                default => 'bg-gray-100 text-gray-800 border-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600'
-                                            };
-                                        @endphp
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border {{ $badgeClass }} shadow-sm">
-                                            {{ Str::ucfirst($ticket->status) }}
-                                        </span>
-                                    @endif
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border {{ $badgeClass }} shadow-sm">
+                                        {{ ucwords($ticket->status) }}
+                                    </span>
                                 </td>
                                 <td class="px-6 py-4 text-right">
                                     <div class="flex items-center justify-end gap-2">
                                         @php
-                                            $isPengaduan = str_contains(strtolower($ticket->layanan->nama ?? ''), 'pengaduan');
-                                            $butuhAksi = ($ticket->status === 'ditolak') || ($ticket->status === 'diajukan' && empty($ticket->lampiran) && !$isPengaduan);
+                                            // Logika menjadi jauh lebih bersih karena langsung membaca enum status dari database
+                                            $butuhAksi = in_array($ticket->status, ['ditolak', 'belum diajukan']);
                                         @endphp
 
                                         @if($butuhAksi)

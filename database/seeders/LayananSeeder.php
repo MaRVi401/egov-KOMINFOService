@@ -73,7 +73,7 @@ class LayananSeeder extends Seeder
             $t2 = Tiket::create([
                 'uuid' => (string) Str::uuid(), 'users_id' => $user->uuid, 'layanan_id' => $idEmail,
                 'no_tiket' => 'TEG-' . Carbon::now()->format('dmY') . '-' . Str::upper(Str::random(4)),
-                'status' => 'diajukan', 'deskripsi' => 'Asn - Permohonan baru'
+                'status' => 'belum diajukan', 'deskripsi' => 'Asn - Permohonan baru'
             ]);
             DetailTiketLayananEmailGov::create([
                 'uuid' => (string) Str::uuid(), 'tiket_id' => $t2->uuid, 'pd_no_surat' => '-', 'pd_tgl' => now(),
@@ -87,7 +87,7 @@ class LayananSeeder extends Seeder
             $t3 = Tiket::create([
                 'uuid' => (string) Str::uuid(), 'users_id' => $user->uuid, 'layanan_id' => $idEmail,
                 'no_tiket' => 'TEG-' . Carbon::now()->format('dmY') . '-' . Str::upper(Str::random(4)),
-                'status' => 'diajukan', 'deskripsi' => 'Perangkat_daerah - Permohonan baru'
+                'status' => 'belum diajukan', 'deskripsi' => 'Perangkat_daerah - Permohonan baru'
             ]);
             DetailTiketLayananEmailGov::create([
                 'uuid' => (string) Str::uuid(), 'tiket_id' => $t3->uuid, 'asn_no_surat' => '-', 'asn_tgl' => now(),
@@ -103,7 +103,7 @@ class LayananSeeder extends Seeder
             $t4 = Tiket::create([
                 'uuid' => (string) Str::uuid(), 'users_id' => $user->uuid, 'layanan_id' => $idSubdomain,
                 'no_tiket' => 'TSD-' . Carbon::now()->format('dmY') . '-' . Str::upper(Str::random(4)),
-                'status' => 'diajukan', 'deskripsi' => 'Permohonan Subdomain: e-puskesmas'
+                'status' => 'belum diajukan', 'deskripsi' => 'Permohonan Subdomain: e-puskesmas'
             ]);
             DetailTiketLayananSubdomain::create([
                 'uuid' => (string) Str::uuid(), 'tiket_id' => $t4->uuid, 'no_surat' => '-', 'tanggal' => now(), 'halaman' => 1,
@@ -121,7 +121,7 @@ class LayananSeeder extends Seeder
             $t5 = Tiket::create([
                 'uuid' => (string) Str::uuid(), 'users_id' => $user->uuid, 'layanan_id' => $idApp,
                 'no_tiket' => 'TPA-' . Carbon::now()->format('dmY') . '-' . Str::upper(Str::random(4)),
-                'status' => 'diajukan', 'deskripsi' => 'Pembuatan Apps - Pembangunan Sistem Awal'
+                'status' => 'belum diajukan', 'deskripsi' => 'Pembuatan Apps - Pembangunan Sistem Awal'
             ]);
             DetailTiketLayananPembuatanApp::create([
                 'uuid' => (string) Str::uuid(), 'tiket_id' => $t5->uuid, 'ajuan_tgl' => now(),
@@ -138,7 +138,7 @@ class LayananSeeder extends Seeder
             $t6 = Tiket::create([
                 'uuid' => (string) Str::uuid(), 'users_id' => $user->uuid, 'layanan_id' => $idApp,
                 'no_tiket' => 'TPA-' . Carbon::now()->format('dmY') . '-' . Str::upper(Str::random(4)),
-                'status' => 'diajukan', 'deskripsi' => 'Pembuatan Apps - Pengembangan Fitur'
+                'status' => 'belum diajukan', 'deskripsi' => 'Pembuatan Apps - Pengembangan Fitur'
             ]);
             DetailTiketLayananPembuatanApp::create([
                 'uuid' => (string) Str::uuid(), 'tiket_id' => $t6->uuid, 'kembang_tgl' => now(),

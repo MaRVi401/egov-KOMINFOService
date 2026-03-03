@@ -69,7 +69,7 @@ return new class extends Migration
             $table->string('no_tiket')->unique();
             $table->string('lampiran')->nullable();
             $table->text('deskripsi')->nullable();
-            $table->enum('status', ['diajukan', 'ditangani', 'selesai', 'ditolak']);
+            $table->enum('status', ['belum diajukan','diajukan', 'ditangani', 'selesai', 'ditolak']);
             $table->timestamps();
         });
 
@@ -78,7 +78,7 @@ return new class extends Migration
             $table->uuid('uuid')->primary();
             $table->foreignUuid('tiket_id')->constrained('tiket', 'uuid')->cascadeOnDelete();
             $table->foreignUuid('users_id')->constrained('users', 'uuid')->cascadeOnDelete();
-            $table->enum('status', ['diajukan', 'ditangani', 'selesai', 'ditolak']);
+            $table->enum('status', ['belum diajukan', 'diajukan', 'ditangani', 'selesai', 'ditolak']);
             $table->timestamps();
         });
 

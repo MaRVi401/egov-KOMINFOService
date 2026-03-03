@@ -166,11 +166,21 @@
                                                         </div>
 
                                                         @if ($ticket->lampiran)
-                                                            <div>
-                                                                <label
-                                                                    class="block text-xs text-gray-500 uppercase mb-1">Lampiran</label>
-                                                                <img src="{{ asset('storage/lampiran/' . $ticket->lampiran) }}"
-                                                                    class="w-full max-h-48 object-contain rounded-lg border dark:border-gray-600 bg-gray-50 dark:bg-gray-900">
+                                                            <div class="mt-4">
+                                                                <label class="block text-xs text-gray-500 uppercase mb-1">Lampiran</label>
+                                                                <img src="{{ Storage::disk('s3')->url($ticket->lampiran) }}"
+                                                                    class="w-full max-h-48 object-contain rounded-lg border dark:border-gray-600 bg-gray-50 dark:bg-gray-900"
+                                                                    alt="Lampiran Tidak ada">
+                                                            </div>
+                                                        @endif
+
+                                                        {{-- Menampilkan Screenshot Pengaduan (Folder: pengaduan) --}}
+                                                        @if ($ticket->detailPengaduan && $ticket->detailPengaduan->lampiran_screenshot)
+                                                            <div class="mt-4">
+                                                                <label class="block text-xs text-gray-500 uppercase mb-1">Screenshot Pengaduan</label>
+                                                                <img src="{{ Storage::disk('s3')->url($ticket->detailPengaduan->lampiran_screenshot) }}"
+                                                                    class="w-full max-h-48 object-contain rounded-lg border dark:border-gray-600 bg-gray-50 dark:bg-gray-900"
+                                                                    alt="Lampiran tidak ada">
                                                             </div>
                                                         @endif
 

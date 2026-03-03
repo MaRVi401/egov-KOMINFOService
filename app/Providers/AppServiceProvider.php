@@ -21,7 +21,7 @@ class AppServiceProvider extends ServiceProvider
         });
 
         // Gate untuk Middleware 'can:pengguna_asn
-        Gate::define('pengguna_asn', function (User $user) {
+        Gate::define('pengguna_asn-only', function (User $user) {
             return $user->role === 'pengguna_asn';
         });
 
