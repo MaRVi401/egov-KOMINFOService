@@ -4,42 +4,49 @@
 
 @section('content')
     <div class="p-4 mt-14">
-        <div class="mb-8 border-b border-gray-200 pb-4 dark:border-gray-700">
-            <div class="flex flex-col md:flex-row md:items-center md:justify-between">
-                <div>
-                    <h2
-                        class="text-2xl font-extrabold tracking-tight text-gray-900 dark:text-white text-center md:text-left">
+        <div class="mb-8 border-b border-gray-200 pb-6 dark:border-gray-700">
+            {{-- Flex Container: Column di mobile, Row di desktop --}}
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+
+                {{-- Sapaan & Nama --}}
+                <div class="text-center md:text-left">
+                    <h2 class="text-xl md:text-2xl font-extrabold tracking-tight text-gray-900 dark:text-white">
                         @php
                             $hour = date('H');
                             $sapaan = $hour < 12 ? 'Pagi' : ($hour < 15 ? 'Siang' : ($hour < 18 ? 'Sore' : 'Malam'));
                         @endphp
-
                         Selamat <span id="sapaan-teks">{{ $sapaan }}</span>,
-
-                        <span class="text-transparent bg-clip-text bg-linear-to-r from-blue-600 to-cyan-500 uppercase">
+                        <span
+                            class="block md:inline text-transparent bg-clip-text bg-linear-to-r from-blue-600 to-cyan-500 uppercase">
                             {{ auth()->user()->nama }}
                         </span>
                     </h2>
-                    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400 text-center md:text-left">
-                        Dashboard Operator Services KOMINFO Kabupaten Subang
+                    <p class="mt-1 text-xs md:text-sm text-gray-500 dark:text-gray-400 font-medium">
+                        Dashboard Operator Services KOMINFO Subang
                     </p>
                 </div>
 
+                {{-- Widget Jam & Tanggal: Sekarang Tampil di Mobile --}}
                 <div
-                    class="hidden md:flex items-center space-x-4 bg-white dark:bg-gray-800 px-5 py-2.5 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm">
-                    <div class="flex flex-col items-end border-r border-gray-200 dark:border-gray-700 pr-4">
+                    class="flex items-center justify-center md:justify-end space-x-3 md:space-x-4 bg-gray-50 dark:bg-gray-800/50 px-4 py-2 md:px-5 md:py-2.5 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm transition-all">
+                    {{-- Bagian Jam --}}
+                    <div
+                        class="flex flex-col items-center md:items-end border-r border-gray-300 dark:border-gray-600 pr-3 md:pr-4">
                         <span id="realtime-clock"
-                            class="text-xl font-black font-mono text-blue-600 dark:text-blue-400 leading-none">
+                            class="text-lg md:text-xl font-black font-mono text-blue-600 dark:text-blue-400 leading-none">
                             00:00:00
                         </span>
-                        <span class="text-[10px] uppercase tracking-widest font-bold text-gray-400 mt-1">Waktu Server</span>
+                        <span class="text-[9px] md:text-[10px] uppercase tracking-widest font-bold text-gray-400 mt-1">Waktu
+                            Server</span>
                     </div>
-                    <div class="flex flex-col">
-                        <span class="text-sm font-bold text-gray-700 dark:text-gray-200 leading-none">
+
+                    {{-- Bagian Hari/Tanggal --}}
+                    <div class="flex flex-col text-left">
+                        <span class="text-xs md:text-sm font-bold text-gray-700 dark:text-gray-200 leading-none">
                             {{ \Carbon\Carbon::now()->translatedFormat('l') }}
                         </span>
-                        <span class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                            {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}
+                        <span class="text-[10px] md:text-xs text-gray-500 dark:text-gray-400 mt-1">
+                            {{ \Carbon\Carbon::now()->translatedFormat('d M Y') }}
                         </span>
                     </div>
                 </div>
