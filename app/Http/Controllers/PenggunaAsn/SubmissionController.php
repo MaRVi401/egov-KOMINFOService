@@ -4,6 +4,7 @@ namespace App\Http\Controllers\PenggunaAsn;
 
 use App\Http\Controllers\Controller;
 use App\Models\Tiket;
+use App\Models\KomentarTiket;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -45,7 +46,8 @@ class SubmissionController extends Controller
             'detailEmailGov',
             'detailSubdomain',
             'detailApps',
-            'detailPengaduan'
+            'detailPengaduan',
+            'komentar.user'
         ])
         ->where('uuid', $uuid)
         ->where('users_id', Auth::user()->uuid)
@@ -112,6 +114,7 @@ class SubmissionController extends Controller
 
             $ticket->lampiran = $path;
             $ticket->status = 'diajukan';
+            $ticket->petugas_id = null;
             $ticket->save();
 
             return back()->with('success', 'Dokumen Gambar berhasil diunggah ke MinIO!');

@@ -26,6 +26,43 @@
                 </span>
             </div>
         </div>
+        {{-- Cek apakah status sudah Selesai atau Ditolak --}}
+        @if(in_array($ticket->status, ['selesai', 'ditolak']))
+            @if($ticket->komentar->isNotEmpty())
+                <div class="mb-6 p-5 rounded-xl border shadow-sm 
+                    {{ $ticket->status == 'ditolak' ? 'bg-red-50 border-red-200 dark:bg-red-900/10 dark:border-red-800' : 'bg-green-50 border-green-200 dark:bg-green-900/10 dark:border-green-800' }}">
+                    
+                    <div class="flex items-center mb-3">
+                        <div class="p-2 rounded-lg {{ $ticket->status == 'ditolak' ? 'bg-red-100 dark:bg-red-800' : 'bg-green-100 dark:bg-green-800' }} mr-3">
+                            <svg class="w-5 h-5 {{ $ticket->status == 'ditolak' ? 'text-red-600 dark:text-red-300' : 'text-green-600 dark:text-green-300' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-bold {{ $ticket->status == 'ditolak' ? 'text-red-800 dark:text-red-400' : 'text-green-800 dark:text-green-400' }}">
+                            Balasan Admin (Tiket {{ Str::ucfirst($ticket->status) }})
+                        </h3>
+                    </div>
+
+                    <div class="space-y-4">
+                        @foreach($ticket->komentar as $item)
+                            <div class="bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-100 dark:border-gray-700 shadow-sm">
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="text-sm font-bold text-gray-900 dark:text-white">
+                                        {{ $item->user->nama ?? 'Administrator' }}
+                                    </span>
+                                    <span class="text-xs text-gray-500 italic">
+                                        {{ $item->created_at->diffForHumans() }}
+                                    </span>
+                                </div>
+                                <p class="text-sm text-gray-700 dark:text-gray-300 italic leading-relaxed">
+                                    "{{ $item->komentar }}"
+                                </p>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
+        @endif
 
         @if(!$isPengaduan)
             @if(($ticket->status == 'belum diajukan' && empty($ticket->lampiran)) || $ticket->status == 'ditolak')
