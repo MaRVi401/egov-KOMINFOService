@@ -119,7 +119,7 @@ Route::middleware('auth')->group(function () {
     |----------------------------------------------------------------------
     */
 
-    Route::middleware('can:pengguna_asn')->group(function () {
+    Route::middleware('can:pengguna_asn-only')->group(function () {
         
         Route::resource('services', ServiceController::class);
 
@@ -154,8 +154,9 @@ Route::middleware('auth')->group(function () {
         //Rute Submission
         Route::post('/submission/{uuid}/upload', [SubmissionController::class, 'uploadDocument'])->name('submission.upload');
         Route::resource('submission', SubmissionController::class);
-            
-        
+
+        //Rute History Tiket
+        Route::resource('history', ServiceHistoryTicketController::class);
 
     });
 });

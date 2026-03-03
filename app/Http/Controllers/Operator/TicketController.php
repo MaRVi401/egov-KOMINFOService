@@ -20,7 +20,7 @@ class TicketController extends Controller
     {
         $search = $request->input('search');
 
-        $query = Tiket::with(['user', 'layanan'])
+        $query = Tiket::with(['user', 'layanan', 'detailPengaduan'])
             ->where('status', 'diajukan')
             ->whereNull('petugas_id');
 
@@ -77,7 +77,7 @@ class TicketController extends Controller
     {
         $search = $request->input('search');
 
-        $query = Tiket::with(['user', 'layanan'])
+        $query = Tiket::with(['user', 'layanan', 'detailPengaduan'])
             ->where('petugas_id', $request->user()->uuid)
             ->where('status', 'ditangani');
 

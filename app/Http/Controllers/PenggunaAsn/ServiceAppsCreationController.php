@@ -47,7 +47,7 @@ class ServiceAppsCreationController extends Controller
                 'users_id'   => Auth::user()->uuid,
                 'layanan_id' => $layanan->uuid,
                 'no_tiket'   => $noTiket,
-                'status'     => 'diajukan',
+                'status'     => 'Belum Diajukan',
                 'deskripsi'  => 'Pembuatan Apps - ' . $jenisLayananDB,
             ]);
         
@@ -57,7 +57,7 @@ class ServiceAppsCreationController extends Controller
                 'uuid'     => (string) Str::uuid(), 
                 'tiket_id' => $tiket->uuid,
                 'users_id' => Auth::user()->uuid, 
-                'status'   => 'diajukan'
+                'status'   => 'Belum Diajukan'
             ]);
 
             DB::commit();

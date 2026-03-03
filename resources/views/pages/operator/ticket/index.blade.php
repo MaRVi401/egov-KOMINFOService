@@ -166,23 +166,29 @@
                                                 <div class="p-6 space-y-4 text-left">
                                                     <p class="text-gray-900 dark:text-white"><strong>No Tiket:</strong>
                                                         {{ $ticket->no_tiket }}</p>
-                                                    <p class="text-gray-900 dark:text-white"><strong>Deskripsi:</strong>
-                                                        {{ $ticket->deskripsi }}</p>
-                                                    @if ($ticket->lampiran)
-                                                        <div class="mt-4">
-                                                            <p class="text-white mb-2"><strong>Lampiran:</strong></p>
-                                                            <img src="{{ asset('storage/lampiran/' . $ticket->lampiran) }}"
-                                                                class="w-full rounded-lg border">
-                                                        </div>
-                                                    @endif
-                                                    {{-- @if ($ticket->lampiran)
-                                                        <div class="mt-4">
-                                                            <p class="text-gray-900 dark:text-white mb-2">
-                                                                <strong>Lampiran:</strong></p>
-                                                            <img src="{{ Storage::disk('s3')->url($ticket->lampiran) }}"
-                                                                class="w-full rounded-lg border dark:border-gray-600 object-contain max-h-64 bg-gray-50 dark:bg-gray-900">
-                                                        </div>
-                                                    @endif --}}
+                                                    <p class="text-gray-900 dark:text-white">
+                                                        <strong>Deskripsi:</strong>
+                                                        {{ $ticket->deskripsi ?? ($ticket->detailPengaduan->detail_pengaduan ?? '-') }}
+                                                    </p>
+                                                    {{-- Menampilkan Lampiran Umum (Folder: lampiran_tiket) --}}
+                                                @if ($ticket->lampiran)
+                                                    <div class="mt-4">
+                                                        <p class="text-gray-900 dark:text-white mb-2"><strong>Lampiran:</strong></p>
+                                                        <img src="{{ Storage::disk('s3')->url($ticket->lampiran) }}?t={{ time() }}"
+                                                            class="w-full rounded-lg border dark:border-gray-600 object-contain max-h-64 bg-gray-50 dark:bg-gray-900" 
+                                                            alt="Lampiran Tidak ada">
+                                                    </div>
+                                                @endif
+
+                                                {{-- Menampilkan Screenshot Pengaduan (Folder: pengaduan) --}}
+                                                @if ($ticket->detailPengaduan && $ticket->detailPengaduan->lampiran_screenshot)
+                                                    <div class="mt-4">
+                                                        <p class="text-gray-900 dark:text-white mb-2"><strong>Screenshot Pengaduan:</strong></p>
+                                                        <img src="{{ Storage::disk('s3')->url($ticket->detailPengaduan->lampiran_screenshot) }}?t={{ time() }}"
+                                                            class="w-full rounded-lg border dark:border-gray-600 object-contain max-h-64 bg-gray-50 dark:bg-gray-900" 
+                                                            alt="Lampiran Tidak ada">
+                                                    </div>
+                                                @endif
                                                 </div>
 
                                                 <div

@@ -62,7 +62,7 @@ class ServiceEmailGovController extends Controller
                 'users_id'   => Auth::user()->uuid,
                 'layanan_id' => $layanan->uuid,
                 'no_tiket'   => $noTiket,
-                'status'     => 'diajukan',
+                'status'     => 'belum diajukan',
                 'deskripsi'  => ucfirst($kategori) . ' - ' . ucfirst($jenisLayananDB),
             ]);
         
@@ -70,7 +70,7 @@ class ServiceEmailGovController extends Controller
             
             RiwayatStatusTiket::create([
                 'uuid' => (string) Str::uuid(), 'tiket_id' => $tiket->uuid,
-                'users_id' => Auth::user()->uuid, 'status' => 'diajukan'
+                'users_id' => Auth::user()->uuid, 'status' => 'belum diajukan'
             ]);
 
             DB::commit();

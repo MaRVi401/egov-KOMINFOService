@@ -52,7 +52,7 @@
             Kembali ke Pilihan
         </button>
 
-        <form id="form-pengajuan" action="{{ route('email.store') }}" method="POST" enctype="multipart/form-data">
+        <form id="form-pengajuan" action="{{ route('services-email-e-gov.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <input type="hidden" name="kategori_aktif" id="kategori_aktif" value="">
             

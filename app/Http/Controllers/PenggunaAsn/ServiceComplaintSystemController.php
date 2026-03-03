@@ -42,7 +42,6 @@ class ServiceComplaintSystemController extends Controller
                 'layanan_id' => $layanan->uuid,
                 'no_tiket'   => $noTiket,
                 'status'     => 'diajukan'
-                
             ]);
         
             $this->storeDetail($tiket->uuid, $request, $filePath);
