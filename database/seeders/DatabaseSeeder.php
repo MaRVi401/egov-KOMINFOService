@@ -22,7 +22,7 @@ class DatabaseSeeder extends Seeder
             ServiceSeeder::class,
             // LayananSeeder::class
             TiketSeeder::class,
-            DashboardKabidSeeder::class,
+            DashboardKabidSeeder::class
         ]);
     }
 }

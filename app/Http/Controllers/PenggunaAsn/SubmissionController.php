@@ -23,7 +23,7 @@ class SubmissionController extends Controller
         } else {
             $query->where('status', '!=', 'selesai');
         }
- 
+
         if ($request->has('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
@@ -53,7 +53,7 @@ class SubmissionController extends Controller
         ->where('users_id', Auth::user()->uuid)
         ->firstOrFail();
 
-        $kategoriEmail = null; 
+        $kategoriEmail = null;
 
         if ($ticket->detailEmailGov) {
             if (!empty($ticket->detailEmailGov->pd_jenis_layanan) || !empty($ticket->detailEmailGov->pd_instansi_nama)) {
@@ -72,15 +72,15 @@ class SubmissionController extends Controller
             ->where('users_id', Auth::user()->uuid)
             ->firstOrFail();
 
-        
+
         if ($ticket->lampiran) {
-           
+
             if (Storage::disk('s3')->exists($ticket->lampiran)) {
                 Storage::disk('s3')->delete($ticket->lampiran);
             }
         }
 
-       
+
         $ticket->delete();
 
         return redirect()->route('submission.index')->with('success', 'Tiket dan lampiran dokumen berhasil dihapus.');
