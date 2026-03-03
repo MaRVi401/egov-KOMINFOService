@@ -5,10 +5,8 @@
 @section('content')
     <div class="p-4 mt-14">
         <div class="mb-8 border-b border-gray-200 pb-6 dark:border-gray-700">
-            {{-- Flex Container: Column di mobile, Row di desktop --}}
             <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
 
-                {{-- Sapaan & Nama --}}
                 <div class="text-center md:text-left">
                     <h2 class="text-xl md:text-2xl font-extrabold tracking-tight text-gray-900 dark:text-white">
                         @php
@@ -26,10 +24,8 @@
                     </p>
                 </div>
 
-                {{-- Widget Jam & Tanggal: Sekarang Tampil di Mobile --}}
                 <div
                     class="flex items-center justify-center md:justify-end space-x-3 md:space-x-4 bg-gray-50 dark:bg-gray-800/50 px-4 py-2 md:px-5 md:py-2.5 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm transition-all">
-                    {{-- Bagian Jam --}}
                     <div
                         class="flex flex-col items-center md:items-end border-r border-gray-300 dark:border-gray-600 pr-3 md:pr-4">
                         <span id="realtime-clock"
@@ -40,7 +36,6 @@
                             Server</span>
                     </div>
 
-                    {{-- Bagian Hari/Tanggal --}}
                     <div class="flex flex-col text-left">
                         <span class="text-xs md:text-sm font-bold text-gray-700 dark:text-gray-200 leading-none">
                             {{ \Carbon\Carbon::now()->translatedFormat('l') }}
