@@ -4,9 +4,47 @@
 
 @section('content')
     <div class="p-4 mt-14">
-        <h2 class="text-2xl font-bold mb-6 text-gray-900 dark:text-white text-center md:text-left">
-            Dashboard Analitik
-        </h2>
+        <div class="mb-8 border-b border-gray-200 pb-4 dark:border-gray-700">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+                <div>
+                    <h2
+                        class="text-2xl font-extrabold tracking-tight text-gray-900 dark:text-white text-center md:text-left">
+                        @php
+                            $hour = date('H');
+                            $sapaan = $hour < 12 ? 'Pagi' : ($hour < 15 ? 'Siang' : ($hour < 18 ? 'Sore' : 'Malam'));
+                        @endphp
+
+                        Selamat <span id="sapaan-teks">{{ $sapaan }}</span>,
+
+                        <span class="text-transparent bg-clip-text bg-linear-to-r from-blue-600 to-cyan-500 uppercase">
+                            {{ auth()->user()->nama }}
+                        </span>
+                    </h2>
+                    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400 text-center md:text-left">
+                        Dashboard Operator Services KOMINFO Kabupaten Subang
+                    </p>
+                </div>
+
+                <div
+                    class="hidden md:flex items-center space-x-4 bg-white dark:bg-gray-800 px-5 py-2.5 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm">
+                    <div class="flex flex-col items-end border-r border-gray-200 dark:border-gray-700 pr-4">
+                        <span id="realtime-clock"
+                            class="text-xl font-black font-mono text-blue-600 dark:text-blue-400 leading-none">
+                            00:00:00
+                        </span>
+                        <span class="text-[10px] uppercase tracking-widest font-bold text-gray-400 mt-1">Waktu Server</span>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="text-sm font-bold text-gray-700 dark:text-gray-200 leading-none">
+                            {{ \Carbon\Carbon::now()->translatedFormat('l') }}
+                        </span>
+                        <span class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                            {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
             <div class="p-5 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
@@ -48,7 +86,7 @@
                 <div class="mt-4">
                     <a href="{{ route('ticket.workdesk') }}"
                         class="text-xs font-bold text-orange-600 hover:underline dark:text-orange-400 inline-flex items-center">
-                        Buka Meja Kerja
+                        Buka Halaman Kerja
                         <svg class="w-3 h-3 ms-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path d="M9 5l7 7-7 7" />
                         </svg>
@@ -132,7 +170,8 @@
                                                 class="shrink-0 w-8 h-8 rounded-full bg-linear-to-br from-gray-200 to-gray-300 dark:from-gray-600 dark:to-gray-700 flex items-center justify-center text-xs font-bold text-gray-600 dark:text-gray-300">
                                                 {{ strtoupper(substr($rt->user->nama, 0, 2)) }}
                                             </div>
-                                            <div class="text-gray-900 dark:text-gray-200 font-medium">{{ $rt->user->nama }}
+                                            <div class="text-gray-900 dark:text-gray-200 font-medium">
+                                                {{ $rt->user->nama }}
                                             </div>
                                         </div>
                                     </td>
