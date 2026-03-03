@@ -16,10 +16,8 @@ use App\Services\WordTemplateServiceEmailGov;
 
 class ServiceEmailGovController extends Controller
 {
-    // 2. DEFINISI PROPERTY SERVICE
     protected $wordTemplateService;
 
-    // 3. CONSTRUCTOR (INJECT SERVICE)
     public function __construct(WordTemplateServiceEmailGov $wordTemplateService)
     {
         $this->wordTemplateService = $wordTemplateService;

@@ -19,6 +19,7 @@ class DashboardController extends Controller
 
             // Dashboard Role Lainnya
             'kabid'        => view('pages.kabid.dashboard'),
+            
             'pengguna_asn' => view('pages.pengguna-asn.dashboard'),
             
             default        => abort(403, 'Role tidak dikenali.'),

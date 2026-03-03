@@ -1,13 +1,8 @@
 <?php
-/*-----------------------------------------------------
-    THIS CODE IS ONLY FOR DEVELOPMENT 
---------------------------------------------------------*/
-
 
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class DevTemplateController extends Controller
 {
@@ -20,8 +15,8 @@ class DevTemplateController extends Controller
     {
         // 1. Validasi Input
         $request->validate([
-            'template_file' => 'required|file|mimes:docx|max:2048', // Max 2MB
-            'target_name'   => 'required|string', // Nama file yang akan disimpan di MinIO
+            'template_file' => 'required|file|mimes:docx|max:2048', 
+            'target_name'   => 'required|string', 
         ]);
 
         try {
@@ -30,13 +25,9 @@ class DevTemplateController extends Controller
             $targetName = $request->target_name;
 
             // 3. Tentukan Disk (Sesuai config filesystems.php Anda)
-            // Gunakan 's3' atau 'minio' sesuai setup Anda terakhir
             $disk = 's3'; 
 
             // 4. Upload ke MinIO (Timpa jika ada)
-            // storeAs(folder, nama_file, disk)
-            // Kita kosongkan folder pertama ('') agar tersimpan di root bucket
-            // atau ganti 'templates' jika struktur folder Anda begitu.
             $path = $file->storeAs('', $targetName, $disk);
 
             if ($path) {

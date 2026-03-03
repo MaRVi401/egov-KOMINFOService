@@ -73,13 +73,12 @@ class ServiceComplaintSystemController extends Controller
     private function validateInput(Request $request)
     {
         $request->validate([
-            // Validasi deskripsi dihapus dari sini
             'detail_pengaduan'    => 'required|string',
             'lampiran_screenshot' => 'nullable|image|mimes:jpeg,png,jpg|max:2048', 
         ], [
             'lampiran_screenshot.mimes' => 'File harus berupa gambar (JPG, JPEG, PNG).',
             'lampiran_screenshot.image' => 'File yang diunggah harus berupa gambar.',
-            'lampiran_screenshot.max'   => 'Ukuran gambar maksimal adalah 2MB.', // disesuaikan dengan komentar di blade
+            'lampiran_screenshot.max'   => 'Ukuran gambar maksimal adalah 2MB.', 
         ]);
     }
 
