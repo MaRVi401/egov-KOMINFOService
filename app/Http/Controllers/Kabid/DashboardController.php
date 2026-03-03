@@ -10,8 +10,9 @@ use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        // 1. Ambil data statistik Dasar
         $layananAktif = Layanan::count();
         $stats = [
             'total'   => Tiket::count(),
@@ -19,16 +20,17 @@ class DashboardController extends Controller
             'proses'  => Tiket::where('status', 'ditangani')->count(),
         ];
 
-        // Logika Tingkat Penyelesaian (%)
+        // 2. Kalkulasi Tingkat Penyelesaian (%)
         $tingkatPenyelesaian = $stats['total'] > 0
             ? round(($stats['selesai'] / $stats['total']) * 100)
             : 0;
 
-        // Ambil data operator menggunakan relasi 'tiketDitangani' dari model User
+        // 3. Ambil data operator dengan Pagination
         $operatorPerformance = User::where('role', 'operator')
             ->withCount(['tiketDitangani as total_handle'])
-            ->get();
+            ->paginate(5);
 
+        // 4. Data untuk Grafik Donat
         $chartData = [
             'labels' => ['Diajukan', 'Ditangani', 'Selesai', 'Ditolak'],
             'data'   => [
@@ -39,6 +41,11 @@ class DashboardController extends Controller
             ]
         ];
 
+        // LOGIKA AJAX: Mencegah Refresh Halaman
+        if ($request->ajax()) {
+            return view('pages.kabid._operator_table', compact('operatorPerformance', 'stats'))->render();
+        }
+
         return view('pages.kabid.dashboard', compact(
             'layananAktif',
             'tingkatPenyelesaian',
@@ -46,21 +53,5 @@ class DashboardController extends Controller
             'chartData',
             'operatorPerformance'
         ));
-    }
-
-    // Method untuk mengambil detail tiket via AJAX
-    public function operatorTickets($uuid)
-    {
-        $operator = User::where('role', 'operator')->where('uuid', $uuid)->firstOrFail();
-
-        $tickets = Tiket::with(['user', 'layanan'])
-            ->where('petugas_id', $uuid)
-            ->orderBy('created_at', 'desc')
-            ->get();
-
-        return response()->json([
-            'operator' => $operator->nama,
-            'tickets' => $tickets
-        ]);
     }
 }

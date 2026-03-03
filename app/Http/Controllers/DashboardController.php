@@ -18,7 +18,7 @@ class DashboardController extends Controller
             'operator'     => app(Operator\DashboardController::class)->index(request()),
 
             // Dashboard Role Lainnya
-            'kabid' => app(\App\Http\Controllers\Kabid\DashboardController::class)->index(),
+            'kabid'        => app(\App\Http\Controllers\Kabid\DashboardController::class)->index(request()),
 
             'pengguna_asn' => view('pages.pengguna-asn.dashboard'),
 
