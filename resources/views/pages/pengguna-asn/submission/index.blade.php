@@ -28,6 +28,9 @@
                 </li>
             </ol>
         </nav>
+        <div class="flex flex-col md:flex-row items-center justify-between mb-6">
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Pengajuan Tiket</h2>
+        </div>
         <hr class="mb-6 border-gray-200 dark:border-gray-700">
 
         <div class="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 mb-6">
@@ -76,7 +79,6 @@
                                 <option value="">Semua Status</option>
                                 <option value="diajukan" {{ request('status') == 'diajukan' ? 'selected' : '' }}>Diajukan</option>
                                 <option value="ditangani" {{ request('status') == 'ditangani' ? 'selected' : '' }}>Ditangani</option>
-                                <option value="selesai" {{ request('status') == 'selesai' ? 'selected' : '' }}>Selesai</option>
                                 <option value="ditolak" {{ request('status') == 'ditolak' ? 'selected' : '' }}>Ditolak</option>
                             </select>
                         </div>
@@ -133,7 +135,7 @@
 
                                     @if($ticket->status === 'diajukan' && empty($ticket->lampiran) && !$isPengaduan)
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold text-gray-500 bg-gray-100 border border-gray-300 dark:bg-gray-700 dark:text-gray-400 dark:border-gray-600 shadow-sm">
-                                            -
+                                            Belum Diajukan
                                         </span>
                                     @else
                                         @php
