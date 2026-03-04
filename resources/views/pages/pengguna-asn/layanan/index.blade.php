@@ -102,7 +102,7 @@
             <p class="mb-3 font-normal text-gray-700 dark:text-gray-400 text-sm">
                 Pelaporan kendala teknis, bug, atau error pada sistem elektronik yang sedang berjalan.
             </p>
-            <a href="{{route('service-compliant-system.index')}}" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-rose-700 rounded-lg hover:bg-rose-800 focus:ring-4 focus:outline-none focus:ring-rose-300 dark:bg-rose-600 dark:hover:bg-rose-700 dark:focus:ring-rose-800">
+            <a href="{{route('service-complaint-system.index')}}" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-rose-700 rounded-lg hover:bg-rose-800 focus:ring-4 focus:outline-none focus:ring-rose-300 dark:bg-rose-600 dark:hover:bg-rose-700 dark:focus:ring-rose-800">
                 Akses Layanan
                 <i class="ti ti-arrow-right ml-2"></i>
             </a>

@@ -84,6 +84,6 @@
 </div>
 
 @push('scripts')
-    @vite('resources/js/compliant-forms.js')
+    @vite('resources/js/complaint-forms.js')
 @endpush
 @endsection
