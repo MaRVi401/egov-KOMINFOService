@@ -67,12 +67,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])
         ->name('dashboard');
 
-    // edit profile
-    Route::middleware(['auth'])->group(function () {
-
-        Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
-        Route::put('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
-    });
+    // Edit profile
+    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
 
     // Proses Logout
     Route::post('/logout', [LoginController::class, 'logout'])
@@ -157,6 +154,5 @@ Route::middleware('auth')->group(function () {
 
         //Rute History Tiket
         Route::resource('history', ServiceHistoryTicketController::class);
-
     });
 });
