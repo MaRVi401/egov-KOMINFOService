@@ -96,7 +96,7 @@ Route::middleware('auth')->group(function () {
     | Khusus Operator
     |----------------------------------------------------------------------
     */
-    Route::middleware(['auth', 'can:operator-only'])->group(function () {
+    Route::middleware('can:operator-only')->group(function () {
 
         // Halaman Meja Kerja
         Route::get('workdesk', [OperatorTicketController::class, 'workDesk'])->name('ticket.workdesk');

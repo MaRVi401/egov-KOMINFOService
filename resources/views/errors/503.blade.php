@@ -1,4 +1,4 @@
-@extends('errors.minimal')
+@extends('errors.layout')
 
 @section('title', 'Sedang Pemeliharaan')
 @section('code', '503')
