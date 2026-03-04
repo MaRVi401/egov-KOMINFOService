@@ -21,7 +21,7 @@ class ServiceComplaintSystemController extends Controller
 {
     public function index()
     {
-        return view('pages.pengguna-asn.layanan.compliant'); 
+        return view('pages.pengguna-asn.layanan.complaint'); 
     }
  
     public function store(Request $request)
