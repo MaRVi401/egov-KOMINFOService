@@ -1,15 +1,6 @@
+import './bootstrap';
 import 'flowbite';
 import { initScrollSpy } from './landing';
-
-import.meta.glob([
-    './**/*.js',
-    '!./app.js',
-    '!./landing.js'
-], { eager: true });
-
-if (document.querySelector('.nav-link')) {
-    initScrollSpy();
-}
 
 // Dark mode setup
 const htmlElement = document.documentElement;
@@ -31,7 +22,7 @@ const savedTheme = localStorage.getItem('theme');
 setTheme(savedTheme);
 
 // Toggle theme function
-window.toggleDarkMode = function () {
+window.toggleDarkMode = function() {
     if (htmlElement.classList.contains('dark')) {
         setTheme('light');
     } else {
@@ -43,7 +34,10 @@ if (themeToggleBtn) {
     themeToggleBtn.addEventListener('click', window.toggleDarkMode);
 }
 
-window.addEventListener('scroll', function () {
+
+initScrollSpy();
+
+window.addEventListener('scroll', function() {
     const backToTop = document.getElementById('back-to-top');
     if (!backToTop) return;
 
@@ -56,6 +50,6 @@ window.addEventListener('scroll', function () {
     }
 });
 
-document.getElementById('back-to-top')?.addEventListener('click', function () {
+document.getElementById('back-to-top')?.addEventListener('click', function() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 });
