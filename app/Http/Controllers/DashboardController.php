@@ -20,7 +20,7 @@ class DashboardController extends Controller
             // Dashboard Role Lainnya
             'kabid'        => app(\App\Http\Controllers\Kabid\DashboardController::class)->index(request()),
 
-            'pengguna_asn' => view('pages.pengguna-asn.dashboard'),
+            'pengguna_asn' => app(PenggunaAsn\DashboardControllerPenggunaAsn::class)->index(request()),
 
             default        => abort(403, 'Role tidak dikenali.'),
         };

@@ -143,7 +143,7 @@ Route::middleware('auth')->group(function () {
 
 
         //Rute untuk pengaduan
-        Route::resource('service-compliant-system', ServiceComplaintSystemController::class);
+        Route::resource('service-complaint-system', ServiceComplaintSystemController::class);
 
 
         Route::prefix('dev')->group(function () {
