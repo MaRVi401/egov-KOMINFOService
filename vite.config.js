@@ -7,13 +7,14 @@ export default defineConfig({
     plugins: [
         laravel({
             input: ['resources/css/app.css',
-                    ...glob.sync('resources/js/*.js'),
-                    ],
+                ...glob.sync('resources/js/*.js'),
+            ],
             refresh: true,
         }),
         tailwindcss(),
     ],
     server: {
+        host: '127.0.0.1',
         watch: {
             ignored: ['**/storage/framework/views/**'],
         },
