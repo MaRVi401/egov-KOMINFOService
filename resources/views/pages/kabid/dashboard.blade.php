@@ -74,7 +74,7 @@
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div id="table-container" class="lg:col-span-2 bg-white border border-gray-200 rounded-2xl shadow-sm dark:bg-gray-800 dark:border-gray-700 overflow-hidden flex flex-col min-h-[450px]">
+            <div id="table-container" class="lg:col-span-2 bg-white border border-gray-200 rounded-2xl shadow-sm dark:bg-gray-800 dark:border-gray-700 overflow-hidden flex flex-col min-h-112.5">
                 <div class="px-5 py-4 border-b border-gray-100 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-700/30 flex justify-between items-center text-heading font-bold italic">
                     <h3 class="flex items-center">
                         <i class="ti ti-users text-blue-600 me-2 text-xl"></i> Produktivitas Operator
@@ -91,7 +91,7 @@
                     <i class="ti ti-chart-pie text-orange-500 me-2 text-xl"></i> Status Layanan Masuk
                 </h3>
 
-                <div class="w-full max-w-[220px] aspect-square mb-8 relative">
+                <div class="w-full max-w-55 aspect-square mb-8 relative">
                     <canvas id="ticketDonutChart"></canvas>
                 </div>
 
