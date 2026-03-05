@@ -56,7 +56,7 @@ class ServiceSubDomainController extends Controller
                 'uuid'      => (string) Str::uuid(), 
                 'tiket_id'  => $tiket->uuid,
                 'users_id'  => Auth::user()->uuid, 
-                'status'    => 'Belum diajukan',
+                'status'    => 'belum diajukan',
                 'catatan'   => 'Permohonan baru diajukan'
             ]);
 
