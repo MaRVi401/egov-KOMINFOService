@@ -110,13 +110,11 @@
         </div>
     </div>
 
-{{-- ... kode HTML Anda tetap sama ... --}}
 
 @push('scripts')
-    {{-- Ganti asset menjadi @vite untuk mengambil file dari resources --}}
     @vite(['resources/js/dashboard-kabid.js'])
 
-    <script>
+    <script nonce="{{ $csp_nonce }}">
         document.addEventListener('DOMContentLoaded', function() {
             initDashboard({
                 labels: @json($chartData['labels']),
