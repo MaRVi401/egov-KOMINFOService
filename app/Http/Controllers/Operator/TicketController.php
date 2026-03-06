@@ -122,7 +122,7 @@ class TicketController extends Controller
     {
         $request->validate([
             'status'   => 'required|in:selesai,ditolak',
-            'komentar' => 'required|string|min:5',
+            'komentar' => 'required|string|min:1',
         ]);
 
         $ticket = Tiket::where('uuid', $uuid)->firstOrFail();
