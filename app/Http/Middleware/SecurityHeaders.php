@@ -37,7 +37,7 @@ class SecurityHeaders
             "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net {$baseUrl}",
 
             // Image: Mendukung S3 Amazon, UI-Avatars, port MinIO/S3 lokal (9000), dan data URI
-            "img-src 'self' data: https://flowbite.s3.amazonaws.com https://ui-avatars.com https://*.ui-avatars.com {$baseUrl}",
+            "img-src 'self' data: https://flowbite.s3.amazonaws.com https://ui-avatars.com https://*.ui-avatars.com {$baseUrl} http://192.168.200.51:9000",
 
             // Font: Mendukung Google Fonts dan Font-face dari JSDelivr
             "font-src 'self' data: https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net",
