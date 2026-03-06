@@ -20,31 +20,34 @@ class SecurityHeaders
 
         $response = $next($request);
 
+        // Dapatkan base URL dan WebSocket URL untuk digunakan dalam CSP
+        $baseUrl = $request->getSchemeAndHttpHost();
+        $wsUrl = "ws://" . $request->getHost() . ":*";
         // 3. Konfigurasi Content Security Policy (CSP)
         $cspPolicy = [
             "default-src 'self'",
 
             // 'unsafe-eval' diperlukan oleh beberapa fungsi library Chart.js/Flowbite
-            "script-src 'self' 'nonce-{$nonce}' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com http://localhost:* http://127.0.0.1:*",
+            "script-src 'self' 'nonce-{$nonce}' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com {$baseUrl}",
 
             // Menangani inline event handlers seperti onclick/onchange di HTML
             "script-src-attr 'unsafe-inline'",
 
             // Style: Mendukung Vite, Google Fonts, dan JSDelivr (untuk Tabler Icons)
-            "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net http://localhost:* http://127.0.0.1:*",
+            "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net {$baseUrl}",
 
             // Image: Mendukung S3 Amazon, UI-Avatars, port MinIO/S3 lokal (9000), dan data URI
-            "img-src 'self' data: https://flowbite.s3.amazonaws.com https://ui-avatars.com https://*.ui-avatars.com http://localhost:* http://127.0.0.1:*",
+            "img-src 'self' data: https://flowbite.s3.amazonaws.com https://ui-avatars.com https://*.ui-avatars.com {$baseUrl}",
 
             // Font: Mendukung Google Fonts dan Font-face dari JSDelivr
             "font-src 'self' data: https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net",
 
             // Connect: Penting untuk WebSocket Vite (HMR) dan pemanggilan API eksternal
-            "connect-src 'self' ws://localhost:* ws://127.0.0.1:* https://cdn.jsdelivr.net",
+            "connect-src 'self' {$wsUrl} {$baseUrl} https://cdn.jsdelivr.net",
 
             "object-src 'none'",
             "base-uri 'self'",
-            "upgrade-insecure-requests"
+            // "upgrade-insecure-requests", // Aktifkan jika semua konten harus dimuat melalui HTTPS
         ];
 
         // 4. Set Semua Security Headers
