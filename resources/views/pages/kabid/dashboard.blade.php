@@ -4,6 +4,7 @@
 
 @section('content')
     <div class="p-4 mt-14">
+        {{-- Header Section --}}
         <div class="mb-8 border-b border-gray-200 pb-6 dark:border-gray-700">
             <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 <div class="text-center md:text-left">
@@ -17,7 +18,7 @@
                             {{ auth()->user()->nama }}
                         </span>
                     </h2>
-                    <p class="mt-1 text-xs md:text-sm text-gray-500 dark:text-gray-400  tracking-wider">
+                    <p class="mt-1 text-xs md:text-sm text-gray-500 dark:text-gray-400 tracking-wider">
                         Dashboard Monitoring Services KOMINFO Subang
                     </p>
                 </div>
@@ -39,6 +40,7 @@
             </div>
         </div>
 
+        {{-- Statistik Cards --}}
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
             <div class="p-5 bg-white border border-gray-200 rounded-xl shadow-sm dark:bg-gray-800 dark:border-gray-700">
                 <div class="flex items-center justify-between mb-2">
@@ -74,24 +76,26 @@
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div id="table-container" class="lg:col-span-2 bg-white border border-gray-200 rounded-2xl shadow-sm dark:bg-gray-800 dark:border-gray-700 overflow-hidden flex flex-col min-h-[450px]">
+            {{-- Tabel Produktivitas dengan Wrapper AJAX --}}
+            <div id="table-container" class="lg:col-span-2 bg-white border border-gray-200 rounded-2xl shadow-sm dark:bg-gray-800 dark:border-gray-700 overflow-hidden flex flex-col min-h-112.5">
                 <div class="px-5 py-4 border-b border-gray-100 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-700/30 flex justify-between items-center text-heading font-bold italic">
-                    <h3 class="flex items-center">
+                    <h3 class="flex items-center text-gray-900 dark:text-white">
                         <i class="ti ti-users text-blue-600 me-2 text-xl"></i> Produktivitas Operator
                     </h3>
                 </div>
 
-                <div id="ajax-table-content">
+                <div id="ajax-table-content" class="h-full">
                     @include('pages.kabid._operator_table')
                 </div>
             </div>
 
+            {{-- Grafik Bulat --}}
             <div class="bg-white border border-gray-200 rounded-2xl shadow-sm dark:bg-gray-800 dark:border-gray-700 p-6 flex flex-col items-center">
                 <h3 class="w-full font-bold text-gray-900 dark:text-white mb-8 border-b border-gray-50 dark:border-gray-700 pb-3 flex items-center italic">
                     <i class="ti ti-chart-pie text-orange-500 me-2 text-xl"></i> Status Layanan Masuk
                 </h3>
 
-                <div class="w-full max-w-[220px] aspect-square mb-8 relative">
+                <div class="w-full max-w-55 aspect-square mb-8 relative">
                     <canvas id="ticketDonutChart"></canvas>
                 </div>
 
@@ -109,20 +113,19 @@
             </div>
         </div>
     </div>
-
-{{-- ... kode HTML Anda tetap sama ... --}}
+@endsection
 
 @push('scripts')
-    {{-- Ganti asset menjadi @vite untuk mengambil file dari resources --}}
     @vite(['resources/js/dashboard-kabid.js'])
 
-    <script>
+    <script nonce="{{ $csp_nonce }}">
         document.addEventListener('DOMContentLoaded', function() {
-            initDashboard({
-                labels: @json($chartData['labels']),
-                data: @json($chartData['data'])
-            });
+            if (typeof window.initDashboard === 'function') {
+                window.initDashboard({
+                    labels: @json($chartData['labels']),
+                    data: @json($chartData['data'])
+                });
+            }
         });
     </script>
 @endpush
-@endsection

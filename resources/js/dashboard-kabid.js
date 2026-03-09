@@ -8,8 +8,6 @@ function renderMonitoringChart(chartLabels, chartData) {
     if (ticketChart) {
         ticketChart.destroy();
     }
-
-    // Pastikan library Chart.js sudah terload sebelum ini dipanggil
     ticketChart = new Chart(chartCtx.getContext('2d'), {
         type: 'doughnut',
         data: {
@@ -82,6 +80,4 @@ function initDashboard(config) {
     });
 }
 
-// --- PERBAIKAN KRUSIAL: Ekspos fungsi ke Window agar bisa dipanggil dari Blade ---
-// Tanpa ini, Vite akan menyembunyikan fungsi ini dari Blade
 window.initDashboard = initDashboard;

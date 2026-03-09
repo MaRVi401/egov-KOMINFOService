@@ -7,6 +7,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Vite;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -15,6 +16,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+
+        // Set CSP Nonce untuk Vite agar bisa digunakan di Blade templates
+        Vite::useCspNonce(request()->attributes->get('csp_nonce'));
+
         // Gate untuk Middleware 'can:super-admin-only'
         Gate::define('super-admin-only', function (User $user) {
             return $user->role === 'super_admin';
@@ -28,7 +33,7 @@ class AppServiceProvider extends ServiceProvider
         Gate::define('operator-only', function (User $user) {
             return $user->role === 'operator';
         });
-        
+
         // View Composer hanya berjalan saat view 'partials.dashboard.sidebar' dipanggil
         View::composer('partials.dashboard.sidebar', function ($view) {
 
