@@ -46,7 +46,7 @@ class ServiceSubDomainController extends Controller
                 'users_id'   => Auth::user()->uuid,
                 'layanan_id' => $layanan->uuid,
                 'no_tiket'   => $noTiket,
-                'status'     => 'Belum diajukan',
+                'status'     => 'belum diajukan',
                 'deskripsi'  => 'Permohonan Subdomain: ' . $request->usulan_subdomain,
             ]);
         
