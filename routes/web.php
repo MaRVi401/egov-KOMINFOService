@@ -154,5 +154,10 @@ Route::middleware('auth')->group(function () {
 
         //Rute History Tiket
         Route::resource('history', ServiceHistoryTicketController::class);
+        
+        // Rute untuk testing AI Scanner
+        Route::get('/test-ai-scanner', function () {
+            return view('pages.pengguna-asn.layanan.test-scanner');
+        })->name('test.scanner');
     });
 });

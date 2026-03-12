@@ -29,7 +29,7 @@ class SecurityHeaders
             "default-src 'self'",
 
             // 'unsafe-eval' diperlukan oleh beberapa fungsi library Chart.js/Flowbite
-            "script-src 'self' 'nonce-{$nonce}' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com {$allowedHosts}",
+            "script-src 'self' 'nonce-{$nonce}' 'unsafe-inline' 'unsafe-eval' data: https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com {$allowedHosts}",
 
             // Menangani inline event handlers seperti onclick/onchange di HTML
             "script-src-attr 'unsafe-inline'",
@@ -44,7 +44,7 @@ class SecurityHeaders
             "font-src 'self' data: https://fonts.gstatic.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net",
 
             // Connect: Penting untuk WebSocket Vite (HMR) dan pemanggilan API eksternal
-            "connect-src 'self' {$wsUrl} {$allowedHosts} https://cdn.jsdelivr.net",
+            "connect-src 'self' data: {$wsUrl} {$allowedHosts} https://cdn.jsdelivr.net",
 
             "object-src 'none'",
             "base-uri 'self'",
@@ -57,7 +57,7 @@ class SecurityHeaders
         $response->headers->set('X-Content-Type-Options', 'nosniff');
         $response->headers->set('X-XSS-Protection', '1; mode=block');
         $response->headers->set('Referrer-Policy', 'strict-origin-when-cross-origin');
-        $response->headers->set('Permissions-Policy', 'geolocation=(), microphone=(), camera=()');
+        $response->headers->set('Permissions-Policy', 'camera=(self), microphone=(), geolocation=()');
 
         // Menghapus X-Powered-By agar versi PHP tidak terlihat
         $response->headers->remove('X-Powered-By');
