@@ -5,7 +5,6 @@
 @push('styles')
 <style>
     .viewport-container {
-        position: relative;
         width: 100%;
         background: #0f172a;
         border-radius: 0.75rem;
@@ -14,16 +13,28 @@
         align-items: center;
         justify-content: center;
         min-height: 500px;
+        padding: 1rem; /* Beri sedikit ruang bernapas */
+    }
+    /* Container pembungkus yang ukurannya akan persis sama dengan gambar */
+    #image-wrapper {
+        position: relative;
+        display: inline-block; 
     }
     #test-image { 
         max-width: 100%; 
-        max-height: 75vh; 
-        object-fit: contain; /* Menjaga rasio asli agar tidak stretch */
+        max-height: 70vh; 
         display: block;
+        /* Hapus object-fit: contain */
+        width: auto;
+        height: auto;
     }
     #overlay {
         position: absolute;
-        cursor: move;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        cursor: crosshair;
         z-index: 10;
         touch-action: none;
     }
@@ -53,13 +64,18 @@
             </div>
 
             <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-                <div class="viewport-container">
-                    <div id="loading-spinner" class="absolute inset-0 flex flex-col items-center justify-center bg-slate-900/90 z-20 hidden">
-                        <div class="w-10 h-10 border-4 border-slate-700 border-t-blue-600 rounded-full animate-spin"></div>
+    
+                <div class="viewport-container relative flex items-center justify-center">
+                    
+                    <div id="image-wrapper" class="hidden relative inline-block w-fit h-fit mx-auto shadow-lg">
+                        
+                        <img id="test-image" class="block max-w-full max-h-[70vh] w-auto h-auto rounded-lg" alt="Scanned Document" />
+                        
+                        <canvas id="overlay" class="absolute top-0 left-0 w-full h-full z-10 touch-none cursor-crosshair rounded-lg"></canvas>
+                    
                     </div>
-                    <img id="test-image" class="hidden">
-                    <canvas id="overlay"></canvas>
                 </div>
+                
                 <div class="p-4 flex items-center justify-between bg-slate-50 dark:bg-slate-800/50">
                     <div class="flex items-center gap-2 text-xs font-bold text-slate-500 uppercase">
                         <div id="ai-status-dot" class="w-2 h-2 rounded-full bg-slate-400"></div>

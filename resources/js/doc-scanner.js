@@ -7,6 +7,9 @@ const overlay = document.getElementById('overlay');
 const captureBtn = document.getElementById('capture-btn');
 const ctx = overlay.getContext('2d');
 
+const POINT_RADIUS = 10;
+const HIT_RADIUS = 30;
+
 let points = []; 
 let draggingPoint = null;
 
@@ -17,12 +20,113 @@ async function loadAI() {
     } catch (e) { console.error("AI Error", e); }
 }
 
+function orderPoints(pts) {
+    // Urutkan berdasarkan sumbu X
+    let sortedX = pts.slice().sort((a, b) => a.x - b.x);
+    let leftSide = sortedX.slice(0, 2);
+    let rightSide = sortedX.slice(2, 4);
+    
+    // Sisi Kiri: Y terkecil = Atas, Y terbesar = Bawah
+    leftSide.sort((a, b) => a.y - b.y);
+    let tl = leftSide[0]; // Top-Left
+    let bl = leftSide[1]; // Bottom-Left
+    
+    // Sisi Kanan: Y terkecil = Atas, Y terbesar = Bawah
+    rightSide.sort((a, b) => a.y - b.y);
+    let tr = rightSide[0]; // Top-Right
+    let br = rightSide[1]; // Bottom-Right
+    
+    return [tl, tr, br, bl];
+}
+
+function snapToEdges(imageElement, displayW, displayH, fallbackPoints) {
+    try {
+        let src = cv.imread(imageElement);
+        let resized = new cv.Mat();
+        // Samakan resolusi pencarian OpenCV dengan resolusi visual layar
+        cv.resize(src, resized, new cv.Size(displayW, displayH));
+        
+        let gray = new cv.Mat();
+        cv.cvtColor(resized, gray, cv.COLOR_RGBA2GRAY, 0);
+        
+        // Blur untuk menghilangkan noise/serat kertas
+        let blur = new cv.Mat();
+        cv.GaussianBlur(gray, blur, new cv.Size(5, 5), 0, 0, cv.BORDER_DEFAULT);
+        
+        // Cari garis tepi (Edge Detection)
+        let edges = new cv.Mat();
+        cv.Canny(blur, edges, 75, 200);
+        
+        // Pertebal garis tepi agar tidak terputus
+        let kernel = cv.Mat.ones(5, 5, cv.CV_8U);
+        cv.dilate(edges, edges, kernel, new cv.Point(-1, -1), 1);
+        cv.erode(edges, edges, kernel, new cv.Point(-1, -1), 1);
+        
+        // Temukan kontur/bentuk
+        let contours = new cv.MatVector();
+        let hierarchy = new cv.Mat();
+        cv.findContours(edges, contours, hierarchy, cv.RETR_LIST, cv.CHAIN_APPROX_SIMPLE);
+        
+        let maxArea = 0;
+        let bestApprox = new cv.Mat();
+        let found = false;
+        
+        for (let i = 0; i < contours.size(); i++) {
+            let cnt = contours.get(i);
+            let area = cv.contourArea(cnt);
+            
+            // Abaikan bentuk kecil (minimal harus 10% dari luas layar)
+            if (area > (displayW * displayH * 0.1)) {
+                let peri = cv.arcLength(cnt, true);
+                let approx = new cv.Mat();
+                // Toleransi sudut
+                cv.approxPolyDP(cnt, approx, 0.02 * peri, true);
+                
+                // Jika bentuknya segiempat (4 sudut) dan ukurannya paling besar
+                if (approx.rows === 4 && area > maxArea) {
+                    maxArea = area;
+                    approx.copyTo(bestApprox);
+                    found = true;
+                }
+                approx.delete();
+            }
+            cnt.delete();
+        }
+        
+        let refinedPoints = fallbackPoints;
+        
+        // Jika garis tepi segiempat kertas berhasil ditemukan
+        if (found) {
+            let data = bestApprox.data32S;
+            let tempPts = [
+                {x: data[0], y: data[1]},
+                {x: data[2], y: data[3]},
+                {x: data[4], y: data[5]},
+                {x: data[6], y: data[7]}
+            ];
+            // Urutkan titik agar sesuai format Kiri-Atas s.d Kiri-Bawah
+            refinedPoints = orderPoints(tempPts);
+        }
+        
+        // Bersihkan memori OpenCV (WAJIB agar browser tidak crash)
+        src.delete(); resized.delete(); gray.delete(); blur.delete(); 
+        edges.delete(); kernel.delete(); contours.delete(); 
+        hierarchy.delete(); bestApprox.delete();
+        
+        return refinedPoints;
+
+    } catch (err) {
+        console.error("OpenCV Snap gagal, kembali ke AI:", err);
+        return fallbackPoints; // Jika OpenCV gagal, tetap gunakan titik dari AI
+    }
+}
+
 // 1. Logic Upload & Syncing
 document.getElementById('image-upload').addEventListener('change', (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
-    document.getElementById('loading-spinner').classList.remove('hidden');
+    //document.getElementById('loading-spinner').classList.remove('hidden');
     const reader = new FileReader();
     
     reader.onload = (event) => {
@@ -30,24 +134,47 @@ document.getElementById('image-upload').addEventListener('change', (e) => {
         testImage.classList.remove('hidden');
         
         testImage.onload = () => {
-            // Sesuai ukuran gambar yang tampil di layar (CSS client size)
-            overlay.width = testImage.clientWidth;
-            overlay.height = testImage.clientHeight;
+            // Tampilkan wrapper
+            document.getElementById('image-wrapper').classList.remove('hidden');
             
-            // Mengunci canvas tepat di atas gambar (mengatasi flexbox alignment)
-            overlay.style.top = testImage.offsetTop + "px";
-            overlay.style.left = testImage.offsetLeft + "px";
+            // PERBAIKAN: Beri jeda 1 frame agar browser selesai menghitung ukuran gambar
+            requestAnimationFrame(() => {
+                // Ambil ukuran gambar yang TAMPIL di layar
+                const displayW = testImage.clientWidth;
+                const displayH = testImage.clientHeight;
 
-            runDetection();
+                // Set ukuran internal canvas agar resolusinya sama dengan tampilan layar
+                overlay.width = displayW;
+                overlay.height = displayH;
+
+                // Inisialisasi titik default
+                const marginX = displayW * 0.1;
+                const marginY = displayH * 0.1;
+                
+                points = [
+                    { x: marginX, y: marginY },
+                    { x: displayW - marginX, y: marginY },
+                    { x: displayW - marginX, y: displayH - marginY },
+                    { x: marginX, y: displayH - marginY }
+                ];
+
+                drawPoints(); 
+
+                // Panggil AI
+                if (model) {
+                    runDetection();
+                } else {
+                    captureBtn.disabled = false; 
+                }
+            });
         };
     };
     reader.readAsDataURL(file);
 });
 
-// 2. AI Detection dengan Letterbox Scaling
+// 2. AI Detection dengan Letterbox Scaling & NMS Filtering
 async function runDetection() {
     const input = tf.tidy(() => {
-        // AI bekerja pada skala 640x640
         return tf.browser.fromPixels(testImage)
             .resizeBilinear([IMGSZ, IMGSZ])
             .div(255.0)
@@ -56,22 +183,65 @@ async function runDetection() {
 
     const predictions = model.execute(input);
     const data = await predictions.data();
+    
+    // Output YOLOv8-pose biasanya memiliki bentuk (shape) [1, 17, 8400]
+    // Artinya ada 17 baris data dan 8400 kolom tebakan
+    const shape = predictions.shape;
+    const numAnchors = shape[2]; // Biasanya 8400
 
-    // Mapping koordinat dari 640x640 ke dimensi client (layar)
-    points = [];
-    for (let i = 0; i < 4; i++) {
-        points.push({
-            x: data[5 + i * 3] * (overlay.width / IMGSZ),
-            y: data[6 + i * 3] * (overlay.height / IMGSZ)
-        });
+    // 1. CARI TEBAKAN DENGAN SKOR TERTINGGI
+    let maxConf = 0;
+    let bestIndex = 0;
+    
+    for (let i = 0; i < numAnchors; i++) {
+        // Baris ke-4 (index 4) adalah letak skor confidence object
+        const conf = data[4 * numAnchors + i]; 
+        
+        if (conf > maxConf) {
+            maxConf = conf;
+            bestIndex = i;
+        }
     }
 
-    document.getElementById('loading-spinner').classList.add('hidden');
-    document.getElementById('ai-status-text').innerText = "AI AKTIF - GESER TITIK JIKA KURANG PAS";
-    document.getElementById('ai-status-dot').classList.replace('bg-slate-400', 'bg-emerald-500');
+    // 2. AMBIL TITIK KOORDINAT DARI TEBAKAN TERBAIK TERSEBUT
+    // Jika AI cukup yakin (Confidence di atas 30%)
+    if (maxConf > 0.3) {
+        let aiPoints = [];
+        
+        // Loop untuk 4 titik sudut dari YOLO
+        for (let j = 0; j < 4; j++) {
+            const rowX = 5 + (j * 3); 
+            const rowY = 6 + (j * 3); 
+
+            const px = data[rowX * numAnchors + bestIndex];
+            const py = data[rowY * numAnchors + bestIndex];
+
+            aiPoints.push({
+                x: px * (overlay.width / IMGSZ),
+                y: py * (overlay.height / IMGSZ)
+            });
+        }
+        
+        // --- HYBRID SNAP: Gabungkan kekuatan AI dengan presisi OpenCV ---
+        // AI bertugas memastikan "ini dokumen", lalu OpenCV mengepaskan titik sudutnya
+        points = snapToEdges(testImage, overlay.width, overlay.height, aiPoints);
+        
+        document.getElementById('ai-status-text').innerText = `DOKUMEN TERDETEKSI (${Math.round(maxConf * 100)}% YAKIN)`;
+        document.getElementById('ai-status-dot').classList.replace('bg-slate-400', 'bg-emerald-500');
+    } else {
+        // Jika AI gagal menemukan dokumen, biarkan di titik default
+        document.getElementById('ai-status-text').innerText = "DOKUMEN TIDAK TERDETEKSI - GESER MANUAL";
+        document.getElementById('ai-status-dot').classList.replace('bg-slate-400', 'bg-red-500');
+    }
+
+    // Sembunyikan spinner dan update UI
+    const spinner = document.getElementById('loading-spinner');
+    if (spinner) spinner.classList.add('hidden');
     
     drawPoints();
     captureBtn.disabled = false;
+    
+    // Bersihkan memory
     tf.dispose([input, predictions]);
 }
 
@@ -107,25 +277,54 @@ function drawPoints() {
 }
 
 // Event Handlers for Dragging
-overlay.addEventListener('mousedown', (e) => {
+// --- PERBAIKAN 3: Event Handlers for Dragging (Mouse & Touch) ---
+
+// Helper untuk mengambil posisi kursor atau jari
+function getPointerPos(e) {
     const rect = overlay.getBoundingClientRect();
-    const mx = e.clientX - rect.left;
-    const my = e.clientY - rect.top;
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+    return {
+        x: clientX - rect.left,
+        y: clientY - rect.top
+    };
+}
+
+function handleStart(e) {
+    e.preventDefault();
+    const pos = getPointerPos(e);
+    // Area klik diperlebar (HIT_RADIUS = 30) agar mudah disentuh jari
     points.forEach((p, i) => {
-        if (Math.hypot(p.x - mx, p.y - my) < 25) draggingPoint = i;
+        if (Math.hypot(p.x - pos.x, p.y - pos.y) < HIT_RADIUS) {
+            draggingPoint = i;
+        }
     });
-});
+}
 
-window.addEventListener('mousemove', (e) => {
+function handleMove(e) {
     if (draggingPoint === null) return;
-    const rect = overlay.getBoundingClientRect();
+    e.preventDefault(); // Mencegah layar ikut ter-scroll saat geser titik di HP
+    const pos = getPointerPos(e);
+    
     // Constraint: titik tidak bisa keluar area gambar
-    points[draggingPoint].x = Math.max(0, Math.min(e.clientX - rect.left, overlay.width));
-    points[draggingPoint].y = Math.max(0, Math.min(e.clientY - rect.top, overlay.height));
+    points[draggingPoint].x = Math.max(0, Math.min(pos.x, overlay.width));
+    points[draggingPoint].y = Math.max(0, Math.min(pos.y, overlay.height));
     drawPoints();
-});
+}
 
-window.addEventListener('mouseup', () => draggingPoint = null);
+function handleEnd() {
+    draggingPoint = null;
+}
+
+// Pasang event untuk Mouse (Laptop/PC)
+overlay.addEventListener('mousedown', handleStart);
+window.addEventListener('mousemove', handleMove);
+window.addEventListener('mouseup', handleEnd);
+
+// Pasang event untuk Touch (HP/Tablet)
+overlay.addEventListener('touchstart', handleStart, { passive: false });
+window.addEventListener('touchmove', handleMove, { passive: false });
+window.addEventListener('touchend', handleEnd);
 
 // 4. Final Warp Perspective (OpenCV)
 captureBtn.addEventListener('click', () => {
