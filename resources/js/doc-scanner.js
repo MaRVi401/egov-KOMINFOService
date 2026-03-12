@@ -284,9 +284,14 @@ function getPointerPos(e) {
     const rect = overlay.getBoundingClientRect();
     const clientX = e.touches ? e.touches[0].clientX : e.clientX;
     const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-    return {
-        x: clientX - rect.left,
-        y: clientY - rect.top
+    
+    // KUNCI: Hitung rasio perbedaan antara resolusi internal Canvas vs ukuran visual di layar
+    const scaleX = overlay.width / rect.width;
+    const scaleY = overlay.height / rect.height;
+
+    return { 
+        x: (clientX - rect.left) * scaleX, 
+        y: (clientY - rect.top) * scaleY 
     };
 }
 
@@ -327,36 +332,56 @@ window.addEventListener('touchmove', handleMove, { passive: false });
 window.addEventListener('touchend', handleEnd);
 
 // 4. Final Warp Perspective (OpenCV)
+// --- PERBAIKAN 2: Dynamic Aspect Ratio untuk Crop ---
+// --- GANTI SELURUH BAGIAN TOMBOL PROSES (captureBtn) MENJADI INI ---
 captureBtn.addEventListener('click', () => {
-    // Ukuran output standar A4 (300 DPI approx)
-    const outW = 1200;
-    const outH = 1600;
+    // 1. KUNCI PERBAIKAN: Paksa OpenCV membaca resolusi ASLI (High-Res)
+    let hiddenCanvas = document.createElement('canvas');
+    hiddenCanvas.width = testImage.naturalWidth;
+    hiddenCanvas.height = testImage.naturalHeight;
+    let hCtx = hiddenCanvas.getContext('2d');
+    hCtx.drawImage(testImage, 0, 0, testImage.naturalWidth, testImage.naturalHeight);
     
-    let src = cv.imread(testImage);
+    // Baca gambar dari canvas full-res yang kita buat, bukan dari elemen layar
+    let src = cv.imread(hiddenCanvas);
     let dst = new cv.Mat();
     
-    // KUNCI: Skala ulang dari dimensi LAYAR ke dimensi ASLI GAMBAR
+    // Hitung rasio antara resolusi asli vs ukuran visual di layar saat ini
     const ratioX = testImage.naturalWidth / overlay.width;
     const ratioY = testImage.naturalHeight / overlay.height;
 
-    let srcArr = [];
-    points.forEach(p => srcArr.push(p.x * ratioX, p.y * ratioY));
+    // Titik pada resolusi gambar asli
+    let pTL = { x: points[0].x * ratioX, y: points[0].y * ratioY }; // Top Left
+    let pTR = { x: points[1].x * ratioX, y: points[1].y * ratioY }; // Top Right
+    let pBR = { x: points[2].x * ratioX, y: points[2].y * ratioY }; // Bottom Right
+    let pBL = { x: points[3].x * ratioX, y: points[3].y * ratioY }; // Bottom Left
 
+    // Hitung ukuran proporsional (Dynamic Aspect Ratio menggunakan Pythagoras)
+    const widthA = Math.hypot(pTR.x - pTL.x, pTR.y - pTL.y);
+    const widthB = Math.hypot(pBR.x - pBL.x, pBR.y - pBL.y);
+    const outW = Math.max(1, Math.round(Math.max(widthA, widthB))); // Ambil sisi terpanjang
+
+    const heightA = Math.hypot(pTL.x - pBL.x, pTL.y - pBL.y);
+    const heightB = Math.hypot(pTR.x - pBR.x, pTR.y - pBR.y);
+    const outH = Math.max(1, Math.round(Math.max(heightA, heightB))); 
+
+    let srcArr = [pTL.x, pTL.y, pTR.x, pTR.y, pBR.x, pBR.y, pBL.x, pBL.y];
     let srcCoords = cv.matFromArray(4, 1, cv.CV_32FC2, srcArr);
+    
+    // Output di-map ke ukuran Proporsional yang baru dihitung
     let dstCoords = cv.matFromArray(4, 1, cv.CV_32FC2, [0, 0, outW, 0, outW, outH, 0, outH]);
 
     let M = cv.getPerspectiveTransform(srcCoords, dstCoords);
-    // Gunakan INTER_LANCZOS4 agar hasil warp tajam dan tidak stretch
     cv.warpPerspective(src, dst, M, new cv.Size(outW, outH), cv.INTER_LANCZOS4);
 
     cv.imshow('output-canvas', dst);
     document.getElementById('result-area').classList.remove('hidden');
     document.getElementById('result-area').scrollIntoView({ behavior: 'smooth' });
 
-    // Cleanup
+    // Cleanup memori untuk mencegah kebocoran RAM
     [src, dst, M, srcCoords, dstCoords].forEach(m => m.delete());
+    hiddenCanvas.remove(); // Buang canvas sementara
 });
-
 // Download Action
 document.getElementById('download-btn')?.addEventListener('click', () => {
     const canvas = document.getElementById('output-canvas');
