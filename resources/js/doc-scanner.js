@@ -131,6 +131,7 @@ document.getElementById('image-upload').addEventListener('change', (e) => {
     
     reader.onload = (event) => {
         testImage.src = event.target.result;
+        document.getElementById('image-placeholder').classList.add('hidden');
         testImage.classList.remove('hidden');
         
         testImage.onload = () => {
@@ -208,7 +209,6 @@ async function runDetection() {
     if (maxConf > 0.3) {
         let aiPoints = [];
         
-        // Loop untuk 4 titik sudut dari YOLO
         for (let j = 0; j < 4; j++) {
             const rowX = 5 + (j * 3); 
             const rowY = 6 + (j * 3); 
@@ -222,28 +222,55 @@ async function runDetection() {
             });
         }
         
-        // --- HYBRID SNAP: Gabungkan kekuatan AI dengan presisi OpenCV ---
-        // AI bertugas memastikan "ini dokumen", lalu OpenCV mengepaskan titik sudutnya
         points = snapToEdges(testImage, overlay.width, overlay.height, aiPoints);
         
         document.getElementById('ai-status-text').innerText = `DOKUMEN TERDETEKSI (${Math.round(maxConf * 100)}% YAKIN)`;
-        document.getElementById('ai-status-dot').classList.replace('bg-slate-400', 'bg-emerald-500');
+        document.getElementById('ai-status-dot').className = 'w-2 h-2 rounded-full bg-emerald-500';
     } else {
-        // Jika AI gagal menemukan dokumen, biarkan di titik default
+        // PERBAIKAN: Jika AI gagal, langsung panggil mode manual agar titik tidak hilang
         document.getElementById('ai-status-text').innerText = "DOKUMEN TIDAK TERDETEKSI - GESER MANUAL";
-        document.getElementById('ai-status-dot').classList.replace('bg-slate-400', 'bg-red-500');
+        document.getElementById('ai-status-dot').className = 'w-2 h-2 rounded-full bg-red-500';
+        setManualPoints(); 
     }
 
-    // Sembunyikan spinner dan update UI
+    const manualBtn = document.getElementById('manual-btn');
+    if (manualBtn) manualBtn.classList.remove('hidden');
+
     const spinner = document.getElementById('loading-spinner');
     if (spinner) spinner.classList.add('hidden');
     
     drawPoints();
     captureBtn.disabled = false;
     
-    // Bersihkan memory
     tf.dispose([input, predictions]);
 }
+
+
+function setManualPoints() {
+    const displayW = overlay.width;
+    const displayH = overlay.height;
+    
+    
+    const marginX = displayW * 0.15; 
+    const marginY = displayH * 0.15;
+    
+    points = [
+        { x: marginX, y: marginY }, // Top-Left
+        { x: displayW - marginX, y: marginY }, // Top-Right
+        { x: displayW - marginX, y: displayH - marginY }, // Bottom-Right
+        { x: marginX, y: displayH - marginY } // Bottom-Left
+    ];
+    
+    drawPoints();
+    
+    // Update UI Status
+    document.getElementById('ai-status-text').innerText = "MODE MANUAL AKTIF";
+    
+    document.getElementById('ai-status-dot').className = 'w-2 h-2 rounded-full bg-amber-500';
+    document.getElementById('capture-btn').disabled = false;
+}
+
+document.getElementById('manual-btn')?.addEventListener('click', setManualPoints);
 
 // 3. Draggable UI Logic
 function drawPoints() {
@@ -395,3 +422,4 @@ document.addEventListener('opencv-ready', () => {
     cv['onRuntimeInitialized'] = loadAI;
     if (cv.Mat) loadAI();
 });
+

@@ -37,6 +37,11 @@
                     "name" : "Riwayat Status Tiket",
                     "icon" : "ti ti-clock",
                     "route": "history.index" 
+                },
+                {
+                    "name" : "Scan Image and crop",
+                    "icon" : "ti ti-scan",
+                    "route": "test.scanner"
                 }
             ]
         },

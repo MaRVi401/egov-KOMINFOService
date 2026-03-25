@@ -73,18 +73,25 @@
                 </div>
 
                 <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-
                     <div class="viewport-container relative flex items-center justify-center">
 
-                        <div id="image-wrapper" class="relative inline-block w-fit h-fit mx-auto shadow-lg">
+                        <div id="image-wrapper" class="relative inline-block w-fit h-fit mx-auto shadow-lg group">
+                            
+                            <div id="image-placeholder" class="flex flex-col items-center justify-center p-12 text-slate-400">
+                                <div class="p-4 rounded-full bg-slate-100 dark:bg-slate-700/50 mb-3 border border-slate-200 dark:border-slate-600">
+                                    <svg class="w-12 h-12 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    </svg>
+                                </div>
+                                <p class="text-sm font-bold text-slate-500">Pratinjau dokumen</p>
+                                <p class="text-xs text-slate-400">Pilih file untuk memulai deteksi AI</p>
+                            </div>
 
-                            <img id="test-image" class="block max-w-full max-h-[70vh] w-auto h-auto rounded-lg"
-                                alt="Scanned Document" />
-
-                            <canvas id="overlay"
-                                class="absolute top-0 left-0 w-full h-full z-10 touch-none cursor-crosshair rounded-lg"></canvas>
-
+                            <img id="test-image" class="hidden block max-w-full max-h-[70vh] w-auto h-auto rounded-lg" alt="Scanned Document" />
+                            
+                            <canvas id="overlay" class="absolute top-0 left-0 w-full h-full z-10 touch-none cursor-crosshair rounded-lg"></canvas>
                         </div>
+
                     </div>
 
                     <div class="p-4 flex items-center justify-between bg-slate-50 dark:bg-slate-800/50">
@@ -92,10 +99,14 @@
                             <div id="ai-status-dot" class="w-2 h-2 rounded-full bg-slate-400"></div>
                             <span id="ai-status-text">Menunggu File...</span>
                         </div>
-                        <button id="capture-btn" disabled
-                            class="px-6 py-2.5 rounded-full bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm shadow-lg disabled:opacity-50 transition-all">
-                            Proses & Luruskan
-                        </button>
+                        <div class="flex items-center gap-2">
+                            <button id="manual-btn" class="hidden px-4 py-2.5 rounded-full bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 font-bold text-sm shadow-sm transition-all">
+                                Atur Manual
+                            </button>
+                            <button id="capture-btn" disabled class="px-6 py-2.5 rounded-full bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm shadow-lg disabled:opacity-50 transition-all">
+                                Proses & Luruskan
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
