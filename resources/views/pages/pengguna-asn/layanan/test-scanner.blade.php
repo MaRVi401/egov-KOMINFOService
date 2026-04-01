@@ -14,10 +14,8 @@
             justify-content: center;
             min-height: 500px;
             padding: 1rem;
-            /* Beri sedikit ruang bernapas */
         }
 
-        /* Container pembungkus yang ukurannya akan persis sama dengan gambar */
         #image-wrapper {
             position: relative;
             display: inline-block;
@@ -27,7 +25,6 @@
             max-width: 100%;
             max-height: 70vh;
             display: block;
-            /* Hapus object-fit: contain */
             width: auto;
             height: auto;
         }
@@ -47,7 +44,7 @@
 
 @section('content')
     <div class="space-y-6">
-        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mt-14">
             <div>
                 <h2 class="text-2xl font-bold text-slate-900 dark:text-white">AI DocScanner Pro</h2>
                 <p class="text-sm text-slate-500">Deteksi otomatis dengan opsi koreksi manual.</p>
@@ -87,7 +84,7 @@
                                 <p class="text-xs text-slate-400">Pilih file untuk memulai deteksi AI</p>
                             </div>
 
-                            <img id="test-image" class="hidden block max-w-full max-h-[70vh] w-auto h-auto rounded-lg" alt="Scanned Document" />
+                            <img id="test-image" class="hidden max-w-full max-h-[70vh] w-auto h-auto rounded-lg" alt="Scanned Document" />
                             
                             <canvas id="overlay" class="absolute top-0 left-0 w-full h-full z-10 touch-none cursor-crosshair rounded-lg"></canvas>
                         </div>
