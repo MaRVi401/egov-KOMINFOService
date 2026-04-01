@@ -203,7 +203,7 @@
             <h2 class="text-xl font-bold mb-2 text-gray-900 dark:text-white">Permohonan Berhasil!</h2>
             <p class="text-gray-600 dark:text-gray-400 mb-6">Dokumen permohonan sedang diunduh secara otomatis.</p>
             <div class="flex justify-center space-x-4">
-                <a href="/tiket/riwayat" class="px-6 py-2.5 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700">Cek Status Tiket</a>
+                <a href="/submission" class="px-6 py-2.5 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700">Cek Status Tiket</a>
                 <a href="/dashboard" class="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">Kembali ke Dashboard</a>
             </div>
         </div>

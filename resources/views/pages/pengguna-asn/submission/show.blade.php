@@ -142,8 +142,8 @@
                     } elseif ($namaLayanan == 'subdomain') {
                         $downloadUrl = url('services/subdomain/download/' . $ticket->uuid);
                     } elseif (in_array($namaLayanan, ['pembuatan aplikasi', 'pembuatan & pengembangan apps'])) {
-                        $downloadUrl = url('services/apps-creation/download/' . $ticket->uuid);
-                    }
+                        $downloadUrl = url('service-app-creation/download/' . $ticket->uuid);
+                    } 
                 @endphp
                 <div class="flex justify-center items-center">
                     <div class="w-full sm:w-auto">
