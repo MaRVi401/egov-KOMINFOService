@@ -78,7 +78,8 @@ class UserManagementController extends Controller
             'email'    => 'required|email|unique:users,email',
             'username' => 'required|string|unique:users,username',
             'role'     => 'required|in:super_admin,pengguna_asn,kabid,operator',
-            'nip'      => 'required|string|max:50',
+            'nip'      => 'required|numeric|digits:18',
+            'no_wa'    => 'nullable|numeric|digits_between:10,13',
             'password' => 'required|min:8|confirmed',
             'avatar'   => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ];
@@ -88,6 +89,10 @@ class UserManagementController extends Controller
             'avatar.image' => 'File yang diunggah harus berupa gambar.',
             'avatar.mimes' => 'Format gambar harus JPG, JPEG, PNG, atau WebP.',
             'email.unique' => 'Email ini sudah terdaftar di sistem.',
+            'nip.numeric' => 'NIP harus berupa angka.',
+            'nip.digits'  => 'NIP harus berjumlah tepat 18 digit.',
+            'no_wa.numeric' => 'Nomor WhatsApp harus berupa angka.',
+            'no_wa.digits_between' => 'Nomor WhatsApp harus berjumlah antara 10 sampai 13 digit.',
             'username.unique' => 'Username ini sudah digunakan.',
             'password.confirmed' => 'Konfirmasi password tidak cocok.',
         ];
@@ -159,7 +164,8 @@ class UserManagementController extends Controller
             'email'    => 'required|email|unique:users,email,' . $user->uuid . ',uuid',
             'username' => 'required|string|unique:users,username,' . $user->uuid . ',uuid',
             'role'     => 'required|in:super_admin,pengguna_asn,kabid,operator',
-            'nip'      => 'required|string|max:50',
+            'nip'      => 'required|numeric|digits:18',
+            'no_wa'    => 'nullable|numeric|digits_between:10,13',
             'avatar'   => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'password' => 'nullable|min:8|confirmed',
         ];
@@ -169,6 +175,10 @@ class UserManagementController extends Controller
             'avatar.mimes' => 'Format foto harus JPG, JPEG, PNG, atau WebP.',
             'email.unique' => 'Alamat email sudah digunakan oleh user lain.',
             'nip.required' => 'NIP wajib diisi untuk sinkronisasi data.',
+            'nip.numeric' => 'NIP harus berupa angka.',
+            'nip.digits'  => 'NIP harus berjumlah tepat 18 digit.',
+            'no_wa.numeric' => 'Nomor WhatsApp harus berupa angka.',
+            'no_wa.digits_between' => 'Nomor WhatsApp harus berjumlah antara 10 sampai 13 digit.',
         ];
 
         $request->validate($rules, $messages);

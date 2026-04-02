@@ -70,15 +70,15 @@
                     {{-- Username --}}
                     <div>
                         <label class="block mb-2 text-sm font-semibold text-gray-900 dark:text-white">Username</label>
-                        <input type="text" name="username" value="{{ $user->username }}"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                        <input type="text" name="username" value="{{ old('username', $user->username) }}"
+                            class="bg-gray-50 border {{ $errors->has('username') ? 'border-red-500 dark:border-red-500' : 'border-gray-300 dark:border-gray-600' }} text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:text-white"
                             required>
                     </div>
                     {{-- NIP --}}
                     <div>
                         <label class="block mb-2 text-sm font-semibold text-gray-900 dark:text-white">NIP</label>
-                        <input type="text" name="nip" value="{{ $nip }}"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                        <input type="text" name="nip" value="{{ old('nip', $nip) }}"
+                            class="bg-gray-50 border {{ $errors->has('nip') ? 'border-red-500 dark:border-red-500' : 'border-gray-300 dark:border-gray-600' }} text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:text-white"
                             required>
                     </div>
                     {{-- Role --}}
@@ -97,8 +97,8 @@
                     {{-- WhatsApp --}}
                     <div>
                         <label class="block mb-2 text-sm font-semibold text-gray-900 dark:text-white">Nomor WhatsApp</label>
-                        <input type="text" name="no_wa" value="{{ $user->no_wa }}"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                        <input type="text" name="no_wa" value="{{ old('no_wa', $user->no_wa) }}"
+                            class="bg-gray-50 border {{ $errors->has('no_wa') ? 'border-red-500 dark:border-red-500' : 'border-gray-300 dark:border-gray-600' }} text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:text-white">
                     </div>
 
                     {{-- Alamat --}}
@@ -106,7 +106,7 @@
                         <label class="block mb-2 text-sm font-semibold text-gray-900 dark:text-white">Alamat Lengkap</label>
                         <textarea name="alamat" rows="3"
                             class="bg-gray-50 border text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:text-white transition-colors
-        {{ $errors->has('alamat') ? 'border-red-500 dark:border-red-500' : 'border-gray-300 dark:border-gray-600' }}"
+                            {{ $errors->has('alamat') ? 'border-red-500 dark:border-red-500' : 'border-gray-300 dark:border-gray-600' }}"
                             placeholder="Masukkan alamat lengkap sesuai KTP...">{{ old('alamat', $user->alamat) }}</textarea>
                         @error('alamat')
                             <p class="mt-1.5 text-xs font-medium text-red-600 dark:text-red-500">{{ $message }}</p>
@@ -133,7 +133,7 @@
                             <input type="file" name="avatar" id="avatar-input" accept="image/*"
                                 onchange="previewImage(this)"
                                 class="block w-full text-xs text-gray-900 border rounded-lg cursor-pointer bg-white focus:outline-none dark:bg-gray-800 dark:placeholder-gray-400 transition-colors
-                {{ $errors->has('avatar') ? 'border-red-500 dark:border-red-500' : 'border-gray-300 dark:border-gray-600 dark:text-gray-400' }}">
+                                {{ $errors->has('avatar') ? 'border-red-500 dark:border-red-500' : 'border-gray-300 dark:border-gray-600 dark:text-gray-400' }}">
 
                             @error('avatar')
                                 <div class="flex items-center gap-1 mt-1.5 text-red-600 dark:text-red-500">
@@ -169,7 +169,7 @@
                             </label>
                             <input type="password" name="password"
                                 class="bg-gray-50 border text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:text-white transition-colors
-                {{ $errors->has('password') ? 'border-red-500 dark:border-red-500' : 'border-gray-300 dark:border-gray-600' }}">
+                            {{ $errors->has('password') ? 'border-red-500 dark:border-red-500' : 'border-gray-300 dark:border-gray-600' }}">
 
                             @error('password')
                                 <p class="mt-1.5 text-xs font-medium text-red-600 dark:text-red-500">{{ $message }}</p>

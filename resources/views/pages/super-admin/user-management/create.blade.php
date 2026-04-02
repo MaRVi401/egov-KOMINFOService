@@ -67,7 +67,7 @@
                     {{-- Email --}}
                     <div>
                         <label class="block mb-2 text-sm font-semibold text-gray-900 dark:text-white">Email</label>
-                        <input type="email" name="email" value="{{ old('email') }}" placeholder="name@company.com"
+                        <input type="email" name="email" value="{{ old('email') }}" placeholder="nama@subang.go.id"
                             class="bg-gray-50 border text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:text-white transition-colors
                         {{ $errors->has('email') ? 'border-red-500 dark:border-red-500' : 'border-gray-300 dark:border-gray-600' }}">
                         @error('email')
@@ -89,9 +89,10 @@
                     {{-- NIP --}}
                     <div>
                         <label class="block mb-2 text-sm font-semibold text-gray-900 dark:text-white">NIP</label>
-                        <input type="text" name="nip" value="{{ old('nip') }}"
+                        <input type="text" name="nip" value="{{ old('nip') }}" maxlength="18"
+                            oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="199001012015011001"
                             class="bg-gray-50 border text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:text-white transition-colors
-                        {{ $errors->has('nip') ? 'border-red-500 dark:border-red-500' : 'border-gray-300 dark:border-gray-600' }}">
+                            {{ $errors->has('nip') ? 'border-red-500 dark:border-red-500' : 'border-gray-300 dark:border-gray-600' }}">
                         @error('nip')
                             <p class="mt-1.5 text-xs font-medium text-red-600 dark:text-red-500">{{ $message }}</p>
                         @enderror
@@ -114,8 +115,13 @@
                     {{-- WhatsApp --}}
                     <div>
                         <label class="block mb-2 text-sm font-semibold text-gray-900 dark:text-white">Nomor WhatsApp</label>
-                        <input type="text" name="no_wa" value="{{ old('no_wa') }}"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                        <input type="text" name="no_wa" value="{{ old('no_wa') }}" maxlength="13"
+                            oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="081234567890"
+                            class="bg-gray-50 border text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:text-white transition-colors
+                            {{ $errors->has('no_wa') ? 'border-red-500' : 'border-gray-300' }}">
+                        @error('no_wa')
+                            <p class="mt-1.5 text-xs font-medium text-red-600">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     {{-- Alamat --}}
@@ -123,7 +129,7 @@
                         <label class="block mb-2 text-sm font-semibold text-gray-900 dark:text-white">Alamat Lengkap</label>
                         <textarea name="alamat" rows="3"
                             class="bg-gray-50 border text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:text-white transition-colors
-        {{ $errors->has('alamat') ? 'border-red-500 dark:border-red-500' : 'border-gray-300 dark:border-gray-600' }}"
+                            {{ $errors->has('alamat') ? 'border-red-500 dark:border-red-500' : 'border-gray-300 dark:border-gray-600' }}"
                             placeholder="Masukkan alamat lengkap sesuai KTP...">{{ old('alamat') }}</textarea>
                         @error('alamat')
                             <p class="mt-1.5 text-xs font-medium text-red-600 dark:text-red-500">{{ $message }}</p>
