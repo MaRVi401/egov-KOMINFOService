@@ -101,6 +101,11 @@ Route::middleware('auth')->group(function () {
         // Halaman Meja Kerja
         Route::get('workdesk', [OperatorTicketController::class, 'workDesk'])->name('ticket.workdesk');
 
+        Route::prefix('dev')->group(function () {
+            Route::get('/upload-template', [DevTemplateController::class, 'index'])->name('dev.template.index');
+            Route::post('/upload-template', [DevTemplateController::class, 'store'])->name('dev.template.store');
+        });
+
         // Proses Ambil Tiket
         Route::post('ticket/{uuid}/handle', [OperatorTicketController::class, 'handle'])->name('ticket.handle');
 
@@ -142,11 +147,6 @@ Route::middleware('auth')->group(function () {
         //Rute untuk pengaduan
         Route::resource('service-complaint-system', ServiceComplaintSystemController::class);
 
-
-        Route::prefix('dev')->group(function () {
-            Route::get('/upload-template', [DevTemplateController::class, 'index'])->name('dev.template.index');
-            Route::post('/upload-template', [DevTemplateController::class, 'store'])->name('dev.template.store');
-        });
 
         //Rute Submission
         Route::post('/submission/{uuid}/upload', [SubmissionController::class, 'uploadDocument'])->name('submission.upload');

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\Vite;
 
 class SecurityHeaders
 {
@@ -18,12 +19,14 @@ class SecurityHeaders
         // 2. Bagikan nonce ke semua view Blade
         View::share('csp_nonce', $nonce);
 
+        Vite::useCspNonce($nonce);
+
         $response = $next($request);
 
         // Dapatkan base URL dan WebSocket URL untuk digunakan dalam CSP
         $baseUrl = $request->getSchemeAndHttpHost();
         $wsUrl = "ws://" . $request->getHost() . ":*";
-        $allowedHosts = "{$baseUrl} http://127.0.0.1:* http://localhost:* http://192.168.200.196:* http://192.168.200.51:*";
+        $allowedHosts = "{$baseUrl} http://127.0.0.1:* http://localhost:*";
         // 3. Konfigurasi Content Security Policy (CSP)
         $cspPolicy = [
             "default-src 'self'",
