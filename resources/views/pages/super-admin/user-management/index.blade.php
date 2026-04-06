@@ -28,7 +28,14 @@
                 </li>
             </ol>
         </nav>
+
         <hr class="mb-6 border-gray-200 dark:border-gray-700">
+
+        {{-- Title Section --}}
+        <div class="mb-6">
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white">User Management</h3>
+            <p class="text-sm text-gray-500 dark:text-gray-400">Kelola pengguna dan hak akses sistem secara efektif.</p>
+        </div>
 
         {{-- Header Section (Search, Filter & Add) --}}
         <div class="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 mb-6">
