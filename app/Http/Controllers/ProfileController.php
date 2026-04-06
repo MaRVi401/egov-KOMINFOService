@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\{Auth, Hash, Storage, DB};
 use Illuminate\Validation\Rule;
 use Intervention\Image\Laravel\Facades\Image;
 use Illuminate\Support\Str;
+use App\Models\JejakAudit;
 
 class ProfileController extends Controller
 {
@@ -93,6 +94,16 @@ class ProfileController extends Controller
             if ($hasNewFile && $oldAvatar && Storage::disk('s3')->exists($oldAvatar)) {
                 Storage::disk('s3')->delete($oldAvatar);
             }
+
+            JejakAudit::create([
+                'users_id' => Auth::id(),
+                'aksi' => 'update',
+                'nama_tabel' => 'users',
+                'record_id' => $user->uuid,
+                'data_lama' => $user->getOriginal(), // Original menangkap data sebelum diubah
+                'data_baru' => $user->fresh()->toArray(),
+                'ip_address' => request()->ip()
+            ]);
 
             DB::commit();
             return back()->with('success', 'Profil berhasil diperbarui!');

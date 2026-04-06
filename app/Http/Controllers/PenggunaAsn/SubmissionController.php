@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
+use App\Models\JejakAudit;
 
 class SubmissionController extends Controller
 {
@@ -79,7 +80,14 @@ class SubmissionController extends Controller
                 Storage::disk('s3')->delete($ticket->lampiran);
             }
         }
-
+        JejakAudit::create([
+            'users_id' => Auth::id(),
+            'aksi' => 'delete',
+            'nama_tabel' => 'tiket',
+            'record_id' => $ticket->uuid,
+            'data_lama' => $ticket->toArray(), // Menyimpan detail tiket yang dihapus
+            'ip_address' => request()->ip()
+        ]);
 
         $ticket->delete();
 
@@ -117,6 +125,15 @@ class SubmissionController extends Controller
             $ticket->petugas_id = null;
             $ticket->save();
 
+            JejakAudit::create([
+                'users_id' => Auth::id(),
+                'aksi' => 'update',
+                'nama_tabel' => 'tiket',
+                'record_id' => $ticket->uuid,
+                'data_lama' => ['lampiran' => null, 'status' => 'belum diajukan'],
+                'data_baru' => ['lampiran' => $path, 'status' => 'diajukan'],
+                'ip_address' => request()->ip()
+            ]);
             return back()->with('success', 'Dokumen Gambar berhasil diunggah ke MinIO!');
         }
 

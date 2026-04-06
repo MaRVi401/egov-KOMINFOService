@@ -13,6 +13,7 @@ use App\Models\DetailTiketLayananPembuatanApp;
 use App\Models\RiwayatStatusTiket;
 use App\Models\Layanan;
 use App\Services\WordTemplateServiceAppsCreation;
+use App\Models\JejakAudit;
 
 class ServiceAppsCreationController extends Controller
 {
@@ -58,6 +59,15 @@ class ServiceAppsCreationController extends Controller
                 'tiket_id' => $tiket->uuid,
                 'users_id' => Auth::user()->uuid, 
                 'status'   => 'belum diajukan'
+            ]);
+
+            JejakAudit::create([
+                'users_id' => Auth::id(),
+                'aksi' => 'create',
+                'nama_tabel' => 'tiket',
+                'record_id' => $tiket->uuid,
+                'data_baru' => $tiket->toArray(), // Merekam detail tiket awal
+                'ip_address' => request()->ip()
             ]);
 
             DB::commit();

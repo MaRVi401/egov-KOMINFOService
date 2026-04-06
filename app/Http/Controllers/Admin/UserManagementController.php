@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Intervention\Image\Laravel\Facades\Image;
 use Illuminate\Support\Str;
+use App\Models\JejakAudit;
 
 class UserManagementController extends Controller
 {
@@ -98,6 +99,15 @@ class UserManagementController extends Controller
         ];
 
         $request->validate($rules, $messages);
+
+        JejakAudit::create([
+            'users_id' => Auth::id(),
+            'aksi' => 'create',
+            'nama_tabel' => 'users',
+            'record_id' => $user->uuid,
+            'data_baru' => $user->toArray(),
+            'ip_address' => request()->ip()
+        ]);
 
         DB::beginTransaction();
         try {
@@ -194,6 +204,7 @@ class UserManagementController extends Controller
             $user->no_wa = $request->no_wa;
             $user->alamat = $request->alamat;
             $user->role = $newRole;
+            $dataLama = $user->getOriginal();
 
             if ($request->filled('password')) {
                 $user->password = Hash::make($request->password);
@@ -230,6 +241,16 @@ class UserManagementController extends Controller
                 $this->getRoleModel($newRole)::where('users_id', $user->uuid)->update(['nip' => $request->nip]);
             }
 
+            JejakAudit::create([
+                'users_id' => Auth::id(),
+                'aksi' => 'update',
+                'nama_tabel' => 'users',
+                'record_id' => $user->uuid,
+                'data_lama' => $dataLama,
+                'data_baru' => $user->fresh()->toArray(),
+                'ip_address' => request()->ip()
+            ]);
+
             DB::commit();
             return redirect()->route('user-management.index')->with('success', 'Profil user diperbarui.');
         } catch (\Exception $e) {
@@ -251,7 +272,17 @@ class UserManagementController extends Controller
         if ($user->avatar) {
             Storage::disk('s3')->delete($user->avatar);
         }
+        
+        JejakAudit::create([
+            'users_id' => Auth::id(),
+            'aksi' => 'delete',
+            'nama_tabel' => 'users',
+            'record_id' => $user->uuid,
+            'data_lama' => $user->toArray(),
+            'ip_address' => request()->ip()
+        ]);
 
+        
         $user->delete(); // Cascade delete handles detail tables
         return redirect()->route('user-management.index')->with('success', 'User deleted successfully.');
     }

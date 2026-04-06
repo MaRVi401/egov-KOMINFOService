@@ -14,6 +14,7 @@ use App\Models\RiwayatStatusTiket;
 use App\Models\Layanan;
 use App\Models\DetailTiketLayananSubdomain;
 use App\Services\WordTemplateServiceSubdomain;
+use App\Models\JejakAudit;
 
 class ServiceSubDomainController extends Controller
 {
@@ -59,6 +60,16 @@ class ServiceSubDomainController extends Controller
                 'status'    => 'belum diajukan',
                 'catatan'   => 'Permohonan baru diajukan'
             ]);
+            
+            JejakAudit::create([
+                'users_id' => Auth::id(),
+                'aksi' => 'create',
+                'nama_tabel' => 'tiket',
+                'record_id' => $tiket->uuid,
+                'data_baru' => $tiket->toArray(), // Merekam detail tiket awal
+                'ip_address' => request()->ip()
+            ]);
+            
 
             DB::commit();
 

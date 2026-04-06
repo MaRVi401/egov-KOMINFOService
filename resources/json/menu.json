@@ -12,7 +12,13 @@
                     "name": "User Management",
                     "icon": "ti ti-users-group",
                     "route": "user-management.index"
+                },
+                {
+                    "name": "Mini SIEM",
+                    "icon": "ti ti-radar",
+                    "route" : "siem.index"
                 }
+                
             ]
         },
         {

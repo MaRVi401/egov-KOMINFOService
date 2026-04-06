@@ -15,7 +15,8 @@ use Intervention\Image\Drivers\Gd\Driver;
 use App\Models\Tiket;
 use App\Models\Layanan;
 use App\Models\RiwayatStatusTiket;
-use App\Models\DetailTiketLayananPengaduanElektronik; 
+use App\Models\DetailTiketLayananPengaduanElektronik;
+use App\Models\JejakAudit;
 
 class ServiceComplaintSystemController extends Controller
 {
@@ -51,6 +52,15 @@ class ServiceComplaintSystemController extends Controller
                 'tiket_id'  => $tiket->uuid,
                 'users_id'  => Auth::user()->uuid, 
                 'status'    => 'diajukan',
+            ]);
+
+            JejakAudit::create([
+                'users_id' => Auth::id(),
+                'aksi' => 'create',
+                'nama_tabel' => 'tiket',
+                'record_id' => $tiket->uuid,
+                'data_baru' => $tiket->toArray(), // Merekam detail tiket awal
+                'ip_address' => request()->ip()
             ]);
 
             DB::commit();

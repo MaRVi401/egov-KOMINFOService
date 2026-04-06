@@ -14,6 +14,7 @@ use App\Http\Controllers\PenggunaAsn\ServiceComplaintSystemController;
 use App\Http\Controllers\PenggunaAsn\SubmissionController;
 use App\Http\Controllers\PenggunaAsn\ServiceHistoryTicketController;
 use App\Http\Controllers\Operator\TicketController as OperatorTicketController;
+use App\Http\Controllers\Admin\SiemController;
 
 /*
 |--------------------------------------------------------------------------
@@ -86,6 +87,12 @@ Route::middleware('auth')->group(function () {
         Route::resource('user-management', UserManagementController::class)
             ->names('user-management')
             ->parameters(['user-management' => 'user']);
+
+        Route::prefix('super-admin/siem')->name('siem.')->controller(SiemController::class)->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('/security-logs', 'securityLogs')->name('security-logs');
+            Route::get('/audit-trails', 'auditTrails')->name('audit-trails');
+        });
     });
 
 

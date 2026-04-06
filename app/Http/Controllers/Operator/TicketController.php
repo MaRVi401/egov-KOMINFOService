@@ -10,6 +10,7 @@ use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
+use App\Models\JejakAudit;
 
 class TicketController extends Controller
 {
@@ -62,6 +63,17 @@ class TicketController extends Controller
                 'users_id'   => $request->user()->uuid,
                 'status'     => 'ditangani',
                 'created_at' => now(),
+            ]);
+
+
+            JejakAudit::create([
+                'users_id' => $request->user()->uuid,
+                'aksi' => 'update',
+                'nama_tabel' => 'tiket',
+                'record_id' => $ticket->uuid,
+                'data_lama' => ['status' => 'diajukan', 'petugas_id' => null],
+                'data_baru' => ['status' => 'ditangani', 'petugas_id' => $request->user()->uuid],
+                'ip_address' => $request->ip()
             ]);
         });
 

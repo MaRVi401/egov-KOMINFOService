@@ -207,6 +207,31 @@ return new class extends Migration
             $table->text('kembang_ket_fitur')->nullable();
             $table->timestamps();
         });
+
+        Schema::create('log_keamanan', function (Blueprint $table) {
+            $table->uuid('uuid')->primary();
+            // nullable karena kalau login gagal, bisa jadi user-nya belum ada di sistem
+            $table->foreignUuid('users_id')->nullable()->constrained('users', 'uuid')->nullOnDelete(); 
+            $table->string('username_attempt')->comment('Mencatat username/email yang dicoba saat login');
+            $table->enum('tipe_event', ['login_sukses', 'login_gagal', 'logout', 'lockout']);
+            $table->string('ip_address', 45)->nullable(); // 45 chars cukup untuk IPv4 & IPv6
+            $table->text('user_agent')->nullable()->comment('Mencatat device/browser yang digunakan');
+            $table->boolean('is_suspicious')->default(false)->comment('Flag untuk memicu alert jika terdeteksi brute force');
+            $table->timestamps();
+        });
+
+        Schema::create('jejak_audit', function (Blueprint $table) {
+            $table->uuid('uuid')->primary();
+            // Siapa yang melakukan aksi (bisa nullable jika aksi dilakukan oleh sistem/cron)
+            $table->foreignUuid('users_id')->nullable()->constrained('users', 'uuid')->nullOnDelete();
+            $table->enum('aksi', ['create', 'update', 'delete']);
+            $table->string('nama_tabel')->comment('Contoh: layanan, tiket, detail_tiket_layanan_email_gov');
+            $table->uuid('record_id')->comment('UUID dari data yang diubah');
+            $table->json('data_lama')->nullable()->comment('Menyimpan state sebelum diubah');
+            $table->json('data_baru')->nullable()->comment('Menyimpan state setelah diubah');
+            $table->string('ip_address', 45)->nullable();
+            $table->timestamps();
+        });
     }
 
     public function down(): void
@@ -224,5 +249,7 @@ return new class extends Migration
         Schema::dropIfExists('pengguna_asn');
         Schema::dropIfExists('super_admin');
         Schema::dropIfExists('users');
+        Schema::dropIfExists('jejak_audit');
+        Schema::dropIfExists('log_keamanan');
     }
 };
