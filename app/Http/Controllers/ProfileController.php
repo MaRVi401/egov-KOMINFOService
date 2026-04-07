@@ -40,11 +40,9 @@ class ProfileController extends Controller
             'email'    => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user->uuid, 'uuid')],
             'no_wa'    => 'nullable|string|min:10|max:15|regex:/^[0-9]+$/',
             'alamat'   => 'nullable|string',
-            // VALIDASI: Diubah ke 2048 (2MB)
             'avatar'   => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
             'password' => 'nullable|string|min:8|confirmed',
         ], [
-            // PESAN CUSTOM: Agar muncul pesan spesifik dalam Bahasa Indonesia
             'avatar.max'         => 'Ukuran foto profil tidak boleh lebih dari 2 MB.',
             'avatar.image'       => 'File yang diunggah harus berupa gambar.',
             'avatar.mimes'       => 'Format gambar harus jpeg, png, jpg, atau webp.',
@@ -100,7 +98,7 @@ class ProfileController extends Controller
                 'aksi' => 'update',
                 'nama_tabel' => 'users',
                 'record_id' => $user->uuid,
-                'data_lama' => $user->getOriginal(), // Original menangkap data sebelum diubah
+                'data_lama' => $user->getOriginal(),
                 'data_baru' => $user->fresh()->toArray(),
                 'ip_address' => request()->ip()
             ]);
@@ -109,8 +107,6 @@ class ProfileController extends Controller
             return back()->with('success', 'Profil berhasil diperbarui!');
         } catch (\Exception $e) {
             DB::rollBack();
-
-            // Cleanup: Hapus file baru di S3 jika database gagal update
             if ($newFilename && Storage::disk('s3')->exists($newFilename)) {
                 Storage::disk('s3')->delete($newFilename);
             }
