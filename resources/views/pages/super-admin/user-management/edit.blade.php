@@ -77,9 +77,13 @@
                     {{-- NIP --}}
                     <div>
                         <label class="block mb-2 text-sm font-semibold text-gray-900 dark:text-white">NIP</label>
-                        <input type="text" name="nip" value="{{ old('nip', $nip) }}"
+                        <input type="text" name="nip" value="{{ old('nip', $nip) }}" maxlength="18"
+                            oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="199001012015011001"
                             class="bg-gray-50 border {{ $errors->has('nip') ? 'border-red-500 dark:border-red-500' : 'border-gray-300 dark:border-gray-600' }} text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:text-white"
                             required>
+                        @error('nip')
+                            <p class="mt-1.5 text-xs font-medium text-red-600 dark:text-red-500">{{ $message }}</p>
+                        @enderror
                     </div>
                     {{-- Role --}}
                     <div>
@@ -97,7 +101,8 @@
                     {{-- WhatsApp --}}
                     <div>
                         <label class="block mb-2 text-sm font-semibold text-gray-900 dark:text-white">Nomor WhatsApp</label>
-                        <input type="text" name="no_wa" value="{{ old('no_wa', $user->no_wa) }}"
+                        <input type="text" name="no_wa" value="{{ old('no_wa', $user->no_wa) }}" maxlength="13"
+                            oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                             class="bg-gray-50 border {{ $errors->has('no_wa') ? 'border-red-500 dark:border-red-500' : 'border-gray-300 dark:border-gray-600' }} text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:text-white">
                     </div>
 

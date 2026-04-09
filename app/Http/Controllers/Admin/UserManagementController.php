@@ -73,7 +73,6 @@ class UserManagementController extends Controller
      */
     public function store(Request $request)
     {
-        // 1. Validasi dengan Custom Messages
         $rules = [
             'nama'     => 'required|string|max:255',
             'email'    => 'required|email|unique:users,email',
@@ -84,49 +83,22 @@ class UserManagementController extends Controller
             'password' => 'required|min:8|confirmed',
             'avatar'   => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ];
-
-        $messages = [
-            'avatar.max'   => 'Ukuran foto terlalu besar, maksimal adalah 2MB.',
-            'avatar.image' => 'File yang diunggah harus berupa gambar.',
-            'avatar.mimes' => 'Format gambar harus JPG, JPEG, PNG, atau WebP.',
-            'email.unique' => 'Email ini sudah terdaftar di sistem.',
-            'nip.numeric' => 'NIP harus berupa angka.',
-            'nip.digits'  => 'NIP harus berjumlah tepat 18 digit.',
-            'no_wa.numeric' => 'Nomor WhatsApp harus berupa angka.',
-            'no_wa.digits_between' => 'Nomor WhatsApp harus berjumlah antara 10 sampai 13 digit.',
-            'username.unique' => 'Username ini sudah digunakan.',
-            'password.confirmed' => 'Konfirmasi password tidak cocok.',
-        ];
+        $messages = $this->customMessages();
 
         $request->validate($rules, $messages);
-
-        JejakAudit::create([
-            'users_id' => Auth::id(),
-            'aksi' => 'create',
-            'nama_tabel' => 'users',
-            'record_id' => $user->uuid,
-            'data_baru' => $user->toArray(),
-            'ip_address' => request()->ip()
-        ]);
 
         DB::beginTransaction();
         try {
             $avatarPath = null;
-
-            // 2. Proses Gambar ke WebP
             if ($request->hasFile('avatar')) {
                 $file = $request->file('avatar');
                 $filename = 'avatars/' . Str::random(40) . '.webp';
-
-                $image = Image::read($file)
-                    ->scale(width: 500)
-                    ->encodeByExtension('webp', quality: 75);
-
+                $image = Image::read($file)->scale(width: 500)->encodeByExtension('webp', quality: 75);
                 Storage::disk('s3')->put($filename, (string) $image);
                 $avatarPath = $filename;
             }
 
-            // 3. Simpan User Utama
+            // Simpan User Utama
             $user = User::create([
                 'nama'     => $request->nama,
                 'email'    => $request->email,
@@ -138,11 +110,21 @@ class UserManagementController extends Controller
                 'avatar'   => $avatarPath,
             ]);
 
-            // 4. Simpan Detail Role
+            // Simpan Detail Role (NIP)
             $this->getRoleModel($request->role)::create([
                 'uuid'     => (string) Str::uuid(),
                 'users_id' => $user->uuid,
                 'nip'      => $request->nip,
+            ]);
+
+            // Catat Audit setelah data berhasil dibuat
+            JejakAudit::create([
+                'users_id' => Auth::id(),
+                'aksi' => 'create',
+                'nama_tabel' => 'users',
+                'record_id' => $user->uuid,
+                'data_baru' => $user->toArray(),
+                'ip_address' => request()->ip()
             ]);
 
             DB::commit();
@@ -179,66 +161,51 @@ class UserManagementController extends Controller
             'avatar'   => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'password' => 'nullable|min:8|confirmed',
         ];
-
-        $messages = [
-            'avatar.max' => 'Ukuran foto maksimal 2MB.',
-            'avatar.mimes' => 'Format foto harus JPG, JPEG, PNG, atau WebP.',
-            'email.unique' => 'Alamat email sudah digunakan oleh user lain.',
-            'nip.required' => 'NIP wajib diisi untuk sinkronisasi data.',
-            'nip.numeric' => 'NIP harus berupa angka.',
-            'nip.digits'  => 'NIP harus berjumlah tepat 18 digit.',
-            'no_wa.numeric' => 'Nomor WhatsApp harus berupa angka.',
-            'no_wa.digits_between' => 'Nomor WhatsApp harus berjumlah antara 10 sampai 13 digit.',
-        ];
-
+        $messages = $this->customMessages();
         $request->validate($rules, $messages);
 
         DB::beginTransaction();
         try {
-            $oldRole = $user->role;
-            $newRole = $request->role;
+            $oldRole = $user->getOriginal('role');
+            $dataLama = $user->getRawOriginal();
 
             $user->nama = $request->nama;
             $user->email = $request->email;
             $user->username = $request->username;
             $user->no_wa = $request->no_wa;
             $user->alamat = $request->alamat;
-            $user->role = $newRole;
-            $dataLama = $user->getOriginal();
+            $user->role = $request->role;
 
             if ($request->filled('password')) {
                 $user->password = Hash::make($request->password);
             }
 
-            // 5. Update Gambar & Hapus File Lama
             if ($request->hasFile('avatar')) {
                 if ($user->avatar) {
                     Storage::disk('s3')->delete($user->avatar);
                 }
-
-                $file = $request->file('avatar');
                 $filename = 'avatars/' . Str::random(40) . '.webp';
-
-                $image = Image::read($file)
-                    ->scale(width: 500)
-                    ->encodeByExtension('webp', quality: 75);
-
+                $image = Image::read($request->file('avatar'))->scale(width: 500)->encodeByExtension('webp', quality: 75);
                 Storage::disk('s3')->put($filename, (string) $image);
                 $user->avatar = $filename;
             }
 
             $user->save();
 
-            // 6. Sinkronisasi Tabel Role
-            if ($oldRole !== $newRole) {
+            // Sinkronisasi Tabel Role
+            if ($oldRole !== $request->role) {
                 $this->getRoleModel($oldRole)::where('users_id', $user->uuid)->delete();
-                $this->getRoleModel($newRole)::create([
+                $this->getRoleModel($request->role)::create([
                     'uuid' => (string) Str::uuid(),
                     'users_id' => $user->uuid,
                     'nip' => $request->nip,
                 ]);
             } else {
-                $this->getRoleModel($newRole)::where('users_id', $user->uuid)->update(['nip' => $request->nip]);
+                // Gunakan updateOrCreate untuk memastikan record detail role ada
+                $this->getRoleModel($request->role)::updateOrCreate(
+                    ['users_id' => $user->uuid],
+                    ['nip' => $request->nip]
+                );
             }
 
             JejakAudit::create([
@@ -272,7 +239,7 @@ class UserManagementController extends Controller
         if ($user->avatar) {
             Storage::disk('s3')->delete($user->avatar);
         }
-        
+
         JejakAudit::create([
             'users_id' => Auth::id(),
             'aksi' => 'delete',
@@ -282,7 +249,7 @@ class UserManagementController extends Controller
             'ip_address' => request()->ip()
         ]);
 
-        
+
         $user->delete(); // Cascade delete handles detail tables
         return redirect()->route('user-management.index')->with('success', 'User deleted successfully.');
     }
@@ -298,5 +265,28 @@ class UserManagementController extends Controller
             'kabid'        => Kabid::class,
             'operator'     => Operator::class,
         ][$role];
+    }
+
+    private function customMessages()
+    {
+        return [
+            'nama.required'     => 'Nama lengkap wajib diisi.',
+            'email.required'    => 'Alamat email wajib diisi.',
+            'email.email'       => 'Format email tidak valid.',
+            'email.unique'      => 'Email sudah terdaftar di sistem.',
+            'username.required' => 'Username wajib diisi.',
+            'username.unique'   => 'Username sudah digunakan.',
+            'nip.required'      => 'NIP wajib diisi.',
+            'nip.numeric'       => 'NIP harus berupa angka.',
+            'nip.digits'        => 'NIP harus berjumlah 18 digit.',
+            'no_wa.numeric'     => 'Nomor WhatsApp harus berupa angka.',
+            'no_wa.digits_between' => 'Nomor WhatsApp harus berjumlah antara 10 sampai 13 digit.',
+            'password.required' => 'Password wajib diisi.',
+            'password.min'      => 'Password minimal harus 8 karakter.',
+            'password.confirmed' => 'Konfirmasi password tidak cocok.',
+            'avatar.image'      => 'File yang diunggah harus berupa gambar.',
+            'avatar.mimes'      => 'Format gambar harus JPG, JPEG, PNG, atau WebP.',
+            'avatar.max'        => 'Ukuran foto terlalu besar, maksimal adalah 2MB.',
+        ];
     }
 }
