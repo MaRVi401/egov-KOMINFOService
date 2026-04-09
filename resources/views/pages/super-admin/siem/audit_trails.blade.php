@@ -11,7 +11,7 @@
             </svg>
             Kembali ke Dashboard SIEM
         </a>
-        Q
+
         <div class="mb-6">
             <h2 class="text-xl font-bold text-gray-900 dark:text-white">Jejak Audit (Audit Trails)</h2>
             <p class="text-sm text-gray-500 dark:text-gray-400">Rekaman perubahan data di dalam sistem untuk transparansi operasional.</p>
