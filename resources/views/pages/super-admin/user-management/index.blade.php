@@ -225,10 +225,13 @@
             </div>
         </div>
 
-        {{-- Pagination Section --}}
         <div class="mt-6">
             {{ $users->appends(['search' => request('search')])->links() }}
         </div>
+    </div>
+
+    <div id="session-flash" aria-hidden="true" data-success="{{ session('success') }}"
+        data-error="{{ session('error') }}">
     </div>
 
     @push('scripts')

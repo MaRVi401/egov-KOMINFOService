@@ -231,27 +231,40 @@ class UserManagementController extends Controller
      */
     public function destroy(User $user)
     {
+        // 1. Validasi: Jangan hapus diri sendiri
         if ($user->uuid === Auth::id()) {
-            return back()->with('error', 'You cannot delete your own account.');
+            return back()->with('error', 'Anda tidak dapat menghapus akun sendiri.');
         }
 
-        // Delete from Minio
-        if ($user->avatar) {
-            Storage::disk('s3')->delete($user->avatar);
+        // 2. Validasi Relasi: Cek apakah user ini masih dirujuk oleh tabel tiket
+        if ($user->tiketDitangani()->exists() || $user->tiketDibuat()->exists()) {
+            return back()->with('error', 'User ini masih memiliki riwayat tiket yang terdaftar.');
         }
 
-        JejakAudit::create([
-            'users_id' => Auth::id(),
-            'aksi' => 'delete',
-            'nama_tabel' => 'users',
-            'record_id' => $user->uuid,
-            'data_lama' => $user->toArray(),
-            'ip_address' => request()->ip()
-        ]);
+        // 3. Proses hapus jika tidak ada relasi
+        DB::beginTransaction();
+        try {
+            if ($user->avatar) {
+                Storage::disk('s3')->delete($user->avatar);
+            }
 
+            JejakAudit::create([
+                'users_id' => Auth::id(),
+                'aksi' => 'delete',
+                'nama_tabel' => 'users',
+                'record_id' => $user->uuid,
+                'data_lama' => $user->toArray(),
+                'ip_address' => request()->ip()
+            ]);
 
-        $user->delete(); // Cascade delete handles detail tables
-        return redirect()->route('user-management.index')->with('success', 'User deleted successfully.');
+            $user->delete();
+            DB::commit();
+
+            return redirect()->route('user-management.index')->with('success', 'User berhasil dihapus.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Terjadi kesalahan sistem: ' . $e->getMessage());
+        }
     }
 
     /**

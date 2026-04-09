@@ -6,7 +6,7 @@ window.confirmDelete = function (uuid, userName) {
         title: 'Konfirmasi Hapus User',
         html: `Apakah Anda yakin? Data <b>${userName}</b> akan dihapus secara permanen dari MinIO dan Database.<br><br>Ketik nama user di bawah untuk konfirmasi:`,
         input: 'text',
-        inputPlaceholder: 'Ketik nama lengkap user...', 
+        inputPlaceholder: 'Ketik nama lengkap user...',
         inputAttributes: {
             autocapitalize: 'off'
         },
@@ -42,7 +42,7 @@ window.previewImage = function (input) {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
-    
+
     const searchInput = document.getElementById('simple-search');
     const clearBtn = document.querySelector('[title="Bersihkan Pencarian"]');
 
@@ -83,9 +83,9 @@ document.addEventListener('DOMContentLoaded', function () {
                             color: textColor,
                             padding: 20,
                             usePointStyle: true,
-                            font: { 
-                                size: 11, 
-                                weight: '600' 
+                            font: {
+                                size: 11,
+                                weight: '600'
                             }
                         }
                     },
@@ -102,5 +102,30 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             }
         });
+    }
+
+    const sessionFlash = document.getElementById('session-flash');
+    if (sessionFlash) {
+        const successMessage = sessionFlash.getAttribute('data-success');
+        const errorMessage = sessionFlash.getAttribute('data-error');
+
+        if (successMessage) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: successMessage,
+                showConfirmButton: false,
+                timer: 3000
+            });
+        }
+
+        if (errorMessage) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal Menghapus User!',
+                text: errorMessage,
+                confirmButtonColor: '#3085d6',
+            });
+        }
     }
 });
