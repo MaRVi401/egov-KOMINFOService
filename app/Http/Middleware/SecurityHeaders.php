@@ -32,7 +32,7 @@ class SecurityHeaders
             "default-src 'self'",
 
             // 'unsafe-eval' diperlukan oleh beberapa fungsi library Chart.js/Flowbite
-            "script-src 'self' 'nonce-{$nonce}' 'unsafe-inline' 'unsafe-eval' data: https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com {$allowedHosts}",
+            "script-src 'self' 'nonce-{$nonce}' 'unsafe-inline' 'unsafe-eval' data: https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com https://cdn.tailwindcss.com {$allowedHosts}",
 
             // Menangani inline event handlers seperti onclick/onchange di HTML
             "script-src-attr 'unsafe-inline'",
