@@ -167,7 +167,7 @@
                 </div>
 
                 <div class="px-5 py-3 border-t border-gray-100 dark:border-gray-700 bg-gray-50/20 dark:bg-gray-800/50 flex justify-between items-center">
-                    <a href="/layanan" class="text-xs font-bold text-blue-600 hover:underline dark:text-blue-400">
+                    <a href="/services" class="text-xs font-bold text-blue-600 hover:underline dark:text-blue-400">
                         + Buat Pengajuan Baru
                     </a>
                     <a href="{{ route('submission.index') }}" class="flex items-center justify-center text-xs font-bold text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400 transition-colors">
