@@ -210,11 +210,10 @@ return new class extends Migration
 
         Schema::create('log_keamanan', function (Blueprint $table) {
             $table->uuid('uuid')->primary();
-            // nullable karena kalau login gagal, bisa jadi user-nya belum ada di sistem
             $table->foreignUuid('users_id')->nullable()->constrained('users', 'uuid')->nullOnDelete(); 
             $table->string('username_attempt')->comment('Mencatat username/email yang dicoba saat login');
             $table->enum('tipe_event', ['login_sukses', 'login_gagal', 'logout', 'lockout']);
-            $table->string('ip_address', 45)->nullable(); // 45 chars cukup untuk IPv4 & IPv6
+            $table->string('ip_address', 45)->nullable();
             $table->text('user_agent')->nullable()->comment('Mencatat device/browser yang digunakan');
             $table->boolean('is_suspicious')->default(false)->comment('Flag untuk memicu alert jika terdeteksi brute force');
             $table->timestamps();
@@ -222,7 +221,6 @@ return new class extends Migration
 
         Schema::create('jejak_audit', function (Blueprint $table) {
             $table->uuid('uuid')->primary();
-            // Siapa yang melakukan aksi (bisa nullable jika aksi dilakukan oleh sistem/cron)
             $table->foreignUuid('users_id')->nullable()->constrained('users', 'uuid')->nullOnDelete();
             $table->enum('aksi', ['create', 'update', 'delete']);
             $table->string('nama_tabel')->comment('Contoh: layanan, tiket, detail_tiket_layanan_email_gov');

@@ -23,7 +23,7 @@ class LogKeamanan extends Model
     ];
 
     protected $casts = [
-        'is_suspicious' => 'boolean', // Memastikan nilainya selalu true/false
+        'is_suspicious' => 'boolean',
     ];
 
     public function user() 

@@ -23,7 +23,6 @@ class JejakAudit extends Model
         'ip_address'
     ];
 
-    // Casting sangat penting di sini agar data JSON mudah dikelola
     protected $casts = [
         'data_lama' => 'array',
         'data_baru' => 'array',

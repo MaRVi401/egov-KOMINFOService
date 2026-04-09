@@ -11,7 +11,6 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        // Statistik User Berdasarkan Role
         $roleData = User::select('role', DB::raw('count(*) as total'))
             ->groupBy('role')
             ->get();
