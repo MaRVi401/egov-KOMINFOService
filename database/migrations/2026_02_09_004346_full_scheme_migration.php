@@ -69,7 +69,7 @@ return new class extends Migration
             $table->string('no_tiket')->unique();
             $table->string('lampiran')->nullable();
             $table->text('deskripsi')->nullable();
-            $table->enum('status', ['belum diajukan','diajukan', 'ditangani', 'selesai', 'ditolak']);
+            $table->enum('status', ['belum diajukan', 'diajukan', 'ditangani', 'selesai', 'ditolak']);
             $table->timestamps();
         });
 
@@ -90,8 +90,22 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        // 6. Detail Layanan 
-        
+        // 6. Prioritas Tiket Kadis
+        Schema::create('prioritas_tiket_kadis', function (Blueprint $table) {
+            $table->uuid('uuid')->primary();
+            $table->foreignUuid('tiket_id')->constrained('tiket', 'uuid')->cascadeOnDelete();
+            $table->foreignUuid('pengusul_id')->constrained('users', 'uuid')->cascadeOnDelete();
+            $table->foreignUuid('penerima_id')->constrained('users', 'uuid')->cascadeOnDelete();
+            $table->string('catatan_kabid')->nullable();
+            $table->string('catatan_kadis')->nullable();
+            $table->enum('status_persetujuan', ['pending', 'disetujui', 'ditolak'])->default('pending');
+            $table->enum('level_prioritas', ['rendah', 'sedang', 'tinggi'])->default('sedang');
+
+            $table->timestamps();
+        });
+
+        // 7. Detail Layanan 
+
         Schema::create('detail_tiket_layanan_pengaduan_sistem_elektronik', function (Blueprint $table) {
             $table->uuid('uuid')->primary();
             $table->foreignUuid('tiket_id')->constrained('tiket', 'uuid')->cascadeOnDelete();
@@ -103,7 +117,7 @@ return new class extends Migration
         Schema::create('detail_tiket_layanan_email_gov', function (Blueprint $table) {
             $table->uuid('uuid')->primary();
             $table->foreignUuid('tiket_id')->constrained('tiket', 'uuid')->cascadeOnDelete();
-            
+
             // PD = Perangkat Daerah
             $table->string('pd_no_surat');
             $table->timestamp('pd_tgl');
@@ -171,7 +185,7 @@ return new class extends Migration
         Schema::create('detail_tiket_layanan_pembuatan_apps', function (Blueprint $table) {
             $table->uuid('uuid')->primary();
             $table->foreignUuid('tiket_id')->constrained('tiket', 'uuid')->cascadeOnDelete();
-            
+
             // Pengajuan (Awal)
             $table->string('ajuan_no_surat')->nullable();
             $table->timestamp('ajuan_tgl')->nullable();
@@ -210,7 +224,7 @@ return new class extends Migration
 
         Schema::create('log_keamanan', function (Blueprint $table) {
             $table->uuid('uuid')->primary();
-            $table->foreignUuid('users_id')->nullable()->constrained('users', 'uuid')->nullOnDelete(); 
+            $table->foreignUuid('users_id')->nullable()->constrained('users', 'uuid')->nullOnDelete();
             $table->string('username_attempt')->comment('Mencatat username/email yang dicoba saat login');
             $table->enum('tipe_event', ['login_sukses', 'login_gagal', 'logout', 'lockout']);
             $table->string('ip_address', 45)->nullable();
@@ -238,6 +252,7 @@ return new class extends Migration
         Schema::dropIfExists('detail_tiket_layanan_subdomain');
         Schema::dropIfExists('detail_tiket_layanan_email_gov');
         Schema::dropIfExists('detail_tiket_layanan_pengaduan_sistem_elektronik');
+        Schema::dropIfExists('prioritas_tiket_kadis');
         Schema::dropIfExists('komentar_tiket');
         Schema::dropIfExists('riwayat_status_tiket');
         Schema::dropIfExists('tiket');
