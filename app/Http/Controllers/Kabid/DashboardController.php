@@ -61,13 +61,25 @@ class DashboardController extends Controller
         if ($request->ajax()) {
             return view('pages.kabid._operator_table', compact('operatorPerformance', 'stats'))->render();
         }
+        $tiketEligible = Tiket::whereIn('status', ['ditolak', 'selesai'])->get();
+        
+        // Ambil user Kadis (asumsi role super_admin)
+        $kadis = User::where('role', 'kadis')->first();
 
+        // Respons untuk AJAX Pagination
+        if ($request->ajax()) {
+            return view('pages.kabid._operator_table', compact('operatorPerformance', 'stats'))->render();
+        }
+
+        // Tambahkan variabel $tiketEligible dan $kadis ke compact()
         return view('pages.kabid.dashboard', compact(
             'layananAktif',
             'tingkatPenyelesaian',
             'stats',
             'chartData',
-            'operatorPerformance'
+            'operatorPerformance',
+            'tiketEligible',
+            'kadis'
         ));
     }
 }

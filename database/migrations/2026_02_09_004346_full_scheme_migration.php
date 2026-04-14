@@ -14,7 +14,7 @@ return new class extends Migration
             $table->string('nama');
             $table->string('username')->unique();
             $table->string('password');
-            $table->enum('role', ['super_admin', 'pengguna_asn', 'kabid', 'operator']);
+            $table->enum('role', ['super_admin', 'pengguna_asn', 'kabid', 'operator', 'kadis']);
             $table->string('alamat')->nullable();
             $table->string('email')->unique();
             $table->string('no_wa')->nullable();
@@ -38,6 +38,13 @@ return new class extends Migration
         });
 
         Schema::create('kabid', function (Blueprint $table) {
+            $table->uuid('uuid')->primary();
+            $table->foreignUuid('users_id')->constrained('users', 'uuid')->cascadeOnDelete();
+            $table->string('nip');
+            $table->timestamps();
+        });
+
+        Schema::create('kadis', function (Blueprint $table) {
             $table->uuid('uuid')->primary();
             $table->foreignUuid('users_id')->constrained('users', 'uuid')->cascadeOnDelete();
             $table->string('nip');

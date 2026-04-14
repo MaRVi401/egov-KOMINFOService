@@ -15,6 +15,7 @@ use App\Http\Controllers\PenggunaAsn\SubmissionController;
 use App\Http\Controllers\PenggunaAsn\ServiceHistoryTicketController;
 use App\Http\Controllers\Operator\TicketController as OperatorTicketController;
 use App\Http\Controllers\Admin\SiemController;
+use App\Http\Controllers\Kabid\UsulanKabidController; 
 
 /*
 |--------------------------------------------------------------------------
@@ -164,6 +165,20 @@ Route::middleware('auth')->group(function () {
         
         //Rute Scanner Image
         Route::view('/ai-scanner', 'pages.pengguna-asn.layanan.test-scanner')->name('test.scanner');
+    });
+
+    /*
+    |----------------------------------------------------------------------
+    | Khusus Kabid
+    |----------------------------------------------------------------------
+    */
+    Route::middleware('can:kabid-only')->group(function () {
+        
+        // Rute untuk fitur Usulan Prioritas Tiket
+        Route::resource('usulan', UsulanKabidController::class)
+             ->names('kabid.usulan')
+             ->only(['index', 'create', 'store', 'show']);
+
     });
 });
 

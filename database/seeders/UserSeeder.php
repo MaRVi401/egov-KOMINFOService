@@ -43,6 +43,7 @@ class UserSeeder extends Seeder
             'nip'      => '199001012024011001',
         ]);
 
+
         // 2. Role lainnya: pengguna_asn, kabid, operator
         $otherRoles = [
             'pengguna_asn' => PenggunaAsn::class,
