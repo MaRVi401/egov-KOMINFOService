@@ -106,7 +106,7 @@
                                     <button data-modal-target="update-modal-{{ $ticket->uuid }}"
                                         data-modal-toggle="update-modal-{{ $ticket->uuid }}"
                                         class="bg-orange-500 hover:bg-orange-600 text-white px-3 py-2 rounded-lg text-sm cursor-pointer transition-all shadow-sm">
-                                        Tangani Tiket
+                                        Prosses Tiket
                                     </button>
 
                                     <div id="update-modal-{{ $ticket->uuid }}" tabindex="-1" aria-hidden="true"

@@ -16,6 +16,9 @@ use App\Http\Controllers\PenggunaAsn\ServiceHistoryTicketController;
 use App\Http\Controllers\Operator\TicketController as OperatorTicketController;
 use App\Http\Controllers\Admin\SiemController;
 use App\Http\Controllers\Kabid\UsulanKabidController; 
+use App\Http\Controllers\Kadis\DashboardController as DashboardKadisController;
+use App\Http\Controllers\Kadis\UsulanKadisController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -123,6 +126,8 @@ Route::middleware('auth')->group(function () {
             ->only(['index', 'show', 'update', 'destroy']);
 
         Route::get('revisi-kadis', [OperatorTicketController::class, 'revisiKadis'])->name('ticket.revisi');
+
+        Route::get('riwayat-tiket', [OperatorTicketController::class, 'history'])->name('ticket.history');
     });
 
     /*
@@ -150,7 +155,7 @@ Route::middleware('auth')->group(function () {
             ->name('subdomain.download');
 
         //Rute baru untuk Pembuatan Apps
-        Route::get('/service-app-creation/download/{uuid}', [App\Http\Controllers\PenggunaAsn\ServiceAppsCreationController::class, 'download'])->name('appscreation.download');
+        Route::get('/service-app-creation/download/{uuid}', [ServiceAppsCreationController::class, 'download'])->name('appscreation.download');
         Route::resource('service-app-creation', ServiceAppsCreationController::class);
 
 
@@ -186,13 +191,13 @@ Route::middleware('auth')->group(function () {
 
     Route::middleware('can:kadis-only')->group(function () {
         
-        Route::resource('manajemen-dashboard', \App\Http\Controllers\Kadis\DashboardController::class)
+        Route::resource('manajemen-dashboard', DashboardKadisController::class)
             ->names([
                 'index' => 'kadis.dashboard.index',
             ])
             ->only(['index']);
         
-        Route::post('/usulan/{uuid}/update', [\App\Http\Controllers\Kadis\UsulanKadisController::class, 'update'])->name('kadis.usulan.update');
+        Route::post('/usulan/{uuid}/update', [UsulanKadisController::class, 'update'])->name('kadis.usulan.update');
     });
 });
 

@@ -19,13 +19,11 @@ class UsulanKadisController extends Controller
         $usulan = PrioritasTiketKadis::where('uuid', $uuid)->firstOrFail();
 
         DB::transaction(function () use ($request, $usulan) {
-            // 1. Simpan keputusan Kadis ke tabel prioritas_tiket_kadis
             $usulan->update([
                 'status_persetujuan' => $request->status_persetujuan,
                 'catatan_kadis' => $request->catatan_kadis,
             ]);
 
-            // 2. Logic: Jika disetujui, ubah status tiket dari 'selesai' menjadi 'diajukan'
             if ($request->status_persetujuan === 'disetujui') {
                 $tiket = $usulan->tiket;
                 if ($tiket && $tiket->status === 'selesai') {
@@ -35,6 +33,13 @@ class UsulanKadisController extends Controller
                 }
             }
         });
+
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Keputusan berhasil disimpan.'
+            ]);
+        }
 
         return redirect()->route('kadis.dashboard.index')->with('success', 'Keputusan berhasil disimpan.');
     }

@@ -64,7 +64,10 @@ class SubmissionController extends Controller
             }
         }
 
-        return view('pages.pengguna-asn.submission.show', compact('ticket', 'kategoriEmail'));
+        // Menghitung jumlah revisi berdasarkan riwayat komentar dari admin
+        $jumlahRevisi = $ticket->komentar->count();
+
+        return view('pages.pengguna-asn.submission.show', compact('ticket', 'kategoriEmail', 'jumlahRevisi'));
     }
 
     public function destroy($uuid)

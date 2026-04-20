@@ -76,6 +76,7 @@
                             <th scope="col" class="px-6 py-4 font-bold">Tiket</th>
                             <th scope="col" class="px-6 py-4 font-bold">Pengaju</th>
                             <th scope="col" class="px-6 py-4 font-bold">Layanan</th>
+                            <th scope="col" class="px-6 py-4 font-bold text-center">Prioritas</th>
                             <th scope="col" class="px-6 py-4 text-right font-bold">Aksi</th>
                         </tr>
                     </thead>
@@ -104,6 +105,23 @@
                                 </td>
                                 <td class="px-6 py-4 text-gray-900 dark:text-white">
                                     {{ $ticket->layanan->nama }}
+                                </td>
+                                <td class="px-6 py-4 text-center">
+                                    @if($usulanKadis && $usulanKadis->level_prioritas)
+                                        @php
+                                            $badgeClass = match($usulanKadis->level_prioritas) {
+                                                'tinggi' => 'bg-red-100 text-red-800 border-red-200 dark:bg-red-900/50 dark:text-red-300 dark:border-red-800',
+                                                'sedang' => 'bg-yellow-100 text-yellow-800 border-yellow-200 dark:bg-yellow-900/50 dark:text-yellow-300 dark:border-yellow-800',
+                                                'rendah' => 'bg-green-100 text-green-800 border-green-200 dark:bg-green-900/50 dark:text-green-300 dark:border-green-800',
+                                                default => 'bg-gray-100 text-gray-800 border-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600'
+                                            };
+                                        @endphp
+                                        <span class="px-2.5 py-1 rounded text-xs font-semibold uppercase border {{ $badgeClass }}">
+                                            {{ $usulanKadis->level_prioritas }}
+                                        </span>
+                                    @else
+                                        <span class="text-gray-500">-</span>
+                                    @endif
                                 </td>
                                 <td class="px-6 py-4 text-right">
                                     <button data-modal-target="update-modal-{{ $ticket->uuid }}"
@@ -140,19 +158,35 @@
 
                                                     <div class="p-6 space-y-4 text-left">
                                                         
-                                                        @if($usulanKadis && $usulanKadis->catatan_kadis)
-                                                            <div class="p-4 bg-red-50 border-l-4 border-red-500 rounded-r-lg dark:bg-red-900/20">
-                                                                <div class="flex items-center mb-2">
-                                                                    <i class="ti ti-message-exclamation text-red-600 dark:text-red-400 text-lg mr-2"></i>
-                                                                    <h4 class="text-sm font-bold text-red-800 dark:text-red-300 uppercase tracking-wide">Instruksi Revisi dari Kadis</h4>
-                                                                </div>
-                                                                <p class="text-sm text-red-700 dark:text-red-400 italic">
-                                                                    "{{ $usulanKadis->catatan_kadis }}"
-                                                                </p>
+                                                        @if($usulanKadis)
+                                                            <div class="space-y-3">
+                                                                @if($usulanKadis->catatan_kabid)
+                                                                    <div class="p-4 bg-blue-50 border-l-4 border-blue-500 rounded-r-lg dark:bg-blue-900/20">
+                                                                        <div class="flex items-center mb-2">
+                                                                            <i class="ti ti-message-circle-2 text-blue-600 dark:text-blue-400 text-lg mr-2"></i>
+                                                                            <h4 class="text-sm font-bold text-blue-800 dark:text-blue-300 uppercase tracking-wide">Catatan dari Kabid</h4>
+                                                                        </div>
+                                                                        <p class="text-sm text-blue-700 dark:text-blue-400 italic">
+                                                                            "{{ $usulanKadis->catatan_kabid }}"
+                                                                        </p>
+                                                                    </div>
+                                                                @endif
+
+                                                                @if($usulanKadis->catatan_kadis)
+                                                                    <div class="p-4 bg-red-50 border-l-4 border-red-500 rounded-r-lg dark:bg-red-900/20">
+                                                                        <div class="flex items-center mb-2">
+                                                                            <i class="ti ti-message-exclamation text-red-600 dark:text-red-400 text-lg mr-2"></i>
+                                                                            <h4 class="text-sm font-bold text-red-800 dark:text-red-300 uppercase tracking-wide">Instruksi Revisi dari Kadis</h4>
+                                                                        </div>
+                                                                        <p class="text-sm text-red-700 dark:text-red-400 italic">
+                                                                            "{{ $usulanKadis->catatan_kadis }}"
+                                                                        </p>
+                                                                    </div>
+                                                                @endif
                                                             </div>
                                                         @endif
 
-                                                        <div class="grid grid-cols-2 gap-4 mt-4">
+                                                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
                                                             <div>
                                                                 <label class="block text-xs text-gray-500 uppercase font-semibold">Pengaju</label>
                                                                 <p class="text-sm font-bold text-gray-900 dark:text-white">{{ $ticket->user->nama }}</p>
@@ -160,6 +194,12 @@
                                                             <div>
                                                                 <label class="block text-xs text-gray-500 uppercase font-semibold">Layanan</label>
                                                                 <p class="text-sm font-bold text-gray-900 dark:text-white">{{ $ticket->layanan->nama }}</p>
+                                                            </div>
+                                                            <div>
+                                                                <label class="block text-xs text-gray-500 uppercase font-semibold">Prioritas</label>
+                                                                <p class="text-sm font-bold text-gray-900 dark:text-white uppercase">
+                                                                    {{ $usulanKadis->level_prioritas ?? '-' }}
+                                                                </p>
                                                             </div>
                                                         </div>
 
@@ -179,9 +219,9 @@
                                                             </div>
                                                         @endif
 
-                                                        <hr class="dark:border-gray-600">
+                                                        <hr class="dark:border-gray-600 mt-4">
 
-                                                        <div>
+                                                        <div class="mt-4">
                                                             <label class="block mb-2 text-sm font-bold text-gray-900 dark:text-white">Pilih Status Akhir</label>
                                                             <select name="status" required class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-red-500 focus:border-red-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white cursor-pointer">
                                                                 <option value="selesai">Selesai (Revisi Berhasil Ditangani)</option>
@@ -211,7 +251,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="5" class="px-6 py-12 text-center">
+                                <td colspan="6" class="px-6 py-12 text-center">
                                     <div class="flex flex-col items-center justify-center">
                                         <svg class="w-12 h-12 text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />

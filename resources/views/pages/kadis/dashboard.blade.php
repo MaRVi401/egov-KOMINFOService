@@ -14,7 +14,7 @@
                         @endphp
                         Selamat {{ $sapaan }},
                         <span class="block md:inline text-transparent bg-clip-text bg-linear-to-r from-blue-600 to-cyan-500 uppercase font-black">
-                            Bapak/Ibu {{ auth()->user()->nama }}
+                            {{ auth()->user()->nama }}
                         </span>
                     </h2>
                     <p class="mt-1 text-xs md:text-sm text-gray-500 dark:text-gray-400 tracking-wider">
@@ -165,6 +165,65 @@
                     @endforeach
                 </div>
             </div>
+        </div>
+    </div>
+    <div class="mt-8 bg-white border border-gray-200 rounded-2xl shadow-sm dark:bg-gray-800 dark:border-gray-700 overflow-hidden flex flex-col">
+        <div class="px-5 py-4 border-b border-gray-100 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-700/30 flex justify-between items-center text-heading font-bold italic">
+            <h3 class="flex items-center text-gray-900 dark:text-white">
+                <i class="ti ti-history text-blue-600 me-2 text-xl"></i> Riwayat Keputusan Usulan Prioritas
+            </h3>
+        </div>
+
+        <div class="p-0 overflow-x-auto">
+            <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 border-b border-gray-200 dark:border-gray-600">
+                    <tr>
+                        <th scope="col" class="px-6 py-4">No Tiket</th>
+                        <th scope="col" class="px-6 py-4">Layanan</th>
+                        <th scope="col" class="px-6 py-4">Pengusul</th>
+                        <th scope="col" class="px-6 py-4">Keputusan</th>
+                        <th scope="col" class="px-6 py-4">Catatan Anda</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($riwayatUsulan as $riwayat)
+                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition">
+                        <td class="px-6 py-4 font-bold text-gray-900 dark:text-white">
+                            {{ $riwayat->tiket->no_tiket ?? '-' }}
+                        </td>
+                        <td class="px-6 py-4">
+                            {{ $riwayat->tiket->layanan->nama ?? '-' }}
+                        </td>
+                        <td class="px-6 py-4">
+                            {{ $riwayat->pengusul->nama ?? '-' }}
+                        </td>
+                        <td class="px-6 py-4">
+                            @if($riwayat->status_persetujuan == 'disetujui')
+                                <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
+                                    <i class="ti ti-check me-1"></i> Disetujui
+                                </span>
+                            @elseif($riwayat->status_persetujuan == 'ditolak')
+                                <span class="bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-red-900 dark:text-red-300">
+                                    <i class="ti ti-x me-1"></i> Ditolak
+                                </span>
+                            @endif
+                        </td>
+                        <td class="px-6 py-4 text-xs italic">
+                            {{ Str::limit($riwayat->catatan_kadis, 60, '...') ?? '-' }}
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="5" class="px-6 py-8 text-center text-gray-500 dark:text-gray-400">
+                            <div class="flex flex-col items-center justify-center">
+                                <i class="ti ti-history text-4xl mb-2 text-gray-300 dark:text-gray-600"></i>
+                                <p>Belum ada riwayat keputusan yang Anda buat.</p>
+                            </div>
+                        </td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
         </div>
     </div>
 

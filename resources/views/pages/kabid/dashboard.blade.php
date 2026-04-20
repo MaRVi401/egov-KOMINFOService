@@ -127,7 +127,6 @@
                             <th class="px-6 py-5 font-black tracking-widest text-blue-900 dark:text-blue-400">Catatan Kabid</th>
                             <th class="px-6 py-5 font-black tracking-widest text-blue-900 dark:text-blue-400">Status</th>
                             <th class="px-6 py-5 font-black tracking-widest text-blue-900 dark:text-blue-400">Catatan Kadis</th>
-                            
                             <th class="px-6 py-5 font-black tracking-widest text-blue-900 dark:text-blue-400 text-center">Aksi</th>
                             <th class="px-6 py-5 text-right font-black tracking-widest text-blue-900 dark:text-blue-400">Waktu</th>
                         </tr>
@@ -181,18 +180,28 @@
                                     @endif
                                 </td>
                                 <td class="px-6 py-4 text-center">
-                                    @if($usulan->status_persetujuan == 'pending')
+                                    <div class="flex items-center justify-center gap-2">
                                         <button type="button" 
-                                                onclick="confirmHapusUsulan('{{ $usulan->uuid }}')" 
-                                                class="text-red-500 hover:text-red-700 transition-colors p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20"
-                                                title="Batalkan Usulan">
-                                            <i class="ti ti-trash text-lg"></i>
+                                                onclick="bukaDetailUsulan(this)" 
+                                                data-usulan="{{ $usulan }}"
+                                                class="inline-flex items-center justify-center p-2 text-white bg-green-600 rounded-lg hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-green-300 dark:bg-green-500 dark:hover:bg-green-600 dark:focus:ring-green-800 transition-all shadow-sm"
+                                                title="Lihat Detail">
+                                            <i class="ti ti-eye text-lg"></i>
                                         </button>
-                                    @else
-                                        <span class="text-gray-300 dark:text-gray-600" title="Sudah diproses">
-                                            <i class="ti ti-lock text-lg"></i>
-                                        </span>
-                                    @endif
+
+                                        @if($usulan->status_persetujuan == 'pending')
+                                            <button type="button" 
+                                                    onclick="confirmHapusUsulan('{{ $usulan->uuid }}')" 
+                                                    class="inline-flex items-center justify-center p-2 text-white bg-red-600 rounded-lg hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-red-500 dark:hover:bg-red-600 dark:focus:ring-red-900 transition-all shadow-sm"
+                                                    title="Batalkan Usulan">
+                                                <i class="ti ti-trash text-lg"></i>
+                                            </button>
+                                        @else
+                                            <span class="inline-flex items-center justify-center p-2 text-gray-500 bg-gray-100 border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400" title="Sudah diproses">
+                                                <i class="ti ti-lock text-lg"></i>
+                                            </span>
+                                        @endif
+                                    </div>
                                 </td>
                                 <td class="px-6 py-4 text-right text-xs font-medium text-gray-500 dark:text-gray-400">
                                     {{ $usulan->created_at->diffForHumans() }}
@@ -200,7 +209,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="px-6 py-10 text-center italic text-gray-400 dark:text-gray-500 bg-white dark:bg-[#1e293b]">
+                                <td colspan="7" class="px-6 py-10 text-center italic text-gray-400 dark:text-gray-500 bg-white dark:bg-[#1e293b]">
                                     Belum ada tiket yang diusulkan ke Kadis.
                                 </td>
                             </tr>
@@ -209,13 +218,9 @@
                 </table>
             </div>
             
-            @if(count($usulanTerkirim) > 0)
-            <div class="px-5 py-4 bg-gray-50 dark:bg-[#1e293b] border-t border-gray-100 dark:border-gray-700 rounded-b-xl flex justify-end">
-                <a href="{{ route('kabid.usulan.index') }}" class="text-xs font-bold text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors flex items-center gap-1">
-                    Lihat Semua Usulan <i class="ti ti-arrow-right"></i>
-                </a>
+            <div class="px-5 py-4 bg-gray-50 dark:bg-[#1e293b] border-t border-gray-100 dark:border-gray-700 rounded-b-xl">
+                {{ $usulanTerkirim->links() }}
             </div>
-            @endif
         </div>
     </div>
 
@@ -245,7 +250,7 @@
                         </label>
                         
                         <div id="container-list-tiket" class="max-h-[50vh] overflow-y-auto space-y-3 pr-2 scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-gray-600 pb-2">
-                            </div>
+                        </div>
                     </div>
 
                     <div class="w-full md:w-5/12 flex flex-col gap-6 pt-6 md:pt-0 border-t md:border-t-0 md:border-l border-gray-100 dark:border-gray-700 md:pl-6">
@@ -302,6 +307,24 @@
             <button type="button" onclick="tutupAlertDanKembali()" class="w-full px-6 py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 shadow-lg shadow-blue-500/30 transition">
                 Kembali ke Dashboard
             </button>
+        </div>
+    </div>
+
+    <div id="modalDetailUsulan" class="fixed inset-0 z-[70] hidden bg-gray-900/60 backdrop-blur-sm overflow-y-auto h-full w-full flex items-center justify-center p-4">
+        <div class="relative w-full max-w-2xl bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-6 md:p-8 border border-gray-100 dark:border-gray-700 flex flex-col max-h-[90vh]">
+            <div class="flex justify-between items-center mb-6 border-b border-gray-100 dark:border-gray-700 pb-4 shrink-0">
+                <h3 class="text-xl font-black text-gray-900 dark:text-white flex items-center gap-3">
+                    <i class="ti ti-file-info text-blue-600 text-2xl"></i> Detail Usulan Prioritas
+                </h3>
+                <button onclick="tutupModalDetailUsulan()" type="button" class="text-gray-400 hover:text-red-500 transition-colors">
+                    <i class="ti ti-x text-2xl"></i>
+                </button>
+            </div>
+            <div id="detailUsulanContent" class="overflow-y-auto pr-2 space-y-4">
+            </div>
+            <div class="flex justify-end pt-5 mt-5 border-t border-gray-100 dark:border-gray-700 shrink-0">
+                <button type="button" onclick="tutupModalDetailUsulan()" class="px-5 py-2.5 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 font-bold rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition">Tutup</button>
+            </div>
         </div>
     </div>
 

@@ -70,56 +70,68 @@ window.tutupModalReview = function() {
     form.reset(); 
 };
 
-
 document.addEventListener('DOMContentLoaded', function () {
     const formReview = document.getElementById('formReviewKadis');
 
     if (formReview) {
         formReview.addEventListener('submit', async function (e) {
-            // Mencegah halaman reload
             e.preventDefault();
 
             let form = this;
             let url = form.action;
             let formData = new FormData(form);
 
-            // Opsional: Ubah text tombol jadi "Menyimpan..." biar UX-nya bagus
             let submitBtn = form.querySelector('button[type="submit"]');
             let originalBtnText = submitBtn.innerHTML;
-            submitBtn.innerHTML = '<i class="ti ti-loader animate-spin"></i> Menyimpan...';
+            
+            Swal.fire({
+                title: 'Menyimpan Data...',
+                html: 'Mohon tunggu sebentar.',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
             submitBtn.disabled = true;
 
             try {
-                // Kirim request ke server menggunakan Fetch API
                 let response = await fetch(url, {
-                    method: 'POST', // Biarkan POST, karena _method=PUT sudah ada di FormData bawaan @method('PUT') Blade
+                    method: 'POST', 
                     body: formData,
                     headers: {
-                        'X-Requested-With': 'XMLHttpRequest', // Wajib agar Laravel tahu ini AJAX
+                        'X-Requested-With': 'XMLHttpRequest',
                         'Accept': 'application/json'
                     }
                 });
 
+                if (!response.ok) {
+                    let errorData = await response.json().catch(() => null);
+                    throw new Error(errorData ? (errorData.message || JSON.stringify(errorData.errors)) : `HTTP Error: ${response.status}`);
+                }
+
                 let result = await response.json();
 
-                if (response.ok) {
-                    // Notifikasi sukses (bisa diganti pakai SweetAlert kalau kamu pasang)
-                    alert('Mantap! ' + result.message);
-                    
-                    // Tutup modal
+                Swal.fire({
+                    title: 'Berhasil!',
+                    text: result.message,
+                    icon: 'success',
+                    confirmButtonColor: '#2563eb',
+                }).then(() => {
                     tutupModalReview();
+                    window.location.reload(); 
+                });
 
-                    // Opsional: Hilangkan baris tabel yang baru saja disetujui biar nggak perlu reload halaman
-                    // Kamu bisa cari baris tr berdasarkan data-uuid tombol yang diklik tadi lalu hapus elemennya dari DOM
-                } else {
-                    alert('Waduh, gagal menyimpan data.');
-                    console.error(result);
-                }
             } catch (error) {
-                alert('Terjadi kesalahan pada jaringan/server.');
                 console.error(error);
+                
+                Swal.fire({
+                    title: 'Gagal Menyimpan!',
+                    text: error.message || 'Terjadi kesalahan pada jaringan atau server.',
+                    icon: 'error',
+                    confirmButtonColor: '#ef4444',
+                });
             } finally {
-                // Kembalikan tombol seperti semula
                 submitBtn.innerHTML = originalBtnText;
                 submitBtn.disabled = false;
             }

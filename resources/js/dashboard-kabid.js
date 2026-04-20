@@ -1,6 +1,5 @@
 let ticketChart;
 
-// 1. Fungsi untuk merender grafik
 function renderMonitoringChart(chartLabels, chartData) {
     const chartCtx = document.getElementById('ticketDonutChart');
     if (!chartCtx) return;
@@ -27,7 +26,6 @@ function renderMonitoringChart(chartLabels, chartData) {
     });
 }
 
-// 2. Fungsi Fetch Data AJAX
 function fetchData(url, config) {
     const contentBody = document.getElementById('ajax-table-content');
     if (contentBody) contentBody.style.opacity = '0.3';
@@ -47,9 +45,7 @@ function fetchData(url, config) {
             contentBody.innerHTML = html;
             contentBody.style.opacity = '1';
         }
-        // Gambar ulang grafik tepat setelah tabel diganti
         renderMonitoringChart(config.labels, config.data);
-        // Update URL bar tanpa refresh
         window.history.pushState(null, null, url);
     })
     .catch(error => {
@@ -58,17 +54,14 @@ function fetchData(url, config) {
     });
 }
 
-// 3. Fungsi Inisialisasi Utama
 function initDashboard(config) {
     renderMonitoringChart(config.labels, config.data);
 
-    // Jam Real-time
     setInterval(() => {
         const clock = document.getElementById('realtime-clock');
         if (clock) clock.textContent = new Date().toLocaleTimeString('en-GB');
     }, 1000);
 
-    // Mencegat klik pagination
     document.addEventListener('click', function (e) {
         const link = e.target.closest('#table-container a');
         if (link && link.href && link.href.includes('page=')) {
@@ -89,39 +82,29 @@ function toggleModalUsulan() {
     }
 }
 
-
-
-
 function lihatDetailTiketOperator(uuid, nama) {
     const container = document.getElementById('container-list-tiket');
     const labelNama = document.getElementById('label-nama-operator');
-    const modal = document.getElementById('modalUsulanKadis'); // Ambil elemen modal
+    const modal = document.getElementById('modalUsulanKadis');
     
-    // 1. Ubah label nama
     if(labelNama) labelNama.innerText = '(Dari ' + nama + ')';
 
-    // 2. Ambil dan Parse Data dari HTML attribute
-    // Mengubah string JSON dari data-tiket kembali menjadi Array JavaScript
     const rawData = modal.getAttribute('data-tiket');
     const semuaTiketEligible = rawData ? JSON.parse(rawData) : [];
 
-    // 3. Filter tiket berdasarkan UUID operator
     const tiketOperator = semuaTiketEligible.filter(tiket => tiket.petugas_id === uuid);
 
     let htmlContent = '';
 
-    // 4. Render HTML Card
     if (tiketOperator.length > 0) {
         tiketOperator.forEach(tiket => {
             const statusClass = tiket.status === 'selesai' ? 'text-green-600' : 'text-red-500';
             const deskripsiLengkap = tiket.deskripsi ? tiket.deskripsi : 'Tidak ada deskripsi yang dilampirkan pada tiket ini.';
             const shortDeskripsi = deskripsiLengkap.length > 80 ? deskripsiLengkap.substring(0, 80) + '...' : deskripsiLengkap;
             
-            // Render Lampiran (Foto)
             let lampiranHtml = '';
             if (tiket.lampiran) {
                 const minioBaseUrl = 'http://localhost:9000/diskominfo-assets';
-                // Sesuaikan '/storage/' jika letak symlink/path kamu berbeda
                 lampiranHtml = `
                     <div class="mb-3">
                         <span class="block text-[10px] font-bold uppercase text-gray-500 tracking-wider mb-1.5">Lampiran Laporan:</span>
@@ -132,7 +115,6 @@ function lihatDetailTiketOperator(uuid, nama) {
                 `;
             }
 
-            // Render Daftar Komentar
             let komentarHtml = '';
             if (tiket.komentar && tiket.komentar.length > 0) {
                 komentarHtml = '<div class="space-y-2">';
@@ -213,23 +195,20 @@ function lihatDetailTiketOperator(uuid, nama) {
         `;
     }
 
-    // 5. Masukkan HTML ke dalam modal dan buka modal
     container.innerHTML = htmlContent;
     modal.classList.remove('hidden');
 }
 
 document.getElementById('formUsulanKadis').addEventListener('submit', function(e) {
-    e.preventDefault(); // 🛑 WAJIB: Mencegah form memuat ulang URL baru
+    e.preventDefault();
 
     let formData = new FormData(this);
     let submitBtn = this.querySelector('button[type="submit"]');
     let originalText = submitBtn.innerHTML;
     
-    // Efek loading di tombol
     submitBtn.innerHTML = '<i class="ti ti-loader animate-spin"></i> Mengirim...';
     submitBtn.disabled = true;
 
-    // Ambil action URL (Pastikan di form HTML sudah ada atribut data-url="{{ route('kabid.usulan.store') }}")
     let actionUrl = this.getAttribute('data-url');
 
     if (!actionUrl) {
@@ -243,37 +222,30 @@ document.getElementById('formUsulanKadis').addEventListener('submit', function(e
         method: "POST",
         headers: {
             "X-CSRF-TOKEN": document.querySelector('input[name="_token"]').value,
-            "Accept": "application/json" // 🛑 WAJIB: Memaksa server Laravel membalas dengan JSON, BUKAN redirect
+            "Accept": "application/json"
         },
         body: formData
     })
     .then(async response => {
-        const data = await response.json().catch(() => ({})); // Tangkap JSON
+        const data = await response.json().catch(() => ({}));
         if (!response.ok) {
             throw new Error(data.message || "Terjadi kesalahan sistem (Error " + response.status + ").");
         }
         return data;
     })
     .then(data => {
-        // 1. Sembunyikan Modal Form Usulan
         document.getElementById('modalUsulanKadis').classList.add('hidden');
         document.getElementById('formUsulanKadis').reset();
-        
-        // 2. Tampilkan Modal Alert Custom - SUKSES
         tampilkanAlert(true, "Berhasil!", data.message || "Usulan prioritas berhasil dikirim ke Kadis.");
     })
     .catch(error => {
-        // Tampilkan Modal Alert Custom - GAGAL
         tampilkanAlert(false, "Gagal Mengirim!", error.message);
     })
     .finally(() => {
-        // Kembalikan tombol ke semula
         submitBtn.innerHTML = originalText;
         submitBtn.disabled = false;
     });
 });
-
-// === Fungsi Pengendali Modal Alert === //
 
 window.tampilkanAlert = function(isSuccess, title, message) {
     const modal = document.getElementById('modalAlertCustom');
@@ -292,11 +264,7 @@ window.tampilkanAlert = function(isSuccess, title, message) {
 }
 
 window.tutupAlertDanKembali = function() {
-    // 1. Tutup Modal Alert
     document.getElementById('modalAlertCustom').classList.add('hidden');
-    
-    // 2. (Opsional) Refresh tabel atau data dashboard jika diperlukan
-    // Jika Anda ingin halamannya refresh murni untuk memperbarui data:
     window.location.reload(); 
 } 
 
@@ -304,7 +272,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const bridge = document.getElementById('dashboard-data-bridge');
     
     if (bridge && typeof window.initDashboard === 'function') {
-        // Ambil data dari attribute HTML
         const labels = JSON.parse(bridge.getAttribute('data-labels'));
         const data = JSON.parse(bridge.getAttribute('data-data'));
 
@@ -338,7 +305,6 @@ window.confirmHapusUsulan = function(uuid) {
                 }
             });
 
-            // PERBAIKAN: URL sudah disesuaikan dengan web.php (tanpa /kabid)
             fetch(`/usulan/${uuid}`, {
                 method: 'DELETE',
                 headers: {
@@ -374,6 +340,54 @@ window.confirmHapusUsulan = function(uuid) {
     });
 }
 
+window.bukaDetailUsulan = function(element) {
+    const usulanRaw = element.getAttribute('data-usulan');
+    const usulan = JSON.parse(usulanRaw);
+    const contentDiv = document.getElementById('detailUsulanContent');
+
+    let statusColor = 'text-orange-500';
+    if (usulan.status_persetujuan === 'disetujui') statusColor = 'text-green-500';
+    if (usulan.status_persetujuan === 'ditolak') statusColor = 'text-red-500';
+
+    let prioColor = usulan.level_prioritas === 'tinggi' ? 'red' : (usulan.level_prioritas === 'sedang' ? 'yellow' : 'green');
+
+    contentDiv.innerHTML = `
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-gray-50 dark:bg-gray-700/30 p-3 rounded-xl border border-gray-100 dark:border-gray-700">
+                <span class="block text-[10px] font-bold uppercase text-gray-500 tracking-wider mb-1">Nomor Tiket</span>
+                <span class="font-black text-gray-900 dark:text-white">${usulan.tiket ? usulan.tiket.no_tiket : '-'}</span>
+            </div>
+            
+            <div class="bg-gray-50 dark:bg-gray-700/30 p-3 rounded-xl border border-gray-100 dark:border-gray-700">
+                <span class="block text-[10px] font-bold uppercase text-gray-500 tracking-wider mb-1">Status Persetujuan</span>
+                <span class="font-black uppercase ${statusColor}">${usulan.status_persetujuan}</span>
+            </div>
+
+            <div class="md:col-span-2 bg-gray-50 dark:bg-gray-700/30 p-3 rounded-xl border border-gray-100 dark:border-gray-700">
+                <span class="block text-[10px] font-bold uppercase text-gray-500 tracking-wider mb-1">Level Prioritas</span>
+                <span class="px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-${prioColor}-700 bg-${prioColor}-100 rounded-lg dark:bg-${prioColor}-900/30 dark:text-${prioColor}-400 inline-block">
+                    ${usulan.level_prioritas}
+                </span>
+            </div>
+
+            <div class="md:col-span-2 bg-white dark:bg-gray-800 p-4 rounded-xl border-2 border-gray-100 dark:border-gray-700">
+                <span class="block text-[10px] font-bold uppercase text-blue-500 tracking-wider mb-2"><i class="ti ti-user"></i> Catatan Kabid (Pengusul)</span>
+                <p class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">${usulan.catatan_kabid || '-'}</p>
+            </div>
+
+            <div class="md:col-span-2 bg-blue-50/50 dark:bg-blue-900/10 p-4 rounded-xl border-2 border-blue-100 dark:border-blue-800/30">
+                <span class="block text-[10px] font-bold uppercase text-orange-500 tracking-wider mb-2"><i class="ti ti-user-check"></i> Catatan Kadis (Balasan)</span>
+                <p class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">${usulan.catatan_kadis || '<span class="italic text-gray-400">Belum ada balasan dari Kadis.</span>'}</p>
+            </div>
+        </div>
+    `;
+
+    document.getElementById('modalDetailUsulan').classList.remove('hidden');
+};
+
+window.tutupModalDetailUsulan = function() {
+    document.getElementById('modalDetailUsulan').classList.add('hidden');
+};
 
 window.initDashboard = initDashboard;
 window.toggleModalUsulan = toggleModalUsulan; 

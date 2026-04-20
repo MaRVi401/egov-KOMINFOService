@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Kabid;
 
 use App\Http\Controllers\Controller;
@@ -10,9 +11,6 @@ use Illuminate\Support\Facades\Auth;
 
 class UsulanKabidController extends Controller
 {
-    /**
-     * Menampilkan daftar tiket yang diusulkan oleh Kabid yang sedang login.
-     */
     public function index()
     {
         $usulan = PrioritasTiketKadis::with(['tiket.layanan', 'penerima'])
@@ -23,24 +21,16 @@ class UsulanKabidController extends Controller
         return view('kabid.usulan.index', compact('usulan'));
     }
 
-    /**
-     * Form untuk membuat usulan baru (opsional jika langsung dari detail tiket)
-     */
     public function create(Request $request)
     {
-        // Ambil tiket yang belum selesai dan belum diusulkan
         $tiket_id = $request->query('tiket_id');
         $tiket = Tiket::findOrFail($tiket_id);
         
-        // Cari user yang berperan sebagai Kadis/Penerima (Asumsi role super_admin untuk Kadis)
         $kadis = User::where('role', 'super_admin')->first(); 
 
         return view('kabid.usulan.create', compact('tiket', 'kadis'));
     }
 
-    /**
-     * Menyimpan usulan ke database.
-     */
     public function store(Request $request)
     {
         $request->validate([
@@ -56,11 +46,8 @@ class UsulanKabidController extends Controller
             'penerima_id' => $request->penerima_id,
             'catatan_kabid' => $request->catatan_kabid,
             'level_prioritas' => $request->level_prioritas,
-            'status_persetujuan' => 'pending', // Default dari skema
+            'status_persetujuan' => 'pending',
         ]);
-
-        // Opsional: Catat aksi ini ke jejak_audit
-        // JejakAudit::create([...]);
 
         if ($request->wantsJson()) {
             return response()->json([
@@ -73,13 +60,9 @@ class UsulanKabidController extends Controller
                          ->with('success', 'Usulan prioritas berhasil dikirim ke Kadis.');
     }
 
-
-    // Tambahkan ini di dalam class UsulanKabidController
-
     public function destroy($uuid)
     {
-        // Cari usulan berdasarkan UUID dan pastikan pengusulnya adalah user yang sedang login
-        $usulan = \App\Models\PrioritasTiketKadis::where('uuid', $uuid)
+        $usulan = PrioritasTiketKadis::where('uuid', $uuid)
             ->where('pengusul_id', auth()->user()->uuid)
             ->first();
 
@@ -90,7 +73,6 @@ class UsulanKabidController extends Controller
             ], 404);
         }
 
-        // Opsional: Batasi penghapusan hanya jika status masih pending
         if ($usulan->status_persetujuan !== 'pending') {
             return response()->json([
                 'status' => 'error',

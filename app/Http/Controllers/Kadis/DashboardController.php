@@ -26,6 +26,12 @@ class DashboardController extends Controller
             ->take(5)
             ->get();
 
+        $riwayatUsulan = PrioritasTiketKadis::with(['tiket.layanan', 'pengusul'])
+            ->whereIn('status_persetujuan', ['disetujui', 'ditolak'])
+            ->orderBy('updated_at', 'desc')
+            ->take(5)
+            ->get();
+
         $chartData = [
             'labels' => ['Pending', 'Disetujui', 'Ditolak'],
             'data'   => [
@@ -39,7 +45,8 @@ class DashboardController extends Controller
             'totalTiketSistem',
             'usulanStats',
             'usulanMasuk',
-            'chartData'
+            'chartData',
+            'riwayatUsulan'
         ));
     }
 }

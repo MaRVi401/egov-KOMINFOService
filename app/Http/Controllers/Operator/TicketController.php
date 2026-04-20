@@ -176,4 +176,46 @@ class TicketController extends Controller
             ->route('ticket.workdesk')
             ->with('success', 'Tiket berhasil diperbarui.');
     }
+
+    public function history(Request $request): View
+    {
+        $search = $request->input('search');
+        $filterTime = $request->input('filter_time');
+        $userUuid = $request->user()->uuid;
+
+        
+        $query = Tiket::with(['user', 'layanan', 'detailPengaduan'])
+            ->where('petugas_id', $userUuid)
+            ->whereIn('status', ['selesai', 'ditolak']);
+
+        
+        if ($filterTime) {
+            $now = now();
+            if ($filterTime === 'hari') {
+                $query->whereDate('updated_at', $now->toDateString());
+            } elseif ($filterTime === 'minggu') {
+                $query->whereBetween('updated_at', [$now->startOfWeek(), $now->endOfWeek()]);
+            } elseif ($filterTime === 'bulan') {
+                $query->whereMonth('updated_at', $now->month)
+                      ->whereYear('updated_at', $now->year);
+            }
+        }
+
+        if ($search) {
+            $query->where(function (Builder $q) use ($search) {
+                $q->where('no_tiket', 'ilike', "%{$search}%")
+                    ->orWhereHas('user', function (Builder $qu) use ($search) {
+                        $qu->where('nama', 'ilike', "%{$search}%");
+                    })
+                    ->orWhereHas('layanan', function (Builder $ql) use ($search) {
+                        $ql->where('nama', 'ilike', "%{$search}%");
+                    });
+            });
+        }
+
+       
+        $tickets = $query->latest('updated_at')->paginate(10);
+
+        return view('pages.operator.ticket.history', compact('tickets'));
+    }
 }

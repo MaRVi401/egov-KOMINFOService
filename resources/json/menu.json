@@ -73,6 +73,11 @@
                     "name": "Revisi Dari Kadis",
                     "icon": "ti ti-message-exclamation",
                     "route": "ticket.revisi"
+                },
+                {
+                    "name" : "Riwayat Ticket",
+                    "icon" : "ti ti-clock",
+                    "route": "ticket.history"
                 }
             ]
         }

@@ -28,7 +28,7 @@ class DashboardController extends Controller
         ? round(($countStatus->selesai / $totalDiproses) * 100)
         : 0;
 
-    $tiketSudahDiusulkan = \App\Models\PrioritasTiketKadis::pluck('tiket_id')->toArray();
+    $tiketSudahDiusulkan = PrioritasTiketKadis::pluck('tiket_id')->toArray();
 
     $operatorPerformance = User::where('role', 'operator')
         ->withCount([
@@ -41,7 +41,7 @@ class DashboardController extends Controller
                       ->whereNotIn('uuid', $tiketSudahDiusulkan);
             }
         ])
-        ->paginate(5);
+        ->paginate(5, ['*'], 'op_page');
 
     $chartData = [
         'labels' => ['Diajukan', 'Ditangani', 'Selesai', 'Ditolak'],
@@ -70,11 +70,10 @@ class DashboardController extends Controller
             
     $kadis = User::where('role', 'kadis')->first();
 
-    $usulanTerkirim = \App\Models\PrioritasTiketKadis::with(['tiket'])
+    $usulanTerkirim = PrioritasTiketKadis::with(['tiket'])
         ->where('pengusul_id', auth()->user()->uuid)
         ->latest()
-        ->take(5)
-        ->get();
+        ->paginate(5, ['*'], 'usulan_page');
 
     return view('pages.kabid.dashboard', compact(
         'layananAktif',

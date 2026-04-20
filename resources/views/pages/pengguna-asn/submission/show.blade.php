@@ -17,13 +17,21 @@
                 <h2 class="text-xl font-bold text-gray-900 dark:text-white">Tiket #{{ $ticket->no_tiket }}</h2>
                 <p class="text-sm text-gray-500 dark:text-gray-400">Layanan: <span class="font-semibold text-blue-600 dark:text-blue-400">{{ $ticket->layanan->nama ?? 'Tidak Diketahui' }}</span></p>
             </div>
-            <div>
+            <div class="flex items-center gap-2">
                 <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold border 
                     {{ $ticket->status == 'diajukan' ? 'bg-gray-100 text-gray-800 border-gray-200' : 
                       ($ticket->status == 'ditangani' ? 'bg-blue-100 text-blue-800 border-blue-200' : 
                       ($ticket->status == 'selesai' ? 'bg-green-100 text-green-800 border-green-200' : 'bg-red-100 text-red-800 border-red-200')) }}">
                     Status: {{ Str::ucfirst($ticket->status) }}
                 </span>
+
+                {{-- Menampilkan Badge Revisi jika tiket pernah direvisi --}}
+                @if($jumlahRevisi > 0)
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold border bg-purple-100 text-red-800 border-purple-200 dark:bg-red-900/30 dark:text-red-400 dark:border-red-800">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                        Revisi ke-{{ $jumlahRevisi }}
+                    </span>
+                @endif
             </div>
         </div>
         {{-- Cek apakah status sudah Selesai atau Ditolak --}}
