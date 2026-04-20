@@ -30,14 +30,17 @@ class AppServiceProvider extends ServiceProvider
             return $user->role === 'pengguna_asn';
         });
 
+        // Gate untuk Middleware 'can:operator-only'
         Gate::define('operator-only', function (User $user) {
             return $user->role === 'operator';
         });
 
+        // Gate untuk Middleware 'can:kabid-only'
         Gate::define('kabid-only', function (User $user) {
             return $user->role === 'kabid';
         });
 
+        // Gate untuk Middleware 'can:kadis-only'
         Gate::define('kadis-only', function (User $user) {
             return $user->role === 'kadis';
         });

@@ -4,7 +4,6 @@ namespace App\Http\Controllers\PenggunaAsn;
 
 use App\Http\Controllers\Controller;
 use App\Models\Tiket;
-use App\Models\KomentarTiket;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -88,7 +87,7 @@ class SubmissionController extends Controller
             'aksi' => 'delete',
             'nama_tabel' => 'tiket',
             'record_id' => $ticket->uuid,
-            'data_lama' => $ticket->toArray(), // Menyimpan detail tiket yang dihapus
+            'data_lama' => $ticket->toArray(),
             'ip_address' => request()->ip()
         ]);
 

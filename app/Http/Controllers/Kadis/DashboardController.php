@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Kadis;
 use App\Http\Controllers\Controller;
 use App\Models\Tiket;
 use App\Models\PrioritasTiketKadis;
-use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {

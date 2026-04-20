@@ -75,8 +75,6 @@ class ProfileController extends Controller
             if ($hasNewFile) {
                 $file = $request->file('avatar');
                 $newFilename = 'avatars/avatar_' . $user->uuid . '_' . time() . '.webp';
-
-                // Image Processing
                 $image = Image::read($file);
                 $image->scale(width: 500);
                 $encoded = $image->toWebp(quality: 75);
@@ -87,8 +85,6 @@ class ProfileController extends Controller
             }
 
             $user->save();
-
-            // Hapus foto lama dari S3 jika upload berhasil
             if ($hasNewFile && $oldAvatar && Storage::disk('s3')->exists($oldAvatar)) {
                 Storage::disk('s3')->delete($oldAvatar);
             }

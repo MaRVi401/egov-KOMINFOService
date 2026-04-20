@@ -44,7 +44,6 @@ class User extends Authenticatable
         ];
     }
 
-    // Relasi ke tabel spesialisasi role
     public function superAdmin()
     {
         return $this->hasOne(SuperAdmin::class, 'users_id', 'uuid');
@@ -62,7 +61,6 @@ class User extends Authenticatable
         return $this->hasOne(Operator::class, 'users_id', 'uuid');
     }
 
-    // Relasi ke Tiket
     public function tiketDibuat()
     {
         return $this->hasMany(Tiket::class, 'users_id', 'uuid');

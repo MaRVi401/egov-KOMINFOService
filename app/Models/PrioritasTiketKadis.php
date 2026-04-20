@@ -21,19 +21,16 @@ class PrioritasTiketKadis extends Model
         'level_prioritas'
     ];
 
-    // Relasi ke Tiket
     public function tiket()
     {
         return $this->belongsTo(Tiket::class, 'tiket_id', 'uuid');
     }
 
-    // Relasi ke User (Kabid/Pengusul)
     public function pengusul()
     {
         return $this->belongsTo(User::class, 'pengusul_id', 'uuid');
     }
 
-    // Relasi ke User (Kadis/Penerima)
     public function penerima()
     {
         return $this->belongsTo(User::class, 'penerima_id', 'uuid');

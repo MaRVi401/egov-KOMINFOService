@@ -77,7 +77,7 @@ class ServiceEmailGovController extends Controller
                 'aksi' => 'create',
                 'nama_tabel' => 'tiket',
                 'record_id' => $tiket->uuid,
-                'data_baru' => $tiket->toArray(), // Merekam detail tiket awal
+                'data_baru' => $tiket->toArray(),
                 'ip_address' => request()->ip()
             ]);
 

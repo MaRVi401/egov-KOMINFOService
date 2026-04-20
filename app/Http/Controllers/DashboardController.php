@@ -16,11 +16,14 @@ class DashboardController extends Controller
 
             // Dashboard Operator
             'operator'     => app(Operator\DashboardController::class)->index(request()),
-
-            'kadis'        => app(Kadis\DashboardController::class)->index(request()),
-
+            
             // Dashboard Kabid
             'kabid'        => app(Kabid\DashboardController::class)->index(request()),
+            
+            // Dashboard Kadis
+            'kadis'        => app(Kadis\DashboardController::class)->index(),
+
+            // Dashboard Pengguna ASN
             'pengguna_asn' => app(PenggunaAsn\DashboardControllerPenggunaAsn::class)->index(request()),
 
             default        => abort(403, 'Role tidak dikenali.'),

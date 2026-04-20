@@ -227,7 +227,7 @@
         </div>
     </div>
 
-    <div id="modalReviewKadis" class="fixed inset-0 z-50 hidden bg-gray-900/60 backdrop-blur-sm overflow-y-auto h-full w-full flex items-center justify-center p-4">
+    <div id="modalReviewKadis" class="fixed inset-0 z-50 bg-gray-900/60 backdrop-blur-sm overflow-y-auto h-full w-full flex items-center justify-center p-4">
         <div class="relative w-full max-w-5xl bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-6 md:p-8 border border-gray-100 dark:border-gray-700 flex flex-col max-h-[90vh]">
             
             <div class="flex justify-between items-center mb-6 shrink-0 border-b border-gray-100 dark:border-gray-700 pb-4">
@@ -272,7 +272,7 @@
 
                         <div class="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-xl border border-gray-100 dark:border-gray-700">
                             <span class="block text-[10px] font-bold uppercase tracking-widest text-gray-500 mb-2">Lampiran (S3)</span>
-                            <a id="rev-lampiran" href="#" target="_blank" class="inline-flex items-center px-4 py-2 bg-white dark:bg-gray-600 border border-gray-200 dark:border-gray-500 rounded-lg text-sm font-bold text-blue-600 hover:text-blue-700 hover:bg-gray-50 dark:text-blue-400 dark:hover:bg-gray-500 transition-colors hidden">
+                            <a id="rev-lampiran" href="#" target="_blank" class="inline-flex items-center px-4 py-2 bg-white dark:bg-gray-600 border border-gray-200 dark:border-gray-500 rounded-lg text-sm font-bold text-blue-600 hover:text-blue-700 hover:bg-gray-50 dark:text-blue-400 dark:hover:bg-gray-500 transition-colors">
                                 <i class="ti ti-external-link me-2"></i> Lihat Dokumen Lampiran
                             </a>
                             <p id="rev-nolampiran" class="text-sm text-gray-500 italic hidden">Tidak ada lampiran.</p>
