@@ -26,7 +26,7 @@
                         <button type="button" 
                                 onclick="lihatDetailTiketOperator('{{ $op->uuid }}', '{{ $op->nama }}')" 
                                 class="inline-block min-w-20 font-bold text-blue-600 dark:text-blue-400 bg-blue-50/50 dark:bg-blue-900/20 px-4 py-1.5 rounded-full border border-blue-300 dark:border-blue-500/50 text-xs hover:bg-blue-600 hover:text-white dark:hover:bg-blue-500 dark:hover:text-white transition-all duration-200 cursor-pointer transform hover:scale-105 hover:shadow-md">
-                            {{ $op->total_handle }} Tiket
+                            {{ $op->total_eligible }} Tiket
                         </button>
                     </td>
                     <td class="px-6 py-4 text-right">

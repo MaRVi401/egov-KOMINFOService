@@ -34,6 +34,14 @@ class AppServiceProvider extends ServiceProvider
             return $user->role === 'operator';
         });
 
+        Gate::define('kabid-only', function (User $user) {
+            return $user->role === 'kabid';
+        });
+
+        Gate::define('kadis-only', function (User $user) {
+            return $user->role === 'kadis';
+        });
+
         // View Composer hanya berjalan saat view 'partials.dashboard.sidebar' dipanggil
         View::composer('partials.dashboard.sidebar', function ($view) {
 

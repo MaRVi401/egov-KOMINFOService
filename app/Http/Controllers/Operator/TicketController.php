@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Operator;
 
 use App\Http\Controllers\Controller;
 use App\Models\Tiket;
+use App\Models\PrioritasTiketKadis;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -14,16 +15,16 @@ use App\Models\JejakAudit;
 
 class TicketController extends Controller
 {
-    /**
-     * Menampilkan Tiket Masuk (Status 'diajukan' & belum ada petugas)
-     */
     public function index(Request $request): View
     {
         $search = $request->input('search');
 
+        $revisiTiketIds = PrioritasTiketKadis::where('status_persetujuan', 'disetujui')->pluck('tiket_id');
+
         $query = Tiket::with(['user', 'layanan', 'detailPengaduan'])
             ->where('status', 'diajukan')
-            ->whereNull('petugas_id');
+            ->whereNull('petugas_id')
+            ->whereNotIn('uuid', $revisiTiketIds);
 
         if ($search) {
             $query->where(function (Builder $q) use ($search) {
@@ -42,9 +43,34 @@ class TicketController extends Controller
         return view('pages.operator.ticket.index', compact('tickets'));
     }
 
-    /**
-     * Aksi untuk mengambil alih tiket (Tangani)
-     */
+    public function revisiKadis(Request $request): View
+    {
+        $search = $request->input('search');
+
+        $revisiTiketIds = PrioritasTiketKadis::where('status_persetujuan', 'disetujui')->pluck('tiket_id');
+
+        $query = Tiket::with(['user', 'layanan', 'detailPengaduan'])
+            ->where('status', 'diajukan')
+            ->whereIn('uuid', $revisiTiketIds)
+            ->where('petugas_id', $request->user()->uuid);
+
+        if ($search) {
+            $query->where(function (Builder $q) use ($search) {
+                $q->where('no_tiket', 'ilike', "%{$search}%")
+                    ->orWhereHas('user', function (Builder $qu) use ($search) {
+                        $qu->where('nama', 'ilike', "%{$search}%");
+                    })
+                    ->orWhereHas('layanan', function (Builder $ql) use ($search) {
+                        $ql->where('nama', 'ilike', "%{$search}%");
+                    });
+            });
+        }
+
+        $tickets = $query->latest()->paginate(10);
+
+        return view('pages.operator.ticket.revisi', compact('tickets'));
+    }
+
     public function handle(Request $request, string $uuid): RedirectResponse
     {
         $ticket = Tiket::where('uuid', $uuid)
@@ -65,7 +91,6 @@ class TicketController extends Controller
                 'created_at' => now(),
             ]);
 
-
             JejakAudit::create([
                 'users_id' => $request->user()->uuid,
                 'aksi' => 'update',
@@ -82,9 +107,6 @@ class TicketController extends Controller
             ->with('success', 'Tiket berhasil dipindahkan ke meja kerja Anda.');
     }
 
-    /**
-     * Menampilkan Meja Kerja (Tiket milik operator login)
-     */
     public function workDesk(Request $request): View
     {
         $search = $request->input('search');
@@ -110,26 +132,15 @@ class TicketController extends Controller
         return view('pages.operator.ticket.workdesk', compact('tickets'));
     }
 
-    /**
-     * Detail Tiket
-     */
     public function show(string $uuid): View
     {
-        $ticket = Tiket::with([
-                'user',
-                'layanan',
-                'riwayatStatus',
-                'komentar.user'
-            ])
+        $ticket = Tiket::with(['user', 'layanan', 'riwayatStatus', 'komentar.user'])
             ->where('uuid', $uuid)
             ->firstOrFail();
 
         return view('pages.operator.ticket.show', compact('ticket'));
     }
 
-    /**
-     * Update status tiket (Selesai / Ditolak) dengan komentar
-     */
     public function update(Request $request, string $uuid): RedirectResponse
     {
         $request->validate([

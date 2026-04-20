@@ -121,6 +121,8 @@ Route::middleware('auth')->group(function () {
         Route::resource('ticket', OperatorTicketController::class)
             ->parameters(['ticket' => 'uuid'])
             ->only(['index', 'show', 'update', 'destroy']);
+
+        Route::get('revisi-kadis', [OperatorTicketController::class, 'revisiKadis'])->name('ticket.revisi');
     });
 
     /*
@@ -177,8 +179,20 @@ Route::middleware('auth')->group(function () {
         // Rute untuk fitur Usulan Prioritas Tiket
         Route::resource('usulan', UsulanKabidController::class)
              ->names('kabid.usulan')
-             ->only(['index', 'create', 'store', 'show']);
+             ->parameters(['usulan' => 'uuid'])
+             ->only(['index', 'create', 'store', 'show', 'destroy']);
 
+    });
+
+    Route::middleware('can:kadis-only')->group(function () {
+        
+        Route::resource('manajemen-dashboard', \App\Http\Controllers\Kadis\DashboardController::class)
+            ->names([
+                'index' => 'kadis.dashboard.index',
+            ])
+            ->only(['index']);
+        
+        Route::post('/usulan/{uuid}/update', [\App\Http\Controllers\Kadis\UsulanKadisController::class, 'update'])->name('kadis.usulan.update');
     });
 });
 

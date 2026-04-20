@@ -7,79 +7,84 @@ use App\Models\Tiket;
 use App\Models\Layanan;
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Models\PrioritasTiketKadis;
 
 class DashboardController extends Controller
 {
     public function index(Request $request)
-    {
-        // 1. Ambil hitungan status global (Optimasi 1 Query)
-        $countStatus = Tiket::selectRaw("
-            count(*) as total,
-            count(case when status = 'diajukan' then 1 end) as diajukan,
-            count(case when status = 'ditangani' then 1 end) as ditangani,
-            count(case when status = 'selesai' then 1 end) as selesai,
-            count(case when status = 'ditolak' then 1 end) as ditolak
-        ")->first();
+{
+    $countStatus = Tiket::selectRaw("
+        count(*) as total,
+        count(case when status = 'diajukan' then 1 end) as diajukan,
+        count(case when status = 'ditangani' then 1 end) as ditangani,
+        count(case when status = 'selesai' then 1 end) as selesai,
+        count(case when status = 'ditolak' then 1 end) as ditolak
+    ")->first();
 
-        $layananAktif = Layanan::count();
+    $layananAktif = Layanan::count();
 
-        // 2. Kalkulasi Penyelesaian Global: Selesai dibanding (Selesai + Ditangani)
-        $totalDiproses = $countStatus->selesai + $countStatus->ditangani;
-        $tingkatPenyelesaian = $totalDiproses > 0
-            ? round(($countStatus->selesai / $totalDiproses) * 100)
-            : 0;
+    $totalDiproses = $countStatus->selesai + $countStatus->ditangani;
+    $tingkatPenyelesaian = $totalDiproses > 0
+        ? round(($countStatus->selesai / $totalDiproses) * 100)
+        : 0;
 
-        // 3. Ambil data operator dengan Pagination + Hitungan Progres Individu
-        // Menggunakan relasi tiketDitangani (petugas_id) dari model User
-        $operatorPerformance = User::where('role', 'operator')
-            ->withCount([
-                'tiketDitangani as total_handle',
-                'tiketDitangani as total_selesai' => function ($query) {
-                    $query->where('status', 'selesai'); // Menghitung hanya yang selesai
-                }
-            ])
-            ->paginate(5);
+    $tiketSudahDiusulkan = \App\Models\PrioritasTiketKadis::pluck('tiket_id')->toArray();
 
-        // 4. Data untuk Grafik Donut
-        $chartData = [
-            'labels' => ['Diajukan', 'Ditangani', 'Selesai', 'Ditolak'],
-            'data'   => [
-                (int) $countStatus->diajukan,
-                (int) $countStatus->ditangani,
-                (int) $countStatus->selesai,
-                (int) $countStatus->ditolak
-            ]
-        ];
+    $operatorPerformance = User::where('role', 'operator')
+        ->withCount([
+            'tiketDitangani as total_handle',
+            'tiketDitangani as total_selesai' => function ($query) {
+                $query->where('status', 'selesai');
+            },
+            'tiketDitangani as total_eligible' => function ($query) use ($tiketSudahDiusulkan) {
+                $query->whereIn('status', ['selesai', 'ditolak'])
+                      ->whereNotIn('uuid', $tiketSudahDiusulkan);
+            }
+        ])
+        ->paginate(5);
 
-        $stats = [
-            'total'   => $countStatus->total,
-            'selesai' => $countStatus->selesai,
-            'proses'  => $countStatus->ditangani,
-        ];
+    $chartData = [
+        'labels' => ['Diajukan', 'Ditangani', 'Selesai', 'Ditolak'],
+        'data'   => [
+            (int) $countStatus->diajukan,
+            (int) $countStatus->ditangani,
+            (int) $countStatus->selesai,
+            (int) $countStatus->ditolak
+        ]
+    ];
 
-        // Respons untuk AJAX Pagination
-        if ($request->ajax()) {
-            return view('pages.kabid._operator_table', compact('operatorPerformance', 'stats'))->render();
-        }
-        $tiketEligible = Tiket::whereIn('status', ['ditolak', 'selesai'])->get();
-        
-        // Ambil user Kadis (asumsi role super_admin)
-        $kadis = User::where('role', 'kadis')->first();
+    $stats = [
+        'total'   => $countStatus->total,
+        'selesai' => $countStatus->selesai,
+        'proses'  => $countStatus->ditangani,
+    ];
 
-        // Respons untuk AJAX Pagination
-        if ($request->ajax()) {
-            return view('pages.kabid._operator_table', compact('operatorPerformance', 'stats'))->render();
-        }
-
-        // Tambahkan variabel $tiketEligible dan $kadis ke compact()
-        return view('pages.kabid.dashboard', compact(
-            'layananAktif',
-            'tingkatPenyelesaian',
-            'stats',
-            'chartData',
-            'operatorPerformance',
-            'tiketEligible',
-            'kadis'
-        ));
+    if ($request->ajax()) {
+        return view('pages.kabid._operator_table', compact('operatorPerformance', 'stats'))->render();
     }
+
+    $tiketEligible = Tiket::with(['layanan', 'komentar.user'])
+        ->whereIn('status', ['ditolak', 'selesai'])
+        ->whereNotIn('uuid', $tiketSudahDiusulkan)
+        ->get();
+            
+    $kadis = User::where('role', 'kadis')->first();
+
+    $usulanTerkirim = \App\Models\PrioritasTiketKadis::with(['tiket'])
+        ->where('pengusul_id', auth()->user()->uuid)
+        ->latest()
+        ->take(5)
+        ->get();
+
+    return view('pages.kabid.dashboard', compact(
+        'layananAktif',
+        'tingkatPenyelesaian',
+        'stats',
+        'chartData',
+        'operatorPerformance',
+        'tiketEligible',
+        'kadis',
+        'usulanTerkirim'
+    ));
+}
 }

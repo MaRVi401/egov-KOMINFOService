@@ -1,6 +1,7 @@
 <?php
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Kabid;
 
+use App\Http\Controllers\Controller;
 use App\Models\PrioritasTiketKadis;
 use App\Models\Tiket;
 use App\Models\User;
@@ -61,7 +62,47 @@ class UsulanKabidController extends Controller
         // Opsional: Catat aksi ini ke jejak_audit
         // JejakAudit::create([...]);
 
+        if ($request->wantsJson()) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Usulan prioritas berhasil dikirim ke Kadis.'
+            ]);
+        }
+
         return redirect()->route('kabid.usulan.index')
                          ->with('success', 'Usulan prioritas berhasil dikirim ke Kadis.');
+    }
+
+
+    // Tambahkan ini di dalam class UsulanKabidController
+
+    public function destroy($uuid)
+    {
+        // Cari usulan berdasarkan UUID dan pastikan pengusulnya adalah user yang sedang login
+        $usulan = \App\Models\PrioritasTiketKadis::where('uuid', $uuid)
+            ->where('pengusul_id', auth()->user()->uuid)
+            ->first();
+
+        if (!$usulan) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Usulan tidak ditemukan atau Anda tidak memiliki akses.'
+            ], 404);
+        }
+
+        // Opsional: Batasi penghapusan hanya jika status masih pending
+        if ($usulan->status_persetujuan !== 'pending') {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Usulan yang sudah diproses oleh Kadis tidak dapat dihapus.'
+            ], 422);
+        }
+
+        $usulan->delete();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Usulan prioritas berhasil dibatalkan/dihapus.'
+        ]);
     }
 }

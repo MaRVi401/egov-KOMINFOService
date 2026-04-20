@@ -8,6 +8,7 @@ use App\Models\SuperAdmin;
 use App\Models\PenggunaAsn;
 use App\Models\Kabid;
 use App\Models\Operator;
+use App\Models\Kadis;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Schema;
@@ -22,13 +23,13 @@ class UserSeeder extends Seeder
         PenggunaAsn::truncate();
         Kabid::truncate();
         Operator::truncate();
+        Kadis::truncate();
         Schema::enableForeignKeyConstraints();
 
-        // 1. Buat KHUSUS 1 Super Admin
         $adminUuid = (string) Str::uuid();
         User::create([
             'uuid'     => $adminUuid,
-            'nama'     => "Ahmad Yassin",
+            'nama'     => "Jack",
             'username' => 'superadmin',
             'password' => Hash::make('12345678'),
             'role'     => 'super_admin',
@@ -43,8 +44,24 @@ class UserSeeder extends Seeder
             'nip'      => '199001012024011001',
         ]);
 
+        $kadisUuid = (string) Str::uuid();
+        User::create([
+            'uuid'     => $kadisUuid,
+            'nama'     => "Kepala Dinas",
+            'username' => 'kadis',
+            'password' => Hash::make('password'),
+            'role'     => 'kadis',
+            'email'    => 'kadis@mail.com',
+            'no_wa'    => '081234567891',
+            'alamat'   => 'Kantor Kepala Dinas',
+        ]);
 
-        // 2. Role lainnya: pengguna_asn, kabid, operator
+        Kadis::create([
+            'uuid'     => (string) Str::uuid(),
+            'users_id' => $kadisUuid,
+            'nip'      => '197001012000011001',
+        ]);
+
         $otherRoles = [
             'pengguna_asn' => PenggunaAsn::class,
             'kabid'        => Kabid::class,
@@ -52,7 +69,6 @@ class UserSeeder extends Seeder
         ];
 
         for ($i = 1; $i <= 19; $i++) {
-            // Pilih role secara bergantian
             $roleKey = array_keys($otherRoles)[$i % count($otherRoles)];
             $modelClass = $otherRoles[$roleKey];
 

@@ -4,7 +4,6 @@
 
 @section('content')
     <div class="p-4 mt-14">
-        {{-- Header Section --}}
         <div class="mb-8 border-b border-gray-200 pb-6 dark:border-gray-700">
             <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 <div class="text-center md:text-left">
@@ -23,7 +22,6 @@
                     </p>
                 </div>
                 
-                {{-- Bagian Waktu Server (Tombol Usulan Sudah Dihapus) --}}
                 <div class="flex flex-col md:flex-row items-center gap-4">
                     <div class="flex items-center justify-center md:justify-end space-x-3 md:space-x-4 bg-white dark:bg-gray-800 px-4 py-2 md:px-5 md:py-2.5 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm transition-all hover:shadow-md">
                         <div class="flex flex-col items-center md:items-end border-r border-gray-200 dark:border-gray-600 pr-3 md:pr-4">
@@ -43,7 +41,6 @@
             </div>
         </div>
 
-        {{-- Statistik Cards --}}
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
             <div class="p-5 bg-white border border-gray-200 rounded-xl shadow-sm dark:bg-gray-800 dark:border-gray-700">
                 <div class="flex items-center justify-between mb-2">
@@ -79,7 +76,6 @@
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {{-- Tabel Produktivitas dengan Wrapper AJAX --}}
             <div id="table-container" class="lg:col-span-2 bg-white border border-gray-200 rounded-2xl shadow-sm dark:bg-gray-800 dark:border-gray-700 overflow-hidden flex flex-col min-h-112.5">
                 <div class="px-5 py-4 border-b border-gray-100 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-700/30 flex justify-between items-center text-heading font-bold italic">
                     <h3 class="flex items-center text-gray-900 dark:text-white">
@@ -92,7 +88,6 @@
                 </div>
             </div>
 
-            {{-- Grafik Bulat --}}
             <div class="bg-white border border-gray-200 rounded-2xl shadow-sm dark:bg-gray-800 dark:border-gray-700 p-6 flex flex-col items-center">
                 <h3 class="w-full font-bold text-gray-900 dark:text-white mb-8 border-b border-gray-50 dark:border-gray-700 pb-3 flex items-center italic">
                     <i class="ti ti-chart-pie text-orange-500 me-2 text-xl"></i> Status Layanan Masuk
@@ -115,6 +110,113 @@
                 </div>
             </div>
         </div>
+        
+        <div class="mt-8 bg-white border border-gray-200 rounded-2xl shadow-sm dark:bg-gray-800 dark:border-gray-700 overflow-hidden flex flex-col">
+            <div class="px-5 py-4 border-b border-gray-100 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-700/30 flex justify-between items-center text-heading font-bold italic">
+                <h3 class="flex items-center text-gray-900 dark:text-white">
+                    <i class="ti ti-send text-blue-600 me-2 text-xl"></i> Riwayat Usulan Prioritas Terbaru
+                </h3>
+            </div>
+
+            <div class="relative overflow-x-auto bg-white dark:bg-[#1e293b]">
+                <table class="w-full text-sm text-left">
+                    <thead class="text-xs uppercase bg-white dark:bg-[#1e293b] border-b border-gray-100 dark:border-gray-700/50">
+                        <tr>
+                            <th class="px-6 py-5 font-black tracking-widest text-blue-900 dark:text-blue-400">No. Tiket</th>
+                            <th class="px-6 py-5 font-black tracking-widest text-blue-900 dark:text-blue-400">Prioritas</th>
+                            <th class="px-6 py-5 font-black tracking-widest text-blue-900 dark:text-blue-400">Catatan Kabid</th>
+                            <th class="px-6 py-5 font-black tracking-widest text-blue-900 dark:text-blue-400">Status</th>
+                            <th class="px-6 py-5 font-black tracking-widest text-blue-900 dark:text-blue-400">Catatan Kadis</th>
+                            
+                            <th class="px-6 py-5 font-black tracking-widest text-blue-900 dark:text-blue-400 text-center">Aksi</th>
+                            <th class="px-6 py-5 text-right font-black tracking-widest text-blue-900 dark:text-blue-400">Waktu</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-50 dark:divide-gray-700/30">
+                        @forelse($usulanTerkirim as $usulan)
+                            <tr class="hover:bg-blue-50/30 dark:hover:bg-slate-700/40 transition-all duration-200">
+                                <td class="px-6 py-4">
+                                    <span class="inline-block px-2.5 py-1 text-xs font-black rounded-md bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 tracking-wider">
+                                        {{ $usulan->tiket->no_tiket ?? 'N/A' }}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    @php
+                                        $colorPrio = $usulan->level_prioritas == 'tinggi' ? 'red' : ($usulan->level_prioritas == 'sedang' ? 'yellow' : 'green');
+                                    @endphp
+                                    <span class="px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-{{$colorPrio}}-700 bg-{{$colorPrio}}-100 rounded-lg dark:bg-{{$colorPrio}}-900/30 dark:text-{{$colorPrio}}-400 border border-{{$colorPrio}}-200 dark:border-{{$colorPrio}}-800">
+                                        {{ $usulan->level_prioritas }}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 text-gray-600 dark:text-gray-400">
+                                    <div class="truncate max-w-xs" title="{{ $usulan->catatan_kabid }}">
+                                        {{ \Illuminate\Support\Str::limit($usulan->catatan_kabid, 45) }}
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    @php
+                                        $statusIcon = 'ti-clock';
+                                        $statusColor = 'orange';
+                                        
+                                        if ($usulan->status_persetujuan == 'disetujui') {
+                                            $statusIcon = 'ti-check';
+                                            $statusColor = 'green';
+                                        } elseif ($usulan->status_persetujuan == 'ditolak') {
+                                            $statusIcon = 'ti-x';
+                                            $statusColor = 'red';
+                                        }
+                                    @endphp
+                                    <span class="flex items-center gap-1.5 text-xs font-bold text-{{$statusColor}}-600 dark:text-{{$statusColor}}-400">
+                                        <i class="ti {{ $statusIcon }} text-base"></i>
+                                        {{ ucfirst($usulan->status_persetujuan) }}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 text-gray-600 dark:text-gray-400">
+                                    @if($usulan->catatan_kadis)
+                                        <div class="truncate max-w-xs" title="{{ $usulan->catatan_kadis }}">
+                                            {{ \Illuminate\Support\Str::limit($usulan->catatan_kadis, 45) }}
+                                        </div>
+                                    @else
+                                        <span class="text-xs italic text-gray-400 dark:text-gray-500">Menunggu balasan...</span>
+                                    @endif
+                                </td>
+                                <td class="px-6 py-4 text-center">
+                                    @if($usulan->status_persetujuan == 'pending')
+                                        <button type="button" 
+                                                onclick="confirmHapusUsulan('{{ $usulan->uuid }}')" 
+                                                class="text-red-500 hover:text-red-700 transition-colors p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20"
+                                                title="Batalkan Usulan">
+                                            <i class="ti ti-trash text-lg"></i>
+                                        </button>
+                                    @else
+                                        <span class="text-gray-300 dark:text-gray-600" title="Sudah diproses">
+                                            <i class="ti ti-lock text-lg"></i>
+                                        </span>
+                                    @endif
+                                </td>
+                                <td class="px-6 py-4 text-right text-xs font-medium text-gray-500 dark:text-gray-400">
+                                    {{ $usulan->created_at->diffForHumans() }}
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="6" class="px-6 py-10 text-center italic text-gray-400 dark:text-gray-500 bg-white dark:bg-[#1e293b]">
+                                    Belum ada tiket yang diusulkan ke Kadis.
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+            
+            @if(count($usulanTerkirim) > 0)
+            <div class="px-5 py-4 bg-gray-50 dark:bg-[#1e293b] border-t border-gray-100 dark:border-gray-700 rounded-b-xl flex justify-end">
+                <a href="{{ route('kabid.usulan.index') }}" class="text-xs font-bold text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors flex items-center gap-1">
+                    Lihat Semua Usulan <i class="ti ti-arrow-right"></i>
+                </a>
+            </div>
+            @endif
+        </div>
     </div>
 
     <div id="modalUsulanKadis" 
@@ -131,7 +233,7 @@
                 </button>
             </div>
 
-            <form action="{{ route('kabid.usulan.store') }}" method="POST" class="flex flex-col overflow-hidden">
+            <form id="formUsulanKadis" data-url="{{ route('kabid.usulan.store') }}" class="flex flex-col overflow-hidden">
                 @csrf
                 <input type="hidden" name="penerima_id" value="{{ $kadis->uuid ?? '' }}">
 
@@ -158,7 +260,7 @@
                                             $colorClasses = 'peer-checked:bg-green-600 peer-checked:border-green-600 hover:border-green-300 dark:hover:border-green-600/50';
                                         } elseif ($lv == 'sedang') {
                                             $colorClasses = 'peer-checked:bg-yellow-500 peer-checked:border-yellow-500 hover:border-yellow-300 dark:hover:border-yellow-600/50';
-                                        } else { // tinggi
+                                        } else { 
                                             $colorClasses = 'peer-checked:bg-red-600 peer-checked:border-red-600 hover:border-red-300 dark:hover:border-red-600/50';
                                         }
                                     @endphp
@@ -188,34 +290,27 @@
             </form>
         </div>
     </div>
+
+    <div id="modalAlertCustom" class="fixed inset-0 z-[60] hidden bg-gray-900/60 backdrop-blur-sm overflow-y-auto h-full w-full flex items-center justify-center p-4">
+        <div class="relative w-full max-w-sm bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-6 md:p-8 text-center border border-gray-100 dark:border-gray-700 flex flex-col items-center">
+            
+            <div id="alertIcon" class="mb-4"></div>
+            
+            <h3 id="alertTitle" class="text-xl font-black text-gray-900 dark:text-white mb-2"></h3>
+            <p id="alertMessage" class="text-sm text-gray-500 dark:text-gray-400 mb-8"></p>
+            
+            <button type="button" onclick="tutupAlertDanKembali()" class="w-full px-6 py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 shadow-lg shadow-blue-500/30 transition">
+                Kembali ke Dashboard
+            </button>
+        </div>
+    </div>
+
+    <span id="dashboard-data-bridge" 
+        data-labels='@json($chartData["labels"])'
+        data-data='@json($chartData["data"])'>
+    </span>
 @endsection
 
 @push('scripts')
     @vite(['resources/js/dashboard-kabid.js'])
-
-    <script nonce="{{ $csp_nonce }}">
-        document.addEventListener('DOMContentLoaded', function() {
-            if (typeof window.initDashboard === 'function') {
-                window.initDashboard({
-                    labels: @json($chartData['labels']),
-                    data: @json($chartData['data'])
-                });
-            }
-        });
-    </script>
-@endpush
-
-@push('scripts')
-    @vite(['resources/js/dashboard-kabid.js'])
-
-    <script nonce="{{ $csp_nonce }}">
-        document.addEventListener('DOMContentLoaded', function() {
-            if (typeof window.initDashboard === 'function') {
-                window.initDashboard({
-                    labels: @json($chartData['labels']),
-                    data: @json($chartData['data'])
-                });
-            }
-        });
-    </script>
 @endpush
