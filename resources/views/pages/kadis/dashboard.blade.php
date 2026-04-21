@@ -227,7 +227,7 @@
         </div>
     </div>
 
-    <div id="modalReviewKadis" class="fixed inset-0 z-50 hidden bg-gray-900/60 backdrop-blur-sm overflow-y-auto h-full w-full flex items-center justify-center p-4">
+    <div id="modalReviewKadis" class="fixed inset-0 z-50 hidden bg-gray-900/60 backdrop-blur-sm overflow-y-auto h-full w-full  items-center justify-center p-4">
         <div class="relative w-full max-w-5xl bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-6 md:p-8 border border-gray-100 dark:border-gray-700 flex flex-col max-h-[90vh]">
             
             <div class="flex justify-between items-center mb-6 shrink-0 border-b border-gray-100 dark:border-gray-700 pb-4">

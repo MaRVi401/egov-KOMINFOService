@@ -55,9 +55,14 @@ window.bukaModalReview = function(btn) {
     
     const form = document.getElementById('formReviewKadis');
     const baseUrl = form.getAttribute('data-action-url');
-    form.action = baseUrl.replace(':uuid', uuid);
+    
+    const updatedUrl = baseUrl.replace('%3Auuid', uuid).replace(':uuid', uuid); 
+    form.setAttribute('action', updatedUrl);
+    form.action = updatedUrl;
 
     modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    
     document.body.style.overflow = 'hidden'; 
 };
 
@@ -65,7 +70,10 @@ window.tutupModalReview = function() {
     const modal = document.getElementById('modalReviewKadis');
     const form = document.getElementById('formReviewKadis');
     
+    
+    modal.classList.remove('flex');
     modal.classList.add('hidden');
+    
     document.body.style.overflow = 'auto'; 
     form.reset(); 
 };
