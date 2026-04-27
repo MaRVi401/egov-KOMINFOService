@@ -27,6 +27,17 @@ class SecurityHeaders
         $baseUrl = $request->getSchemeAndHttpHost();
         $wsUrl = "ws://" . $request->getHost() . ":*";
         $allowedHosts = "{$baseUrl} http://127.0.0.1:* http://localhost:*";
+
+        // $baseUrl = $request->getSchemeAndHttpHost();
+        
+        
+        // $wsUrl = "ws://" . $request->getHost() . ":5173";
+        
+        // $viteHost = "http://" . $request->getHost() . ":5173"; 
+        
+        // $allowedHosts = "{$baseUrl} {$viteHost} http://127.0.0.1:5173 http://localhost:5173";
+
+
         // 3. Konfigurasi Content Security Policy (CSP)
         $cspPolicy = [
             "default-src 'self'",
