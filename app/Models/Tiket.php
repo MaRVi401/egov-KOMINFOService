@@ -12,7 +12,7 @@ class Tiket extends Model
     protected $table = 'tiket';
     protected $primaryKey = 'uuid';
     public $incrementing = false;
-    protected $fillable = ['users_id', 'layanan_id', 'petugas_id', 'no_tiket', 'deskripsi', 'status'];
+    protected $fillable = ['users_id', 'layanan_id', 'petugas_id', 'no_tiket', 'deskripsi', 'status', 'surat_pengantar'];
 
     public function user()
     {

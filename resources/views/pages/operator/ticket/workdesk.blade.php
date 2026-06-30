@@ -116,16 +116,14 @@
                                                 class="relative bg-white rounded-lg shadow dark:bg-gray-800 border dark:border-gray-700">
                                                 <div
                                                     class="flex items-center justify-between p-4 border-b rounded-t dark:border-gray-600">
-                                                    <h3
-                                                        class="text-xl font-semibold text-gray-900 dark:text-white text-left">
+                                                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white text-left">
                                                         Update Status: {{ $ticket->no_tiket }}
                                                     </h3>
                                                     <button type="button"
                                                         class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white cursor-pointer"
                                                         data-modal-hide="update-modal-{{ $ticket->uuid }}">
                                                         <svg class="w-3 h-3" aria-hidden="true"
-                                                            xmlns="http://www.w3.org/2000/svg" fill="none"
-                                                            viewBox="0 0 14 14">
+                                                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
                                                             <path stroke="currentColor" stroke-linecap="round"
                                                                 stroke-linejoin="round" stroke-width="2"
                                                                 d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
@@ -134,8 +132,7 @@
                                                     </button>
                                                 </div>
 
-                                                <form action="{{ route('ticket.update', $ticket->uuid) }}"
-                                                    method="POST">
+                                                <form action="{{ route('ticket.update', $ticket->uuid) }}" method="POST">
                                                     @csrf
                                                     @method('PUT')
 
@@ -145,13 +142,15 @@
                                                                 <label
                                                                     class="block text-xs text-gray-500 uppercase font-semibold">Pengaju</label>
                                                                 <p class="text-sm font-bold text-gray-900 dark:text-white">
-                                                                    {{ $ticket->user->nama }}</p>
+                                                                    {{ $ticket->user->nama }}
+                                                                </p>
                                                             </div>
                                                             <div>
                                                                 <label
                                                                     class="block text-xs text-gray-500 uppercase font-semibold">Layanan</label>
                                                                 <p class="text-sm font-bold text-gray-900 dark:text-white">
-                                                                    {{ $ticket->layanan->nama }}</p>
+                                                                    {{ $ticket->layanan->nama }}
+                                                                </p>
                                                             </div>
                                                         </div>
 
@@ -167,17 +166,55 @@
 
                                                         @if ($ticket->lampiran)
                                                             <div class="mt-4">
-                                                                <label class="block text-xs text-gray-500 uppercase mb-1">Lampiran</label>
+                                                                <label
+                                                                    class="block text-xs text-gray-500 uppercase mb-1">Lampiran</label>
                                                                 <img src="{{ Storage::disk('s3')->url($ticket->lampiran) }}"
                                                                     class="w-full max-h-48 object-contain rounded-lg border dark:border-gray-600 bg-gray-50 dark:bg-gray-900"
                                                                     alt="Lampiran Tidak ada">
+                                                            </div>
+                                                            <a href="{{ Storage::disk('s3')->url($ticket->lampiran) }}"
+                                                                target="_blank"
+                                                                class="inline-flex items-center text-xs text-blue-600 hover:underline dark:text-blue-400">
+                                                                <svg class="w-3.5 h-3.5 me-1" fill="none" stroke="currentColor"
+                                                                    viewBox="0 0 24 24">
+                                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                                        stroke-width="2"
+                                                                        d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                                                </svg>
+                                                                Buka Lampiran di Tab Baru
+                                                            </a>
+                                                        @endif
+
+                                                        {{-- Menampilkan Surat Pengantar Kepala Dinas --}}
+                                                        @if ($ticket->surat_pengantar)
+                                                            <div class="mt-4">
+                                                                <label
+                                                                    class="block text-xs text-purple-600 dark:text-purple-400 font-bold uppercase mb-1">Surat
+                                                                    Pengantar Kepala Dinas</label>
+                                                                <img src="{{ Storage::disk('s3')->url($ticket->surat_pengantar) }}"
+                                                                    class="w-full max-h-48 object-contain rounded-lg border border-purple-200 dark:border-purple-700 bg-gray-50 dark:bg-gray-900"
+                                                                    alt="Surat Pengantar Tidak ada">
+                                                                <div class="mt-1.5">
+                                                                    <a href="{{ Storage::disk('s3')->url($ticket->surat_pengantar) }}"
+                                                                        target="_blank"
+                                                                        class="inline-flex items-center text-xs text-blue-600 hover:underline dark:text-blue-400">
+                                                                        <svg class="w-3.5 h-3.5 me-1" fill="none"
+                                                                            stroke="currentColor" viewBox="0 0 24 24">
+                                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                                stroke-width="2"
+                                                                                d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                                                        </svg>
+                                                                        Buka Surat Pengantar di Tab Baru
+                                                                    </a>
+                                                                </div>
                                                             </div>
                                                         @endif
 
                                                         {{-- Menampilkan Screenshot Pengaduan (Folder: pengaduan) --}}
                                                         @if ($ticket->detailPengaduan && $ticket->detailPengaduan->lampiran_screenshot)
                                                             <div class="mt-4">
-                                                                <label class="block text-xs text-gray-500 uppercase mb-1">Screenshot Pengaduan</label>
+                                                                <label class="block text-xs text-gray-500 uppercase mb-1">Screenshot
+                                                                    Pengaduan</label>
                                                                 <img src="{{ Storage::disk('s3')->url($ticket->detailPengaduan->lampiran_screenshot) }}"
                                                                     class="w-full max-h-48 object-contain rounded-lg border dark:border-gray-600 bg-gray-50 dark:bg-gray-900"
                                                                     alt="Lampiran tidak ada">
@@ -215,8 +252,7 @@
                                                             class="text-white bg-orange-600 hover:bg-orange-700 font-medium rounded-lg text-sm px-5 py-2.5 text-center transition-all cursor-pointer">
                                                             Simpan Perubahan
                                                         </button>
-                                                        <button data-modal-hide="update-modal-{{ $ticket->uuid }}"
-                                                            type="button"
+                                                        <button data-modal-hide="update-modal-{{ $ticket->uuid }}" type="button"
                                                             class="ms-3 text-gray-500 bg-white hover:bg-gray-100 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 cursor-pointer hover:text-gray-900 transition-all dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600">
                                                             Batal
                                                         </button>

@@ -170,25 +170,24 @@
                                                         <strong>Deskripsi:</strong>
                                                         {{ $ticket->deskripsi ?? ($ticket->detailPengaduan->detail_pengaduan ?? '-') }}
                                                     </p>
-                                                    {{-- Menampilkan Lampiran Umum (Folder: lampiran_tiket) --}}
-                                                @if ($ticket->lampiran)
-                                                    <div class="mt-4">
-                                                        <p class="text-gray-900 dark:text-white mb-2"><strong>Lampiran:</strong></p>
-                                                        <img src="{{ Storage::disk('s3')->url($ticket->lampiran) }}?t={{ time() }}"
-                                                            class="w-full rounded-lg border dark:border-gray-600 object-contain max-h-64 bg-gray-50 dark:bg-gray-900" 
-                                                            alt="Lampiran Tidak ada">
-                                                    </div>
-                                                @endif
 
-                                                {{-- Menampilkan Screenshot Pengaduan (Folder: pengaduan) --}}
-                                                @if ($ticket->detailPengaduan && $ticket->detailPengaduan->lampiran_screenshot)
-                                                    <div class="mt-4">
-                                                        <p class="text-gray-900 dark:text-white mb-2"><strong>Screenshot Pengaduan:</strong></p>
-                                                        <img src="{{ Storage::disk('s3')->url($ticket->detailPengaduan->lampiran_screenshot) }}?t={{ time() }}"
-                                                            class="w-full rounded-lg border dark:border-gray-600 object-contain max-h-64 bg-gray-50 dark:bg-gray-900" 
-                                                            alt="Lampiran Tidak ada">
-                                                    </div>
-                                                @endif
+                                                   {{-- Bagian Dokumen Tindak Lanjut (Lama) --}}
+                                                    @if($ticket->lampiran)
+                                                        <a href="{{ Storage::disk('s3')->url($ticket->lampiran) }}" target="_blank" class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-blue-700 bg-blue-100 rounded-lg hover:bg-blue-200 dark:bg-blue-900/30 dark:text-blue-400">
+                                                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                                                            Lihat Dokumen Utama
+                                                        </a>
+                                                    @endif
+
+                                                    {{-- TAMBAHKAN INI: Bagian Surat Pengantar Dinas (Baru) --}}
+                                                    @if($ticket->surat_pengantar)
+                                                        <a href="{{ Storage::disk('s3')->url($ticket->surat_pengantar) }}" target="_blank" class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-purple-700 bg-purple-100 rounded-lg hover:bg-purple-200 dark:bg-purple-900/30 dark:text-purple-400 ml-2">
+                                                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                                                            Lihat Surat Pengantar
+                                                        </a>
+                                                    @else
+                                                        <span class="text-xs text-gray-400 italic ml-2">(Surat Pengantar Belum Diunggah)</span>
+                                                    @endif
                                                 </div>
 
                                                 <div

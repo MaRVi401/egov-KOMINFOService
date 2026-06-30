@@ -28,9 +28,9 @@ class SubmissionController extends Controller
             $search = $request->search;
             $query->where(function ($q) use ($search) {
                 $q->where('status', 'LIKE', "%{$search}%")
-                ->orWhereHas('layanan', function ($subQuery) use ($search) {
-                    $subQuery->where('nama', 'LIKE', "%{$search}%");
-                });
+                    ->orWhereHas('layanan', function ($subQuery) use ($search) {
+                        $subQuery->where('nama', 'LIKE', "%{$search}%");
+                    });
             });
         }
 
@@ -49,9 +49,9 @@ class SubmissionController extends Controller
             'detailPengaduan',
             'komentar.user'
         ])
-        ->where('uuid', $uuid)
-        ->where('users_id', Auth::user()->uuid)
-        ->firstOrFail();
+            ->where('uuid', $uuid)
+            ->where('users_id', Auth::user()->uuid)
+            ->firstOrFail();
 
         $kategoriEmail = null;
 
@@ -75,13 +75,20 @@ class SubmissionController extends Controller
             ->where('users_id', Auth::user()->uuid)
             ->firstOrFail();
 
-
+        // Hapus lampiran berkas utama jika ada
         if ($ticket->lampiran) {
-
             if (Storage::disk('s3')->exists($ticket->lampiran)) {
                 Storage::disk('s3')->delete($ticket->lampiran);
             }
         }
+
+        // Hapus berkas surat pengantar jika ada
+        if ($ticket->surat_pengantar) {
+            if (Storage::disk('s3')->exists($ticket->surat_pengantar)) {
+                Storage::disk('s3')->delete($ticket->surat_pengantar);
+            }
+        }
+
         JejakAudit::create([
             'users_id' => Auth::id(),
             'aksi' => 'delete',
@@ -93,52 +100,67 @@ class SubmissionController extends Controller
 
         $ticket->delete();
 
-        return redirect()->route('submission.index')->with('success', 'Tiket dan lampiran dokumen berhasil dihapus.');
+        return redirect()->route('submission.index')->with('success', 'Tiket dan seluruh dokumen lampiran berhasil dihapus.');
     }
 
     public function uploadDocument(Request $request, $uuid)
     {
+        // Validasi untuk kedua berkas
         $request->validate([
-            'file_surat' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'file_surat' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            'surat_pengantar' => 'required|image|mimes:jpeg,png,jpg|max:2048',
         ], [
-            'file_surat.required' => 'Dokumen wajib diunggah.',
-            'file_surat.mimes'   => 'Format dokumen harus berupa PDF.',
-            'file_surat.max'      => 'Ukuran file maksimal adalah 2 MB.',
+            'file_surat.required' => 'Dokumen tindak lanjut wajib diunggah.',
+            'file_surat.mimes' => 'Format dokumen tindak lanjut harus berupa Gambar (JPEG/PNG/JPG).',
+            'file_surat.max' => 'Ukuran file dokumen tindak lanjut maksimal adalah 2 MB.',
+            'surat_pengantar.required' => 'Surat pengantar kepala dinas wajib diunggah.',
+            'surat_pengantar.mimes' => 'Format surat pengantar harus berupa Gambar (JPEG/PNG/JPG).',
+            'surat_pengantar.max' => 'Ukuran file surat pengantar maksimal adalah 2 MB.',
         ]);
 
         $ticket = Tiket::where('uuid', $uuid)->firstOrFail();
+        $manager = new ImageManager(new Driver());
+        $dataLama = ['lampiran' => $ticket->lampiran, 'surat_pengantar' => $ticket->surat_pengantar, 'status' => $ticket->status];
 
+        // Proses unggah File Surat Utama (Dokumen Tindak Lanjut)
         if ($request->hasFile('file_surat')) {
-            $file = $request->file('file_surat');
-            $filename = Str::uuid() . '.webp';
+            $fileSurat = $request->file('file_surat');
+            $filenameSurat = Str::uuid() . '.webp';
+            $imageSurat = $manager->read($fileSurat->getRealPath());
+            $encodedSurat = $imageSurat->toWebp(80);
+            $pathSurat = 'lampiran_tiket/' . $filenameSurat;
 
-            $manager = new ImageManager(new Driver());
-
-            $image = $manager->read($file->getRealPath());
-
-            $encodedImage = $image->toWebp(80);
-
-            $path = 'lampiran_tiket/' . $filename;
-
-            Storage::disk('s3')->put($path, $encodedImage->toString());
-
-            $ticket->lampiran = $path;
-            $ticket->status = 'diajukan';
-            $ticket->petugas_id = null;
-            $ticket->save();
-
-            JejakAudit::create([
-                'users_id' => Auth::id(),
-                'aksi' => 'update',
-                'nama_tabel' => 'tiket',
-                'record_id' => $ticket->uuid,
-                'data_lama' => ['lampiran' => null, 'status' => 'belum diajukan'],
-                'data_baru' => ['lampiran' => $path, 'status' => 'diajukan'],
-                'ip_address' => request()->ip()
-            ]);
-            return back()->with('success', 'Dokumen Gambar berhasil diunggah ke MinIO!');
+            Storage::disk('s3')->put($pathSurat, $encodedSurat->toString());
+            $ticket->lampiran = $pathSurat;
         }
 
-        return back()->with('error', 'Terjadi kesalahan saat mengunggah dokumen.');
+        // Proses unggah Surat Pengantar Kepala Dinas
+        if ($request->hasFile('surat_pengantar')) {
+            $filePengantar = $request->file('surat_pengantar');
+            $filenamePengantar = Str::uuid() . '.webp';
+            $imagePengantar = $manager->read($filePengantar->getRealPath());
+            $encodedPengantar = $imagePengantar->toWebp(80);
+            $pathPengantar = 'surat_pengantar/' . $filenamePengantar;
+
+            Storage::disk('s3')->put($pathPengantar, $encodedPengantar->toString());
+            $ticket->surat_pengantar = $pathPengantar;
+        }
+
+        // Perbarui status tiket
+        $ticket->status = 'diajukan';
+        $ticket->petugas_id = null;
+        $ticket->save();
+
+        JejakAudit::create([
+            'users_id' => Auth::id(),
+            'aksi' => 'update',
+            'nama_tabel' => 'tiket',
+            'record_id' => $ticket->uuid,
+            'data_lama' => $dataLama,
+            'data_baru' => ['lampiran' => $ticket->lampiran, 'surat_pengantar' => $ticket->surat_pengantar, 'status' => 'diajukan'],
+            'ip_address' => request()->ip()
+        ]);
+
+        return back()->with('success', 'Semua dokumen berhasil diunggah dan tiket berhasil diajukan!');
     }
 }
