@@ -1,6 +1,6 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const ctx = document.getElementById('usulanDonutChart');
-    if(ctx) {
+    if (ctx) {
         const labelsData = JSON.parse(ctx.getAttribute('data-labels'));
         const valuesData = JSON.parse(ctx.getAttribute('data-values'));
 
@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-window.bukaModalReview = function(btn) {
+window.bukaModalReview = function (btn) {
     const modal = document.getElementById('modalReviewKadis');
     const uuid = btn.getAttribute('data-uuid');
     const noTiket = btn.getAttribute('data-notiket');
@@ -33,49 +33,70 @@ window.bukaModalReview = function(btn) {
     const pengusul = btn.getAttribute('data-pengusul');
     const catatanKabid = btn.getAttribute('data-catatankabid');
     const deskripsi = btn.getAttribute('data-deskripsi');
+
+    // Ambil kedua atribut
     const lampiran = btn.getAttribute('data-lampiran');
-    
+    const suratPengantar = btn.getAttribute('data-suratpengantar');
+
     document.getElementById('rev-notiket').innerText = noTiket;
     document.getElementById('rev-layanan').innerText = layanan;
     document.getElementById('rev-pengusul').innerText = "- " + pengusul;
     document.getElementById('rev-catatankabid').innerText = catatanKabid;
     document.getElementById('rev-deskripsi').innerText = deskripsi;
-    
+
+    // Inisialisasi Elemen Tombol
     const btnLampiran = document.getElementById('rev-lampiran');
+    const btnSuratPengantar = document.getElementById('rev-suratpengantar');
     const txtNoLampiran = document.getElementById('rev-nolampiran');
-    
+
+    // Reset tampilan awal (sembunyikan semua)
+    btnLampiran.classList.add('hidden');
+    btnSuratPengantar.classList.add('hidden');
+    txtNoLampiran.classList.add('hidden');
+
+    let adaLampiran = false;
+
+    // Cek dan tampilkan Lampiran Utama
     if (lampiran && lampiran.trim() !== '') {
         btnLampiran.href = lampiran;
         btnLampiran.classList.remove('hidden');
-        txtNoLampiran.classList.add('hidden');
-    } else {
-        btnLampiran.classList.add('hidden');
+        adaLampiran = true;
+    }
+
+    // Cek dan tampilkan Surat Pengantar Kadis
+    if (suratPengantar && suratPengantar.trim() !== '') {
+        btnSuratPengantar.href = suratPengantar;
+        btnSuratPengantar.classList.remove('hidden');
+        adaLampiran = true;
+    }
+
+    // Jika keduanya kosong, munculkan teks "Tidak ada lampiran"
+    if (!adaLampiran) {
         txtNoLampiran.classList.remove('hidden');
     }
-    
+
+    // (Sisa kode untuk action form URL tetap sama...)
     const form = document.getElementById('formReviewKadis');
     const baseUrl = form.getAttribute('data-action-url');
-    
-    const updatedUrl = baseUrl.replace('%3Auuid', uuid).replace(':uuid', uuid); 
+    const updatedUrl = baseUrl.replace('%3Auuid', uuid).replace(':uuid', uuid);
     form.setAttribute('action', updatedUrl);
     form.action = updatedUrl;
 
     modal.classList.remove('hidden');
     modal.classList.add('flex');
-    
-    document.body.style.overflow = 'hidden'; 
+    document.body.style.overflow = 'hidden';
 };
 
-window.tutupModalReview = function() {
+window.tutupModalReview = function () {
     const modal = document.getElementById('modalReviewKadis');
     const form = document.getElementById('formReviewKadis');
-    
-    
+
+
     modal.classList.remove('flex');
     modal.classList.add('hidden');
-    
-    document.body.style.overflow = 'auto'; 
-    form.reset(); 
+
+    document.body.style.overflow = 'auto';
+    form.reset();
 };
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -91,7 +112,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             let submitBtn = form.querySelector('button[type="submit"]');
             let originalBtnText = submitBtn.innerHTML;
-            
+
             Swal.fire({
                 title: 'Menyimpan Data...',
                 html: 'Mohon tunggu sebentar.',
@@ -105,7 +126,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             try {
                 let response = await fetch(url, {
-                    method: 'POST', 
+                    method: 'POST',
                     body: formData,
                     headers: {
                         'X-Requested-With': 'XMLHttpRequest',
@@ -127,12 +148,12 @@ document.addEventListener('DOMContentLoaded', function () {
                     confirmButtonColor: '#2563eb',
                 }).then(() => {
                     tutupModalReview();
-                    window.location.reload(); 
+                    window.location.reload();
                 });
 
             } catch (error) {
                 console.error(error);
-                
+
                 Swal.fire({
                     title: 'Gagal Menyimpan!',
                     text: error.message || 'Terjadi kesalahan pada jaringan atau server.',

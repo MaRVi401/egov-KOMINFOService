@@ -36,22 +36,22 @@ function fetchData(url, config) {
             "Accept": "text/html"
         }
     })
-    .then(response => {
-        if (!response.ok) throw new Error("Gagal memuat data");
-        return response.text();
-    })
-    .then(html => {
-        if (contentBody) {
-            contentBody.innerHTML = html;
-            contentBody.style.opacity = '1';
-        }
-        renderMonitoringChart(config.labels, config.data);
-        window.history.pushState(null, null, url);
-    })
-    .catch(error => {
-        console.error("AJAX Error:", error);
-        if (contentBody) contentBody.style.opacity = '1';
-    });
+        .then(response => {
+            if (!response.ok) throw new Error("Gagal memuat data");
+            return response.text();
+        })
+        .then(html => {
+            if (contentBody) {
+                contentBody.innerHTML = html;
+                contentBody.style.opacity = '1';
+            }
+            renderMonitoringChart(config.labels, config.data);
+            window.history.pushState(null, null, url);
+        })
+        .catch(error => {
+            console.error("AJAX Error:", error);
+            if (contentBody) contentBody.style.opacity = '1';
+        });
 }
 
 function initDashboard(config) {
@@ -86,8 +86,8 @@ function lihatDetailTiketOperator(uuid, nama) {
     const container = document.getElementById('container-list-tiket');
     const labelNama = document.getElementById('label-nama-operator');
     const modal = document.getElementById('modalUsulanKadis');
-    
-    if(labelNama) labelNama.innerText = '(Dari ' + nama + ')';
+
+    if (labelNama) labelNama.innerText = '(Dari ' + nama + ')';
 
     const rawData = modal.getAttribute('data-tiket');
     const semuaTiketEligible = rawData ? JSON.parse(rawData) : [];
@@ -101,25 +101,63 @@ function lihatDetailTiketOperator(uuid, nama) {
             const statusClass = tiket.status === 'selesai' ? 'text-green-600' : 'text-red-500';
             const deskripsiLengkap = tiket.deskripsi ? tiket.deskripsi : 'Tidak ada deskripsi yang dilampirkan pada tiket ini.';
             const shortDeskripsi = deskripsiLengkap.length > 80 ? deskripsiLengkap.substring(0, 80) + '...' : deskripsiLengkap;
-            
+
             let lampiranHtml = '';
+            let attachments = [];
+            const minioBaseUrl = 'http://localhost:9000/diskominfo-assets';
+
+            // 1. Ambil Lampiran Utama
             if (tiket.lampiran) {
-                const minioBaseUrl = 'http://localhost:9000/diskominfo-assets';
-                lampiranHtml = `
-                    <div class="mb-3">
-                        <span class="block text-[10px] font-bold uppercase text-gray-500 tracking-wider mb-1.5">Lampiran Laporan:</span>
-                        <a href="${minioBaseUrl}/${tiket.lampiran}" target="_blank" class="inline-block hover:opacity-80 transition-opacity">
-                            <img src="${minioBaseUrl}/${tiket.lampiran}" alt="Lampiran" class="max-h-32 rounded-lg border border-gray-200 dark:border-gray-700 object-cover shadow-sm">
-                        </a>
-                    </div>
-                `;
+                attachments.push({
+                    title: 'Lampiran Laporan',
+                    file: tiket.lampiran
+                });
+            }
+
+            // 2. Ambil Surat Pengantar Kepala Dinas
+            // Catatan: Sesuaikan 'tiket.surat_pengantar' jika nama kolom di JSON Anda berbeda
+            // (misal: tiket.detail_layanan.file_surat_pengantar)
+            const suratPengantar = tiket.surat_pengantar;
+
+            if (suratPengantar) {
+                attachments.push({
+                    title: 'Surat Pengantar Kadis',
+                    file: suratPengantar
+                });
+            }
+
+            // 3. Render semua lampiran yang tersedia menggunakan flexbox agar sejajar
+            if (attachments.length > 0) {
+                lampiranHtml = `<div class="mb-3 flex flex-wrap gap-4">`;
+
+                attachments.forEach(attachment => {
+                    // Cek jika file berupa PDF (karena surat pengantar seringkali PDF)
+                    const isPdf = attachment.file.toLowerCase().endsWith('.pdf');
+                    const fileDisplay = isPdf
+                        ? `<div class="h-32 w-28 bg-gray-50 dark:bg-gray-800 flex flex-col items-center justify-center rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm transition-all hover:bg-gray-100">
+                               <i class="ti ti-file-type-pdf text-4xl text-red-500"></i>
+                               <span class="text-[10px] mt-2 font-bold text-gray-500">Buka PDF</span>
+                           </div>`
+                        : `<img src="${minioBaseUrl}/${attachment.file}" alt="${attachment.title}" class="h-32 w-auto rounded-lg border border-gray-200 dark:border-gray-700 object-cover shadow-sm">`;
+
+                    lampiranHtml += `
+                        <div>
+                            <span class="block text-[10px] font-bold uppercase text-gray-500 tracking-wider mb-1.5">${attachment.title}:</span>
+                            <a href="${minioBaseUrl}/${attachment.file}" target="_blank" class="inline-block hover:opacity-80 transition-opacity">
+                                ${fileDisplay}
+                            </a>
+                        </div>
+                    `;
+                });
+
+                lampiranHtml += `</div>`;
             }
 
             let komentarHtml = '';
             if (tiket.komentar && tiket.komentar.length > 0) {
                 komentarHtml = '<div class="space-y-2">';
                 komentarHtml += '<span class="block text-[10px] font-bold uppercase text-gray-500 tracking-wider mb-1.5">Komentar Operator:</span>';
-                
+
                 tiket.komentar.forEach(kom => {
                     const namaUser = kom.user ? kom.user.nama : 'Operator';
                     komentarHtml += `
@@ -199,13 +237,13 @@ function lihatDetailTiketOperator(uuid, nama) {
     modal.classList.remove('hidden');
 }
 
-document.getElementById('formUsulanKadis').addEventListener('submit', function(e) {
+document.getElementById('formUsulanKadis').addEventListener('submit', function (e) {
     e.preventDefault();
 
     let formData = new FormData(this);
     let submitBtn = this.querySelector('button[type="submit"]');
     let originalText = submitBtn.innerHTML;
-    
+
     submitBtn.innerHTML = '<i class="ti ti-loader animate-spin"></i> Mengirim...';
     submitBtn.disabled = true;
 
@@ -226,51 +264,51 @@ document.getElementById('formUsulanKadis').addEventListener('submit', function(e
         },
         body: formData
     })
-    .then(async response => {
-        const data = await response.json().catch(() => ({}));
-        if (!response.ok) {
-            throw new Error(data.message || "Terjadi kesalahan sistem (Error " + response.status + ").");
-        }
-        return data;
-    })
-    .then(data => {
-        document.getElementById('modalUsulanKadis').classList.add('hidden');
-        document.getElementById('formUsulanKadis').reset();
-        tampilkanAlert(true, "Berhasil!", data.message || "Usulan prioritas berhasil dikirim ke Kadis.");
-    })
-    .catch(error => {
-        tampilkanAlert(false, "Gagal Mengirim!", error.message);
-    })
-    .finally(() => {
-        submitBtn.innerHTML = originalText;
-        submitBtn.disabled = false;
-    });
+        .then(async response => {
+            const data = await response.json().catch(() => ({}));
+            if (!response.ok) {
+                throw new Error(data.message || "Terjadi kesalahan sistem (Error " + response.status + ").");
+            }
+            return data;
+        })
+        .then(data => {
+            document.getElementById('modalUsulanKadis').classList.add('hidden');
+            document.getElementById('formUsulanKadis').reset();
+            tampilkanAlert(true, "Berhasil!", data.message || "Usulan prioritas berhasil dikirim ke Kadis.");
+        })
+        .catch(error => {
+            tampilkanAlert(false, "Gagal Mengirim!", error.message);
+        })
+        .finally(() => {
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+        });
 });
 
-window.tampilkanAlert = function(isSuccess, title, message) {
+window.tampilkanAlert = function (isSuccess, title, message) {
     const modal = document.getElementById('modalAlertCustom');
     const icon = document.getElementById('alertIcon');
-    
+
     if (isSuccess) {
         icon.innerHTML = '<i class="ti ti-circle-check text-[70px] text-green-500 drop-shadow-md"></i>';
     } else {
         icon.innerHTML = '<i class="ti ti-alert-triangle text-[70px] text-red-500 drop-shadow-md"></i>';
     }
-    
+
     document.getElementById('alertTitle').innerText = title;
     document.getElementById('alertMessage').innerText = message;
-    
+
     modal.classList.remove('hidden');
 }
 
-window.tutupAlertDanKembali = function() {
+window.tutupAlertDanKembali = function () {
     document.getElementById('modalAlertCustom').classList.add('hidden');
-    window.location.reload(); 
-} 
+    window.location.reload();
+}
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const bridge = document.getElementById('dashboard-data-bridge');
-    
+
     if (bridge && typeof window.initDashboard === 'function') {
         const labels = JSON.parse(bridge.getAttribute('data-labels'));
         const data = JSON.parse(bridge.getAttribute('data-data'));
@@ -282,20 +320,20 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-window.confirmHapusUsulan = function(uuid) {
+window.confirmHapusUsulan = function (uuid) {
     Swal.fire({
         title: 'Batalkan Usulan?',
         text: "Apakah Anda yakin ingin membatalkan usulan prioritas untuk tiket ini?",
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonColor: '#ef4444', 
-        cancelButtonColor: '#6b7280', 
+        confirmButtonColor: '#ef4444',
+        cancelButtonColor: '#6b7280',
         confirmButtonText: '<i class="ti ti-trash"></i> Ya, Batalkan!',
         cancelButtonText: 'Batal',
-        reverseButtons: true 
+        reverseButtons: true
     }).then((result) => {
         if (result.isConfirmed) {
-            
+
             Swal.fire({
                 title: 'Memproses...',
                 text: 'Sedang membatalkan usulan prioritas',
@@ -313,34 +351,34 @@ window.confirmHapusUsulan = function(uuid) {
                     'X-Requested-With': 'XMLHttpRequest'
                 }
             })
-            .then(async response => {
-                const data = await response.json();
-                if (!response.ok) throw new Error(data.message || "Gagal membatalkan usulan.");
-                return data;
-            })
-            .then(data => {
-                Swal.fire({
-                    title: 'Dibatalkan!',
-                    text: data.message,
-                    icon: 'success',
-                    timer: 1500,
-                    showConfirmButton: false
-                }).then(() => {
-                    window.location.reload(); 
+                .then(async response => {
+                    const data = await response.json();
+                    if (!response.ok) throw new Error(data.message || "Gagal membatalkan usulan.");
+                    return data;
+                })
+                .then(data => {
+                    Swal.fire({
+                        title: 'Dibatalkan!',
+                        text: data.message,
+                        icon: 'success',
+                        timer: 1500,
+                        showConfirmButton: false
+                    }).then(() => {
+                        window.location.reload();
+                    });
+                })
+                .catch(error => {
+                    Swal.fire({
+                        title: 'Gagal!',
+                        text: error.message,
+                        icon: 'error'
+                    });
                 });
-            })
-            .catch(error => {
-                Swal.fire({
-                    title: 'Gagal!',
-                    text: error.message,
-                    icon: 'error'
-                });
-            });
         }
     });
 }
 
-window.bukaDetailUsulan = function(element) {
+window.bukaDetailUsulan = function (element) {
     const usulanRaw = element.getAttribute('data-usulan');
     const usulan = JSON.parse(usulanRaw);
     const contentDiv = document.getElementById('detailUsulanContent');
@@ -385,10 +423,10 @@ window.bukaDetailUsulan = function(element) {
     document.getElementById('modalDetailUsulan').classList.remove('hidden');
 };
 
-window.tutupModalDetailUsulan = function() {
+window.tutupModalDetailUsulan = function () {
     document.getElementById('modalDetailUsulan').classList.add('hidden');
 };
 
 window.initDashboard = initDashboard;
-window.toggleModalUsulan = toggleModalUsulan; 
+window.toggleModalUsulan = toggleModalUsulan;
 window.lihatDetailTiketOperator = lihatDetailTiketOperator;
